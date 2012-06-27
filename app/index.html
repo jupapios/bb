@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>le app</title>
   <meta name="description" content="">
 
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/main.css">
 
   <script src="http://localhost:5000/socket.io/socket.io.js"></script>
   <script src="js/main.js"></script>
@@ -16,6 +16,14 @@
 
   </header>
   <div role="main">
+
+    <div id="sec-home">
+    <a href="#" onclick="game.new(); return false;" class="button-play">- play -</a>
+    <a href="#" onclick="game.new(); return false;" class="button-controls">- controls -</a>
+    <a href="#" onclick="game.new(); return false;" class="button-exit">- exit -</a>
+    <a href="#" onclick="game.new(); return false;" class="button-credits">- credits -</a>
+    </div>
+
     <a href="#" onclick="game.new(); return false;" class="action disabled">new</a>
     <br />
     <a href="#" onclick="game.join($('instanceId').value); return false;" class="action disabled">join</a>

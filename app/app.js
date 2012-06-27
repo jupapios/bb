@@ -1,6 +1,6 @@
 var static = require('node-static'),
-  http = require('http'),
-  util = require('util');
+  http = require('http')
+
 var webroot = './',
   port = 8080;
 var file = new(static.Server)(webroot, {

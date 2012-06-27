@@ -1,3 +1,7 @@
+/* Author:
+	Juan Pablo Pinilla - @jp_pinilla
+*/
+
 var
 	game
 	, socket
@@ -5,12 +9,10 @@ var
 	, other_player = 0
 	, instance = null
 
-// Console history, events, ...
+
+// Console history, events
 const DEBUG = true
 
-/* Author:
-	Juan Pablo Pinilla - @jp_pinilla
-*/
 
 /************************************
  * Utils
