@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="7" height="33" tilewidth="101" tileheight="19">
+ <tileset firstgid="1" name="sprite" tilewidth="101" tileheight="19">
+  <image source="sprite.png" width="505" height="1881"/>
+ </tileset>
+ <layer name="Capa de patrones 5" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJxjYEAFO9FoZLAPjUYGh9FoZHACiM2hNDo4C8Q2UBodXAJiRyj9DIgPQjE3EF8HYjco/RqIj0GxAFSvN5T+AMSnoVgUKhYApb9isTMUSv/CIheFRWwUjAJaAQCjwRa5
+  </data>
+ </layer>
+ <layer name="Capa de patrones 4-5" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJxjYBh+4DqZcnfwyD0k0y2jYBSQCwD0NANs
+  </data>
+ </layer>
+ <layer name="Capa de patrones 4 (puente)" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJxjYBjeYAkjA8N7BgS+yIiQWwlkf2FA4GtIcuuA7J8MCHwbyZzNQPY/BgR+gGTODiCbGQk/RTJnL5DNgYRfIZlzCMjmRcLvkcwYBSMTAACkch6v
+  </data>
+ </layer>
+ <layer name="Capa de patrones 3-4" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJxjYBi+4DqZcnfwyD0k0y2jYBSQCgDY3ANs
+  </data>
+ </layer>
+ <layer name="Capa de patrones 3" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFgwG8B+KDUPweCZ9nZGD4AqSPQfEXJHwFKPcTSJ+G4p9I+CZQ7h+QvgDF/5DwPaAcMxBfZYBgZkYEfsyI240v8Mi9xSM3CsgDAGeIHYA=
+  </data>
+ </layer>
+ <layer name="Capa de patrones 2-3" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFowA/4GCEYGyAlxGCRwH1AQBDvAAv
+  </data>
+ </layer>
+ <layer name="Capa de patrones 2" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFIxHwAfFBKOZDkxMG4mNQLIwmJwHEp6EYxH4PxKlQLAvEF6AYxP4CxFlQrATEV6EYxP4JxPlQjA7+AXEJFKMDZkYGhkoGCB7uAAC+FhET
+  </data>
+ </layer>
+ <layer name="Capa de Patrones 1" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJztyaEOQHAUxeH7n6JQFEVRFK+lKIqiKJ5MURRFUTyCoijm3N0TTNA0Z/u233ZE/v37fiH0FD6+CAaKHl8MI2lvUFACE2nvUFIKM2kfUFEGC2mfUFMOK2l7TqQRk934zrRi8pvAmU5M+6J7cQF06R9b
+  </data>
+ </layer>
+ <layer name="Personajes" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgF1AAz8MjNxSO3CI/ccixis6D0Gixy8/GYtQSP3Eokdiaa3Dokdh4eM4rxyFXgkavFI9eER24kAACS6Qkg
+  </data>
+ </layer>
+ <layer name="Objectos" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgZwAWPnCceOT88csFkuoWa4B0euc945H7gkfuLR46JEbccO5LcCjR1PEj8tXjM2ASVE8RixnYoXwyLGXugfGkkM2DgIJSvgGQGOlBFMgMbOIhHjlYAAD/EDiY=
+  </data>
+ </layer>
+ <layer name="Sombras" width="7" height="33">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgF9ATOjAiMDjwYERgd+DIiMDoIYkRgWgBc7gUBXO4FAVzuBQFaune4AAASrgXn
+  </data>
+ </layer>
+</map>
