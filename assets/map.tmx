@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="7" height="33" tilewidth="101" tileheight="19">
  <tileset firstgid="1" name="sprite" tilewidth="101" tileheight="19">
-  <image source="sprite.png" width="505" height="1881"/>
+  <image source="../../../Desktop/GAME/sprite.png" width="505" height="1881"/>
  </tileset>
  <layer name="Capa de patrones 5" width="7" height="33">
   <data encoding="base64" compression="zlib">
@@ -43,14 +43,9 @@
    eJztyaEOQHAUxeH7n6JQFEVRFK+lKIqiKJ5MURRFUTyCoijm3N0TTNA0Z/u233ZE/v37fiH0FD6+CAaKHl8MI2lvUFACE2nvUFIKM2kfUFEGC2mfUFMOK2l7TqQRk934zrRi8pvAmU5M+6J7cQF06R9b
   </data>
  </layer>
- <layer name="Personajes" width="7" height="33">
-  <data encoding="base64" compression="zlib">
-   eJxjYBgF1AAz8MjNxSO3CI/ccixis6D0Gixy8/GYtQSP3Eokdiaa3Dokdh4eM4rxyFXgkavFI9eER24kAACS6Qkg
-  </data>
- </layer>
  <layer name="Objectos" width="7" height="33">
   <data encoding="base64" compression="zlib">
-   eJxjYBgZwAWPnCceOT88csFkuoWa4B0euc945H7gkfuLR46JEbccO5LcCjR1PEj8tXjM2ASVE8RixnYoXwyLGXugfGkkM2DgIJSvgGQGOlBFMgMbOIhHjlYAAD/EDiY=
+   eJxjYBgFQxm8wyP3GY/cDzxyf/HIMTHilmNHkluBpo4Hib8Wjxmb8JixHY8Ze5D4m9DkDiLxt+Oxew8euYN45GgFAN1cDHE=
   </data>
  </layer>
  <layer name="Sombras" width="7" height="33">
@@ -58,4 +53,24 @@
    eJxjYBgF9ATOjAiMDjwYERgd+DIiMDoIYkRgWgBc7gUBXO4FAVzuBQFaune4AAASrgXn
   </data>
  </layer>
+ <objectgroup color="#ff007f" name="collision" width="7" height="33">
+  <object x="2" y="276">
+   <polygon points="0,0 98,-33 400,-32 504,4"/>
+  </object>
+  <object x="707" y="623">
+   <polygon points="0,0 -709,3 -707,-112 -304,-110 -302,-73 -102,-74 -104,-155 -3,-155"/>
+  </object>
+  <object x="102" y="278">
+   <polygon points="0,0 -1,230 201,234 201,1"/>
+  </object>
+  <object x="304" y="431">
+   <polygon points="0,0 99,-2 99,80 -1,80"/>
+  </object>
+  <object x="503" y="204">
+   <polygon points="0,0 -99,-40 -404,-38 -506,1 -503,-204 203,-204 202,3"/>
+  </object>
+  <object x="403" y="357">
+   <polygon points="0,0 202,1 203,39 0,40 2,74"/>
+  </object>
+ </objectgroup>
 </map>

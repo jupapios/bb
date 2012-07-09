@@ -9,7 +9,7 @@ The project name will be used to generate your .zip archive and .bar file
 
 	<!-- Update these as necessary -->
 	<property name="password" value="playbook" />
-	<property name="simIP" value="192.168.239.128" />
+	<property name="simIP" value="192.168.86.128" />
 
 	<!-- Check that the SDK path is valid -->
 	<property name="sdk.HOME" location="C:\Program Files (x86)\Research In Motion\BlackBerry WebWorks SDK for TabletOS 2.2.0.5" />

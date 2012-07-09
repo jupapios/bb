@@ -2,9 +2,9 @@
 <widget xmlns="http://www.w3.org/ns/widgets"
        xmlns:rim="http://www.blackberry.com/ns/widgets" version="1.0.0">
  
-       <name>le app</name>
+       <name>le caju</name>
        <author>Caju</author>
-       <description>Play with your friends</description>
+       <description>la app for testing</description>
        <icon src="img/icon.png" />
        <content src="index.html" />
        <feature id="blackberry.app" />

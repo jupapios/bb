@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>le app</title>
+  <title>le caju</title>
   <meta name="description" content="">
 
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
   <link rel="stylesheet" href="css/main.css">
 
-  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+  <script src="http://192.168.1.24:5000/socket.io/socket.io.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/libs/core.js"></script>
+  <script src="js/libs/box2d.js"></script>
   <script src="js/main.js"></script>
 </head>
 <body>
@@ -16,6 +19,12 @@
 
   </header>
   <div role="main">
+
+    <div id="app"></div>
+    <div class="canvas-container" style="width: 707px">
+      <div class="cloud"></div>
+      <canvas id="app-canvas" width="707" height="742"></div>
+    </div>
 
     <div id="sec-home">
     <a href="#" onclick="game.new(); return false;" class="button-play">- play -</a>
@@ -39,12 +48,12 @@
     </div>
     <div id="log">
       <h1>Log:</h1>
-    </div>    
+    </div>
   </div>
   <footer>
 
   </footer>
 
-  <!--<script src="js/libs/jquery-1.7.1.min.js"></script>-->
+  <script src="js/libs/tiled.js"></script>
 </body>
 </html>

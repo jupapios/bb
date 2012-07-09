@@ -265,6 +265,74 @@ td {
   color: #fff;
   text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
 }
+.tile {
+  position: absolute;
+}
+.app {
+  position: relative;
+}
+.canvas-container {
+  position: relative;
+  padding-top: 40px;
+}
+.canvas-container .cloud {
+  -webkit-animation: cloud 2s infinite alternate;
+  -moz-animation: cloud 2s infinite alternate;
+  -o-animation: cloud 2s infinite alternate;
+  -ms-animation: cloud 2s infinite alternate;
+  animation: cloud 2s infinite alternate;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: url("../img/cloud.png") no-repeat;
+  width: 140px;
+  height: 95px;
+}
+@-moz-keyframes cloud {
+  0% {
+    margin-top: 0;
+  }
+
+  100% {
+    margin-top: 10px;
+  }
+}
+@-webkit-keyframes cloud {
+  0% {
+    margin-top: 0;
+  }
+
+  100% {
+    margin-top: 10px;
+  }
+}
+@-o-keyframes cloud {
+  0% {
+    margin-top: 0;
+  }
+
+  100% {
+    margin-top: 10px;
+  }
+}
+@-ms-keyframes cloud {
+  0% {
+    margin-top: 0;
+  }
+
+  100% {
+    margin-top: 10px;
+  }
+}
+@keyframes cloud {
+  0% {
+    margin-top: 0;
+  }
+
+  100% {
+    margin-top: 10px;
+  }
+}
 .ir {
   border: 0;
   font: 0/0 a;
