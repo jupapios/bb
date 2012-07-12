@@ -15,12 +15,11 @@ RevoluteJointDef =  Box2D.Dynamics.Joints.b2RevoluteJointDef
 
 !function (container, map, drawingCanvas) {
 
-	// Check the element is in the DOM and the browser supports canvas
-	if(drawingCanvas.getContext) {
-		// Initaliase a 2-dimensional drawing context
-		var context = drawingCanvas.getContext('2d')
-		//Canvas commands go here
-	}
+
+	var context = drawingCanvas.getContext('2d')
+
+	window.caju_canvas = drawingCanvas
+	window.caju_context = context
 
 	var
 		contWidth = container.getSize().x
@@ -55,7 +54,7 @@ RevoluteJointDef =  Box2D.Dynamics.Joints.b2RevoluteJointDef
 						  "id": lobj.name
 						}
 					}
-					console.log(entityDef)
+					//console.log(entityDef)
 					//gPhysicsEngine.addBody(entityDef)					
 				}
 			} else if (layer.data) {
@@ -63,7 +62,7 @@ RevoluteJointDef =  Box2D.Dynamics.Joints.b2RevoluteJointDef
 			}
 		}
 
-		console.log(sw,sh)
+		//console.log(sw,sh)
 	}
 
 

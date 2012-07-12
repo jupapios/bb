@@ -14,6 +14,42 @@ var
 const DEBUG = true
 
 
+
+/************************************
+ * Joystick
+ ***********************************/
+function handle_button_a () {
+	$$('.cloud')[0].style.display = 'none'
+}
+
+function handle_button_b () {
+	$$('.cloud')[0].style.display = 'block'
+}
+
+function handle_button_c () {
+	//console.log(this)
+}
+
+window.addEvent('domready', function() {
+	var joystick = new VirtualJoystick({
+		container: document.getElementById('joystick'),
+		mouseSupport: true
+	})
+})
+
+
+/************************************
+ * Character
+ ************************************/
+
+window.character = new Image()
+character.src = "img/boy.png"
+character.onload = function() {  
+	caju_context.drawImage(character, 0, 0)
+}
+
+
+
 /************************************
  * Utils
  ************************************/
@@ -53,7 +89,7 @@ window.$$ = function () {
 /************************************
  * Socket
  ************************************/
-
+/*
 socket = io.connect('http://localhost:5000', {
 	'reconnect': true
 	, 'reconnection delay': 500
@@ -118,3 +154,4 @@ game = {
 
 	}
 }
+*/

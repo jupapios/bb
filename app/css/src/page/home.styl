@@ -20,11 +20,62 @@
 			color white
 			text-shadow -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
 
+
 .tile
 	position absolute
 
 .app
 	position relative
+
+.buttons
+	bottom 10px
+	position absolute
+	right 10px
+	z-index 2
+
+	a
+		background-color rgba(0,0,0,.3)
+		border 1px solid black
+		border-radius 30px
+		color white
+		cursor pointer
+		display block
+		font-size 3em
+		font-weight bold
+		height 60px
+		text-align center
+		transition all 2s linear
+		width 60px
+
+		&:active
+			transform rotate(360deg)
+
+	.button-a
+		margin auto
+
+	.button-b
+	.button-c
+		display inline-block
+
+.joystick2
+	background-color rgba(0, 0, 0, .4)
+	border 10px solid cyan
+	border-radius 50px
+	bottom 10px
+	cursor pointer
+	position absolute
+	height 80px
+	left 10px
+	width 80px
+	z-index 2
+
+#joystick
+	position absolute
+	top 0
+	left 0
+	width 100%
+	height 100%
+	z-index 1
 
 .canvas-container
 	position relative
@@ -34,7 +85,7 @@
 		animation cloud 2s infinite alternate
 		position absolute
 		top 10px
-		right 10px
+		left 10px
 		background url('../img/cloud.png') no-repeat
 		width 140px
 		height 95px
