@@ -246,6 +246,11 @@ table {
 td {
   vertical-align: top;
 }
+canvas {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+}
 #sec-home [class^="button-"],
 #sec-home [class*=" button-"] {
   color: #000;

@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+	<title>Caju</title>
+
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/libs/easel.js"></script>
+    <!--<script src="js/map.js"></script>-->
+    <script src="http://192.168.1.22:5000/socket.io/socket.io.js"></script>
+
+</head>
+<body onload="init()">
+<canvas id="app" width="707" height="742"></canvas>
+<div class="controls" style="position: absolute; z-index: 2;">
+    <a href="#" onclick="game.new(); return false;" class="action disabled">new</a>
+    <br />
+    <a href="#" onclick="game.join(document.getElementById('instanceId').value); return false;" class="action disabled">join</a>
+    <input id="instanceId" type="number" maxlength="1" max="6">
+</div>
+<script>
+
+    // For keyboard TEST
+    const
+        KEYCODE_UP = 38
+        , KEYCODE_DOWN = 40
+        , KEYCODE_LEFT = 37
+        , KEYCODE_RIGHT = 39
+    ;
+
+    const DEBUG = true;
+
+    function handleKeyDown (e) {
+
+        console.log(e);
+
+        switch (e.keyCode) {
+            case KEYCODE_UP:
+                player.bmpAnimation.direction = KEYCODE_UP;
+                break;
+            case KEYCODE_DOWN:
+                player.bmpAnimation.direction = KEYCODE_DOWN;
+                break;
+            case KEYCODE_LEFT:
+                player.bmpAnimation.direction = KEYCODE_LEFT;
+                break;
+            case KEYCODE_RIGHT:
+                player.bmpAnimation.direction = KEYCODE_RIGHT;
+                break;
+        }
+
+    }
+
+    function handleKeyUp(e) {
+        player.bmpAnimation.direction = 0;
+    }
+
+    var
+          canvas
+        , stage
+
+        , map
+        , player
+        , enemy
+
+        , total_images = 0
+    ;
+
+    var
+        map_points = null
+        , sw = null//map_points.tilewidth
+        , sh = null//map_points.tileheight
+        , sh_p = null//map_points.tilesets[0].tileheight
+    ;
+
+    const TOTAL_IMAGES = 2;
+
+    function init () {
+
+        canvas = document.getElementById('app');
+        stage = new Stage(canvas);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "map.json", true);
+
+        xhr.onload = function(e) {
+            map_points = JSON.parse(xhr.responseText); // not responseText
+
+            sw = map_points.tilewidth
+            sh = map_points.tileheight
+            sh_p = map_points.tilesets[0].tileheight
+
+            // INICIO carga mapa
+            map = new Image();
+
+            map.onload = handleMapLoad;
+            map.onerror = handleImageError;
+
+            map.src = map_points.tilesets[0].image;
+            // FIN carga mapa
+
+        }
+
+        xhr.send();
+
+    }
+
+    function handleImageLoad () {
+
+        total_images++;
+
+        var spriteSheet = new SpriteSheet({
+            images: [this],
+            "frames": this.frames,
+            "animations": this.animations
+        });
+
+        this.bmpAnimation = new BitmapAnimation(spriteSheet);
+
+        this.bmpAnimation.gotoAndPlay("idle");
+
+        this.bmpAnimation.vX = 4;
+        this.bmpAnimation.vY = 4;
+        this.bmpAnimation.x = this.position.x;
+        this.bmpAnimation.y = this.position.y;
+
+        this.bmpAnimation.currentFrame = 0;
+        stage.addChild(this.bmpAnimation);
+
+        if(total_images == TOTAL_IMAGES) {
+
+            document.onkeydown = handleKeyDown;
+            document.onkeyup = handleKeyUp;
+
+            Ticker.addListener(window);
+            Ticker.useRAF = true;
+            Ticker.setFPS(60);
+        }
+
+    }
+
+    function handleMapLoad () {
+
+        for(var i= 0; i<map_points.layers.length; i++) {
+            var layer = map_points.layers[i];
+            if(layer.data) {
+                drawLayer(layer);
+            } else if(layer.name == "players") {
+                var mePosition = layer.objects[other_player ? 0: 1];
+                var otherPosition = layer.objects[other_player];
+
+                // INICIO jugador
+                player = new Image();
+
+                player.onload = handleImageLoad;
+                player.onerror = handleImageError;
+
+                player.frames = {"count": 3, "regY": 0, "height": 88, "regX": 0, "width": 67};
+
+                player.animations = {"idle": [0, 2]};
+
+                player.position = {x:mePosition.x, y:mePosition.y};
+                player.src = "img/boy.png";
+                // FIN jugador
+
+                // INICIO enemigo
+                enemy = new Image();
+
+                enemy.onload = handleImageLoad;
+                enemy.onerror = handleImageError;
+
+                enemy.frames = {"count": 3, "regY": 0, "height": 88, "regX": 0, "width": 67};
+
+                enemy.animations = {"idle": [0, 2]};
+
+                enemy.position = {x:otherPosition.x, y:otherPosition.y};
+                enemy.src = "img/boy.png";
+                // FIN enemigo
+            }
+        }
+    }
+
+    function handleImageError () {
+
+    }
+
+    function drawLayer (layer) {
+        var
+                i=0
+                , left = 0
+                , top = 0
+                , arr = layer.data
+                , width = layer.width
+                , floor = 0
+                , row
+        ;
+
+        for(;arr.length > i;i++) {
+
+            left += sw;
+
+            if(i%width==0) {
+                row=Math.floor(i/width);
+                top=row*sh;
+                left = 0;
+            }
+
+            if(arr[i] != 0) drawTile(left, top - floor, arr[i]-1)
+        }
+
+        stage.update();
+    }
+
+    function drawTile (left, top, pos) {
+        var
+                width = parseInt(map.width) / sw
+                , b_left =  sw * (pos%width)
+                , b_top = Math.floor(pos/width) * sh_p
+        ;
+
+        var bmp = new Bitmap(map);
+
+        bmp.sourceRect = {
+            x: b_left
+            , y : b_top
+            , height: sh_p
+            , width: sw
+        };
+
+        bmp.x = left;
+        bmp.y = top;
+
+        stage.addChild(bmp);
+    }
+
+    function tick () {
+        if(player.bmpAnimation.direction == KEYCODE_UP) {
+            player.bmpAnimation.y -= player.bmpAnimation.vY;
+        } else if(player.bmpAnimation.direction == KEYCODE_DOWN) {
+            player.bmpAnimation.y += player.bmpAnimation.vY;
+        } else if(player.bmpAnimation.direction == KEYCODE_LEFT) {
+            player.bmpAnimation.x -= player.bmpAnimation.vX;
+        } else if(player.bmpAnimation.direction == KEYCODE_RIGHT) {
+            player.bmpAnimation.x += player.bmpAnimation.vX;
+        }
+        if(connection_ready && instance) {
+            socket.emit('move',{
+                id: instance
+                , py: other_player
+                , data: {
+                    x: player.bmpAnimation.x,
+                    y: player.bmpAnimation.y
+                }
+            });
+        }
+        stage.update();
+    }
+
+    /************************************
+     * Socket
+     ************************************/
+
+    var connection_ready = false;
+    var other_player = 0;
+    var instance = null;
+    var socket;
+
+    socket = io.connect('http://localhost:5000', {
+        'reconnect': true
+        , 'reconnection delay': 500
+        , 'max reconnection attempts': 5
+    });
+
+    socket.on('connect', function () {
+        connection_ready = true;
+        if(DEBUG) console.log('OPEN');
+    });
+
+    socket.on('new', function (data) {
+        if(DEBUG) console.log('NEW: ', data);
+        instance = parseInt(data);
+    });
+
+    socket.on('move', function (data) {
+        enemy.bmpAnimation.x = data.x;
+        enemy.bmpAnimation.y = data.y;
+        if(DEBUG) console.log('MOVE: ', data);
+    });
+
+    game = {
+
+        // Create new instance at server
+        // server returns the instance id
+        new: function () {
+            if(DEBUG) console.log('Click: new');
+            if(connection_ready) {
+                socket.emit('new')
+                other_player = 1
+            }
+        },
+
+        // Append you to existing game instance
+        // You send to the server the instance id
+        join: function (instanceId) {
+            if(DEBUG) console.log('Click: join');
+            if(connection_ready) {
+                socket.emit('join', instanceId )
+
+                instance = instanceId
+                other_player = 0
+            }
+            if(DEBUG) console.log('JOIN: ', instance, other_player)
+        }
+
+       /* move: function (dataToSend) {
+            if(DEBUG) console.log('Click: move');
+            if(connection_ready) {
+                socket.emit('move',{
+                    id: instance
+                    , py: other_player
+                    , data: dataToSend
+                })
+            }
+        }*/
+    }
+
+
+
+</script>
+</body>
+</html>

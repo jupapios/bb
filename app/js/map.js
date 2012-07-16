@@ -327,6 +327,42 @@ var map_points ={ "height":33,
          "width":7,
          "x":0,
          "y":0
+        }, 
+        {
+         "color":"#00ff00",
+         "height":33,
+         "name":"players",
+         "objects":[
+                {
+                 "height":0,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "width":0,
+                 "x":136,
+                 "y":211
+                }, 
+                {
+                 "height":0,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "type":"",
+                 "width":0,
+                 "x":528,
+                 "y":333
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":7,
+         "x":0,
+         "y":0
         }],
  "orientation":"orthogonal",
  "properties":

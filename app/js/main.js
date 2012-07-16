@@ -45,10 +45,10 @@ window.addEvent('domready', function() {
 window.character = new Image()
 character.src = "img/boy.png"
 character.onload = function() {  
-	var img = caju_context.createImageData(67, 88)
+	/*var img = caju_context.createImageData(67, 88)
 	for (var i = img.data.length; --i >= 0; )
 	  img.data[i] = 0;
-	ctx.putImageData(img, 100, 100);
+	ctx.putImageData(img, 100, 100);*/
 	caju_context.drawImage(character, 0, 0)
 }
 
@@ -93,7 +93,7 @@ window.$$ = function () {
 /************************************
  * Socket
  ************************************/
-/*
+
 socket = io.connect('http://localhost:5000', {
 	'reconnect': true
 	, 'reconnection delay': 500
@@ -158,4 +158,3 @@ game = {
 
 	}
 }
-*/
