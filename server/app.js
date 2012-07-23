@@ -26,12 +26,12 @@ io.sockets.on('connection', function (socket) {
     })
 
     socket.on('join', function (instanceId) {
-        //console.log('JOIN: ',message)
         instances[instanceId][1] = socket
     })
 
     socket.on('move', function (data) {
-        instances[data.id][data.py].emit('move', data.data )
+        console.log(data.id, data.py);
+        if(instances[data.id][data.py]) instances[data.id][data.py].emit('move', data.data );
     })
 
     socket.on('disconnect', function () {

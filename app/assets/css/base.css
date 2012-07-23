@@ -1,0 +1,179 @@
+@charset "UTF-8";
+
+/***********************************
+	Generic styles
+************************************/
+@font-face {
+    font-family: 'WindlassRegular';
+    src: url('windlass-webfont.eot');
+    src: url('windlass-webfont.eot?#iefix') format('embedded-opentype'),
+         url('windlass-webfont.woff') format('woff'),
+         url('windlass-webfont.ttf') format('truetype'),
+         url('windlass-webfont.svg#WindlassRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'TitilliumMaps26L500wt';
+    src: url('titilliummaps26l002-webfont.eot');
+    src: url('titilliummaps26l002-webfont.eot?#iefix') format('embedded-opentype'),
+         url('titilliummaps26l002-webfont.woff') format('woff'),
+         url('titilliummaps26l002-webfont.ttf') format('truetype'),
+         url('titilliummaps26l002-webfont.svg#TitilliumMaps26L500wt') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'TitilliumMaps26L1wt';
+    src: url('titilliummaps26l004-webfont.eot');
+    src: url('titilliummaps26l004-webfont.eot?#iefix') format('embedded-opentype'),
+         url('titilliummaps26l004-webfont.woff') format('woff'),
+         url('titilliummaps26l004-webfont.ttf') format('truetype'),
+         url('titilliummaps26l004-webfont.svg#TitilliumMaps26L1wt') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+
+*{
+	margin: 0px;
+	padding:0px;
+	border: 0px;
+}
+body {
+	background-color: #111;
+	font-family: sans-serif;
+	font-size: 14px;
+	color: #CCC;
+	background: #050505 url('../skin/tangled_background_repeat.jpg') repeat-x left top;
+}
+
+a:active, a:visited, a:link
+{
+	color: #CCC;
+}
+
+a:hover
+{
+	text-decoration:none;
+}
+
+.canvasHolder {
+	width: 750px;
+	position: absolute;
+	top: 36px;
+	left: 261px;
+}
+
+.description {
+	background-color: #222;
+	width: 750px;
+	padding: 15px;
+	margin-bottom:1px;
+}
+
+strong {
+	color: #FFF;
+}
+
+#wrapper{
+	height: 1200px;
+	min-width: 1024px;
+	background: url('../skin/bkomrobot_background.jpg') no-repeat left top;
+	
+}
+
+.logo{
+	margin-left: 40px;
+}
+
+.robot_logo{
+	position: absolute;
+	z-index:10000;
+	top: 70px;
+	left: 535px;
+}
+
+.bkom_robot_finger{
+	position: absolute;
+	z-index:10010;
+	top: 166px;
+	left: 946px;
+	width: 67px;
+	height: 165px;
+	background: url('../skin/bkomrobot_finger.png') no-repeat left top;
+}
+
+
+.bkom_menu{
+	position: absolute;
+	z-index:10000;
+	top: 185px;
+	left: 40px;
+	
+}
+
+.bkom_menu ul{
+	list-style-type:none;
+	
+}
+
+.bkom_menu li{
+	margin-bottom:10px;
+	
+}
+.bkom_menu li a{
+	padding:3px;
+	font-family:"TitilliumMaps26L500wt", sans-serif;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:uppercase;
+	font-size:1.3em;
+	color: #c1d72e;
+	background:#000000;
+}
+.bkom_menu li a:hover{
+	text-decoration:none;
+	text-transform:uppercase;
+	font-size:1.3em;
+	color: #000;
+	background:#c1d72e;
+}
+
+.description_text{
+	position: absolute;
+	z-index:10000;
+	top: 685px;
+	left: 270px;
+	
+	font-family:"TitilliumMaps26L1wt", sans-serif;
+}
+.description_text h1{
+	color: #fff;
+	font-weight:bold;
+	text-transform:uppercase;
+	font-size:2em;
+	
+}
+.description_text h2{
+	color: #c1d72e;
+	font-weight:bold;
+	text-transform:uppercase;
+	font-size:1.5em;
+	
+}
+
+.description_text p{
+	font-size:1em;
+	width: 600px;
+	margin-top: 30px;
+	font-family:"TitilliumMaps26L500wt", sans-serif;
+}
