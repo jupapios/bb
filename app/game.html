@@ -59,6 +59,10 @@
 
         <div class="new_game popup">
             <h1>new game</h1>
+            <p>choose a world</p>
+            <div class="img_container">
+                <img src="" width="200" height="160" onclick="init(this.getAttribute('data-url'))" data-url="map.json">
+            </div>
             <p>invite a friend: <span>2</span></p>
             <!--<a class="play disabled" href="javascript:;" onclick="">play!</a>-->
             <p>waiting friend</p>
@@ -68,14 +72,16 @@
     </section>
 
 
-    <section class="game">
-
+    <section class="game" style="display:none">
+        <canvas id="app" width="707" height="742"></canvas>
+        <div class="alert_waiting">
+            <p>waiting your friend</p>
+            <p>remember give him the id 2</p>
+        </div>
     </section>
 
 
-    <div class=""></div>
     <!--
-    <canvas id="app" width="707" height="742"></canvas>
     <div class="controls" style="position: absolute; z-index: 2;">
         <a href="#" onclick="game.new(); return false;" class="action disabled">nuevo juego</a>
         <br />
@@ -296,13 +302,24 @@ window.Colider = Colider;
         player.bmpAnimation.direction = 0;
     }
 
-    function init () {
+    function init (map_url) {
+
+        document.querySelector('.new_game').removeClass('active');
+
+        setTimeout(function() {
+            document.querySelector('.intro').style.display = 'none';
+
+            setTimeout(function() {
+                document.querySelector('.game').style.display = 'block';
+            }, 200);
+
+        }, 600);
 
         canvas = document.getElementById('app');
         stage = new Stage(canvas);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", "map.json", true);
+        xhr.open("GET", map_url, true);
 
         xhr.onload = function(e) {
 
@@ -343,8 +360,10 @@ window.Colider = Colider;
 
         this.bmpAnimation.vX = 4;
         this.bmpAnimation.vY = 4;
-        this.bmpAnimation.x = this.position.x;
-        this.bmpAnimation.y = this.position.y;
+        /*this.bmpAnimation.x = this.position.x;
+        this.bmpAnimation.y = this.position.y;*/
+        this.bmpAnimation.x = -9999;
+        this.bmpAnimation.y = -9999;        
 
         this.bmpAnimation.currentFrame = 0;
         stage.addChild(this.bmpAnimation);
