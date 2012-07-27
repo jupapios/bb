@@ -53,7 +53,7 @@
         <div class="join_game popup">
             <h1>join a game</h1>
             <input type="text" placeholder="game's id">
-            <a class="play" href="javascript:;" onclick="">play!</a>
+            <a class="play" href="javascript:;" onclick="game.join(this.parentElement.querySelector('input').value)">play!</a>
             <a class="close ir" href="javascript:;" onclick="this.parentElement.removeClass('active')"></a>
         </div>
 
@@ -61,11 +61,10 @@
             <h1>new game</h1>
             <p>choose a world</p>
             <div class="img_container">
-                <img src="" width="200" height="160" onclick="init(this.getAttribute('data-url'))" data-url="map.json">
+                <img src="" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map.json">
+                <img src="" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map.json">
+                <img src="" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map.json">
             </div>
-            <p>invite a friend: <span>2</span></p>
-            <!--<a class="play disabled" href="javascript:;" onclick="">play!</a>-->
-            <p>waiting friend</p>
             <a class="close ir" href="javascript:;" onclick="this.parentElement.removeClass('active')"></a>
         </div>        
 
@@ -74,9 +73,9 @@
 
     <section class="game" style="display:none">
         <canvas id="app" width="707" height="742"></canvas>
-        <div class="alert_waiting">
+        <div class="alert_waiting" style="display:none">
             <p>waiting your friend</p>
-            <p>remember give him the id 2</p>
+            <p>remember give him the id <span id="instanceId"></span></p>
         </div>
     </section>
 
@@ -265,6 +264,7 @@ window.Colider = Colider;
     const TOTAL_IMAGES = 3;
 
     var connection_ready = false;
+    var ready = false;
     var other_player = 1;
     var instance = -1;
     var socket;
@@ -304,18 +304,9 @@ window.Colider = Colider;
 
     function init (map_url) {
 
-        document.querySelector('.new_game').removeClass('active');
-
-        setTimeout(function() {
-            document.querySelector('.intro').style.display = 'none';
-
-            setTimeout(function() {
-                document.querySelector('.game').style.display = 'block';
-            }, 200);
-
-        }, 600);
-
         canvas = document.getElementById('app');
+        canvas.width = document.width;
+        canvas.height = document.height;
         stage = new Stage(canvas);
 
         var xhr = new XMLHttpRequest();
@@ -340,7 +331,8 @@ window.Colider = Colider;
 
         }
 
-        xhr.send();
+        xhr.send();         
+
 
     }
 
@@ -358,6 +350,8 @@ window.Colider = Colider;
 
         this.bmpAnimation.gotoAndPlay("idle");
 
+        this.bmpAnimation.direction = 0;
+
         this.bmpAnimation.vX = 4;
         this.bmpAnimation.vY = 4;
         /*this.bmpAnimation.x = this.position.x;
@@ -370,12 +364,14 @@ window.Colider = Colider;
 
         if(total_images == TOTAL_IMAGES) {
 
-            document.onkeydown = handleKeyDown;
-            document.onkeyup = handleKeyUp;
+            document.querySelector("#instanceId").innerText = instance;
+            document.querySelector('.game').style.display = 'block';
 
-            Ticker.addListener(window);
-            Ticker.useRAF = true;
-            Ticker.setFPS(60);
+            // Im second player and Im ready to play
+            // tell the server start the game
+            if(other_player == 0) {
+                socket.emit('ready', instance);
+            }
         }
 
     }
@@ -451,8 +447,6 @@ window.Colider = Colider;
                 }
             }
 
-            //colider = new Colider(hitZones);
-
             window.colider = new Colider(hitZones);
         }
     }
@@ -463,13 +457,13 @@ window.Colider = Colider;
 
     function drawLayer (layer) {
         var
-                i=0
-                , left = 0
-                , top = 0
-                , arr = layer.data
-                , width = layer.width
-                , floor = 0
-                , row
+            i=0
+            , left = 0
+            , top = 0
+            , arr = layer.data
+            , width = layer.width
+            , floor = 0
+            , row
         ;
 
         for(;arr.length > i;i++) {
@@ -490,9 +484,9 @@ window.Colider = Colider;
 
     function drawTile (left, top, pos) {
         var
-                width = parseInt(map.width) / sw
-                , b_left =  sw * (pos%width)
-                , b_top = Math.floor(pos/width) * sh_p
+            width = parseInt(map.width) / sw
+            , b_left =  sw * (pos%width)
+            , b_top = Math.floor(pos/width) * sh_p
         ;
 
         var bmp = new Bitmap(map);
@@ -540,7 +534,7 @@ window.Colider = Colider;
                 player.bmpAnimation.x -= testRect.width - 1;
             }
         }
-        if(connection_ready && instance != -1) {
+        if(ready && connection_ready && instance != -1) {
             socket.emit('move', {
                 id: instance
                 , py: other_player
@@ -570,24 +564,70 @@ window.Colider = Colider;
 
     socket.on('new', function (data) {
         if(DEBUG) console.log('NEW: ', data);
-        instance = parseInt(data);
-        init();
+        instance = parseInt(data.id);
+        init(data.mapUrl);
     });
 
     socket.on('move', function (data) {
-        enemy.bmpAnimation.x = data.x;
-        enemy.bmpAnimation.y = data.y;
+        if(ready) {
+            enemy.bmpAnimation.x = data.x;
+            enemy.bmpAnimation.y = data.y;
+        }
         if(DEBUG) console.log('MOVE: ', data);
     });
+
+    socket.on('join', function (data) {
+        /*enemy.bmpAnimation.x = data.x;
+        enemy.bmpAnimation.y = data.y;
+        if(DEBUG) console.log('MOVE: ', data);*/
+        init(data);
+    });
+
+    socket.on('ready', function (data) {
+        /*enemy.bmpAnimation.x = data.x;
+        enemy.bmpAnimation.y = data.y;
+        if(DEBUG) console.log('MOVE: ', data);*/
+        //init(data);
+        /* INICIO: Esto cuando el otro jugador se conecte */
+        document.onkeydown = handleKeyDown;
+        document.onkeyup = handleKeyUp;
+
+        Ticker.addListener(window);
+        Ticker.useRAF = true;
+        Ticker.setFPS(60);
+        /* FIN: Esto cuando el otro jugador se conecte */ 
+        
+        player.bmpAnimation.x = player.position.x;
+        player.bmpAnimation.y = player.position.y;
+
+        enemy.bmpAnimation.x = enemy.position.x;
+        enemy.bmpAnimation.y = enemy.position.y;
+        //console.log(player)
+        ready = true;
+
+        document.querySelector('.alert_waiting').style.display = 'none';
+    });    
 
     game = {
 
         // Create new instance at server
         // server returns the instance id
-        new: function () {
+        new: function (map_url) {
+            document.querySelector('.new_game').removeClass('active');
+
+            setTimeout(function() {
+                document.querySelector('.intro').style.display = 'none';
+
+                setTimeout(function() {
+                    //show waiting
+                    document.querySelector('.alert_waiting').style.display = 'block';
+                }, 200);
+
+            }, 600); 
+
             if(DEBUG) console.log('Click: new');
             if(connection_ready) {
-                socket.emit('new')
+                socket.emit('new', map_url)
                 other_player = 1
             }
         },
@@ -595,13 +635,24 @@ window.Colider = Colider;
         // Append you to existing game instance
         // You send to the server the instance id
         join: function (instanceId) {
+            document.querySelector('.join_game').removeClass('active');
+
+            setTimeout(function() {
+                document.querySelector('.intro').style.display = 'none';
+
+                setTimeout(function() {
+                    //show waiting
+                    document.querySelector('.alert_waiting').style.display = 'block';
+                    //TO CHANGE
+                }, 200);
+
+            }, 600);             
             if(DEBUG) console.log('Click: join');
             if(connection_ready) {
                 socket.emit('join', instanceId )
 
                 instance = instanceId
                 other_player = 0
-                init()
             }
             if(DEBUG) console.log('JOIN: ', instance, other_player)
         }
