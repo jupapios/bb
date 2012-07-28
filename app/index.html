@@ -27,7 +27,7 @@
     </script>
 
     <script src="js/libs/easel.js"></script>
-    <script src="http://192.168.1.21:5000/socket.io/socket.io.js"></script>
+    <script src="http://10.20.0.113:5000/socket.io/socket.io.js"></script>
 
 </head>
 <body>
@@ -59,8 +59,8 @@
             <h1>new game</h1>
             <p>choose a world</p>
             <div class="img_container">
-                <img src="" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map.json">
-                <img src="" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map_03.json">
+                <img src="img/map_01.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map.json">
+                <img src="img/map_02.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map_03.json">
                 <img src="" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map.json">
             </div>
             <a class="close ir" href="javascript:;" onclick="this.parentElement.removeClass('active')"></a>
@@ -623,7 +623,7 @@ window.Colider = Colider;
      * Socket
      ************************************/
 
-    socket = io.connect('http://192.168.1.21:5000', {
+    socket = io.connect('http://10.20.0.113:5000', {
         'reconnect': true
         , 'reconnection delay': 500
         , 'max reconnection attempts': 5
