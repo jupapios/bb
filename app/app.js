@@ -2,9 +2,9 @@ var static = require('node-static'),
   http = require('http')
 
 var webroot = './',
-  port = 8080;
+  port = 8000;
 var file = new(static.Server)(webroot, {
-  cache: 600
+  cache: 100
 });
 http.createServer(function(req, res) {
   req.addListener('end', function() {

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Caju</title>
+  <meta name="description" content="">
+
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="css/main.css">
+
+  <!--<script src="http://192.168.1.24:5000/socket.io/socket.io.js"></script>--> 
+  <script src="js/map.js"></script>
+  <script src="js/libs/core.js"></script>
+   <script src="js/libs/easel.js"></script>
+  <script src="js/libs/box2d.js"></script>
+</head>
+<body>
+  <!--
+  <header></header>
+  -->
+  <div role="main">
+    <div id="joystick" class="joystick"></div>
+    <div class="buttons">
+      <a onclick="handle_button_a()" ontouchstart="handle_button_a()" class="button-a">A</a>
+      <a onclick="handle_button_b()" ontouchstart="handle_button_b()" class="button-b">B</a>
+      <a onclick="handle_button_c()" ontouchstart="handle_button_c()" class="button-c">C</a>
+    </div>
+    <!--<div id="joystick"></div>-->
+
+    <div id="app"></div>
+    <div class="canvas-container" style="width: 707px">
+      <div class="cloud"></div>
+      <canvas id="app-canvas" width="707" height="742"></canvas>
+    </div>
+
+    <div style="display:none">
+    <div id="sec-home">
+    <a href="#" onclick="game.new(); return false;" class="button-play">- play -</a>
+    <a href="#" onclick="game.new(); return false;" class="button-controls">- controls -</a>
+    <a href="#" onclick="game.new(); return false;" class="button-exit">- exit -</a>
+    <a href="#" onclick="game.new(); return false;" class="button-credits">- credits -</a>
+    </div>
+
+
+
+    <a href="#" onclick="game.new(); return false;" class="action disabled">new</a>
+    <br />
+    <a href="#" onclick="game.join($('instanceId').value); return false;" class="action disabled">join</a>
+    <input id="instanceId" type="number" maxlength="1" max="6" />
+    <br />
+    <a href="#" onclick="game.move($('dataToSend').value); return false;" class="action disabled">move</a>
+    <textarea id="dataToSend" type="text"></textarea>
+    <div id="history">
+      <h1>History:</h1>
+    </div>
+    <div id="error">
+      <h1>Errores:</h1>
+    </div>
+    <div id="log">
+      <h1>Log:</h1>
+    </div>
+    </div>
+  </div>
+
+  <!--
+  <footer></footer>
+  -->
+
+  <script src="js/libs/tiled.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/libs/virtualjoystick.js"></script>
+</body>
+</html>

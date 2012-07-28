@@ -55,7 +55,7 @@
  </layer>
  <objectgroup color="#00ff00" name="players" width="14" height="33">
   <object x="439" y="211"/>
-  <object x="528" y="333"/>
+  <object x="577" y="209"/>
  </objectgroup>
  <objectgroup name="animations" width="14" height="33">
   <object name="octopus" x="224" y="346"/>
