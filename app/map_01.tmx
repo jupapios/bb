@@ -5,7 +5,7 @@
  </tileset>
  <layer name="Capa de patrones 2" width="14" height="66">
   <data encoding="base64" compression="zlib">
-   eJztliFPxEAQhddfxVVcBRWsWdM/gMFgMBgMhn+KISEkhIRgMPwDDAaDQbGXzEsf053p7gnUveRlu22/7u60O9M+/NWdai0Nqn+v2o7MGlX/kdr9vT2ZFVX/OftM2k7mA7OS6r9mn0vbyXxg1qT6b9kX0nYyH5j1kf0g3mS/Z1/S2hKZ9Zn9JN7KuSta20RmfWW/iHdy7prWZq3nOyx1Q2uzuJ8Cdyscr0lzljp1bwtnPcNj+LvqG7hBHddyeAe9HNdyUY4HOa7lEo2bGrhJ5oixajnEo3YscC3xYKYlHuCG0BYPcGPjWOBiw1icJ8GU8qZmkCPx7hL1LSF+4KOwwwqL+Ol3PdLzSkL8EMspzDlzdLgY5u8Yc0TOjA7H8UvUB29xE3H628d5SzqW+prHWftmjbP2zRpnzVHXWn3dmqOutfp6KY/oulTiQljGnXPiRmxx+Ja55u61DXNtLXHYB9gnmPsuzLUVTE8c9gH2CXQiZm4gLob53yPSfadi5kbisA9iWP5H6LXhubwP1nJTqZbX1ITaOlziDtGRO3L/wXn50ZOXHz15+dFTPJDzcoinQ/b6L4pEMnI=
+   eJztlqFPxDAYxetvYhM3cRNUMMH+AQwGg8FgMPynGBJCQkgIBsN/gMFgMCh6yfeyt3ftd9sJ1H3JS7u2v1v72n63JkzjXspc1EmttD1IWZGY64R7onI7tiExF4V7STq3srL5QMz1wr0lXVhZ2Xwg5gbh3pMuraxsPhBzn0mPplXSR9IVra0nMfeV9Gyqrf2a1jaQmPtOejWtrf2G1oZQ7ifsxi2trcT9Zrg743hNypWikrFLuNJvlDjsAaJZwLVSn8thDxqrz+Wi1Vurz+V6em+/gBtsjnjXXA5+bN+1Eq0djv2oRRuHYT/WGeW4Nkz92GSU47ow9f4koxwXw9T704x4PAQGz2cZsRdNGPeup+dSwD/wWFu7h4V/vNeDtbUOB//g5RDGnNk5XAzjOcYckTOjw7F/PT2DL3EDcXr20V4K9VL7PI69XMJpHpnLlebY7Iye9pfmqN8A2q9eol2/AbQ/hF3fOSciv5Q4nGX+z90G8kuJwz3APcHcNbewZ3wPcE8QmlvYM9wFfHtEGqe5hT3DWY5hvCelYM/4HuT2Uzn9L8/tZY7bN6bEHRJH7sj9B+flRy+8/OiFlx+9iAdyXg7x4pC7/gc8dTca
   </data>
  </layer>
  <layer name="Capa de Patrones 1" width="14" height="66">
@@ -22,4 +22,9 @@
   <object x="609" y="648"/>
   <object x="1179" y="1027"/>
  </objectgroup>
+ <layer name="Capa de patrones 4" width="14" height="66">
+  <data encoding="base64" compression="zlib">
+   eJzty6ERACAMALHuhMFgajCYGvYfpTu87H18IqRZFnwbvgNfwnfhe/AVfB8+SZIkzdEYOQIl
+  </data>
+ </layer>
 </map>
