@@ -1,6 +1,6 @@
 var
     id = 0
-    instances = {}
+    , instances = {}
 ;
 
 var 
@@ -12,7 +12,6 @@ var
     })
 
     , port = process.env.PORT || 5000
-
     , io = require('socket.io').listen(app)
 ;
 
@@ -40,8 +39,8 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('move', function (data) {
-        console.log(data.id, data.py);
-        if(instances[data.id][data.py]) instances[data.id][data.py].emit('move', data.data );
+        //console.log(data.id, data.py);
+        if(instances[data.id][data.py]) instances[data.id][data.py].emit('move', data.data);
     });
 
     socket.on('disconnect', function () {

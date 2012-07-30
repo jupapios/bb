@@ -6,7 +6,7 @@
 	<title>CaJu</title>
 
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
-
+    <link href='http://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600,700,800' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/main.css">
 
     <script>
@@ -27,24 +27,34 @@
     </script>
 
     <script src="js/libs/easel.js"></script>
-    <script src="http://10.20.0.129:5000/socket.io/socket.io.js"></script>
+    <script src="http://127.0.0.1:5000/socket.io/socket.io.js"></script>
 
 </head>
 <body>
     <section class="intro">
+        <img class="player" src="img/home.png" width="310">
+        <!--<img class="parasite" src="img/bicho1.png" width="200">-->
+        <!--<img class="octo" src="img/bicho2.png" width="200">-->
 
-        <h1>CaJu</h1>
-        <img class="parasite" src="img/bicho1.png" width="200">
-        <img class="octo" src="img/bicho2.png" width="200">
+        <article class="menu">
 
-        <nav>
-            <ul>
-                <li><a href="javascript:;" onclick="document.querySelector('.new_game').addClass('active')">new game</a></li>
-                <li><a href="javascript:;" onclick="document.querySelector('.join_game').addClass('active')">join a game</a></li>
-                <li><a href="javascript:;">your player</a></li>
-                <li><a href="javascript:;">options</a></li>
-            </ul>
-        </nav>
+            <!--<h1>CaJu</h1>-->
+            <h1>&nbsp;</h1>
+
+            <nav>
+                <ul>
+                    <!--<li><a href="javascript:;" onclick="document.querySelector('.new_game').addClass('active')">new game</a></li>
+                    <li><a href="javascript:;" onclick="document.querySelector('.join_game').addClass('active')">join a game</a></li>
+                    <li><a href="javascript:;" onclick="document.querySelector('.your_player').addClass('active')">your player</a></li>
+                    <li><a href="javascript:;">options</a></li>-->
+                    <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">new game</a></li>
+                    <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">join a game</a></li>
+                    <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">your player</a></li>
+                    <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">options</a></li>
+                </ul>
+            </nav>
+
+        </article>
 
         <p class="alert">To play please rotate your device to landscape mode</p>
         <img class="landspace" src="img/landspace.png" width="200">
@@ -65,7 +75,13 @@
                 <img src="map/map_03.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map_03.json">
             </div>
             <a class="close ir" href="javascript:;" onclick="this.parentElement.removeClass('active')"></a>
-        </div>        
+        </div>
+
+        <div class="your_player popup">
+            <h1>your player</h1>
+            <img src="">
+            <a class="close ir" href="javascript:;" onclick="this.parentElement.removeClass('active')"></a>
+        </div>
 
     </section>
 
@@ -332,9 +348,9 @@ window.Colider = Colider;
 
             map_points = JSON.parse(xhr.responseText);
 
-            sw = map_points.tilewidth
-            sh = map_points.tileheight
-            sh_p = map_points.tilesets[0].tileheight
+            sw = map_points.tilewidth;
+            sh = map_points.tileheight;
+            sh_p = map_points.tilesets[0].tileheight;
 
             inner_points = map_points.layers;
 
@@ -597,7 +613,7 @@ window.Colider = Colider;
             //Test if movement is possible
             var testRect = colider.hitTest(player);
             if(testRect && testRect.height != 0 && testRect.width != 0){
-            player.bmpAnimation.x += testRect.width + 1;
+                    player.bmpAnimation.x += testRect.width + 1;
             }            
         } else if(player.bmpAnimation.direction == KEYCODE_RIGHT) {
             player.bmpAnimation.x += player.bmpAnimation.vX;
@@ -626,74 +642,73 @@ window.Colider = Colider;
 
     if(typeof io !== "undefined") {
 
-
-    socket = io.connect('http://10.20.0.129:5000', {
-        'reconnect': true
-        , 'reconnection delay': 500
-        , 'max reconnection attempts': 5
-    });
-
-    socket.on('connect', function () {
-        connection_ready = true;
-        if(DEBUG) console.log('OPEN');
-    });
-
-    socket.on('new', function (data) {
-        if(DEBUG) console.log('NEW: ', data);
-        instance = parseInt(data.id);
-        init(data.mapUrl);
-    });
-
-    socket.on('move', function (data) {
-        if(ready) {
-            enemy.bmpAnimation.x = data.x;
-            enemy.bmpAnimation.y = data.y;
-        }
-        if(DEBUG) console.log('MOVE: ', data);
-    });
-
-    socket.on('join', function (data) {
-        /*enemy.bmpAnimation.x = data.x;
-        enemy.bmpAnimation.y = data.y;
-        if(DEBUG) console.log('MOVE: ', data);*/
-        init(data);
-    });
-
-    socket.on('ready', function (data) {
-        /*enemy.bmpAnimation.x = data.x;
-        enemy.bmpAnimation.y = data.y;
-        if(DEBUG) console.log('MOVE: ', data);*/
-        //init(data);
-        /* INICIO: Esto cuando el otro jugador se conecte */
-        document.onkeydown = handleKeyDown;
-        document.onkeyup = handleKeyUp;
-
-        Ticker.addListener(window);
-        Ticker.useRAF = true;
-        Ticker.setFPS(60);
-        /* FIN: Esto cuando el otro jugador se conecte */ 
-        
-        player.bmpAnimation.x = player.position.x;
-        player.bmpAnimation.y = player.position.y;
-
-        enemy.bmpAnimation.x = enemy.position.x;
-        enemy.bmpAnimation.y = enemy.position.y;
-        //console.log(player)
-        ready = true;
-
-        document.querySelector('.alert_waiting').style.display = 'none';
-        document.querySelector('.alert_waiting_join').style.display = 'none';
-
-        var joystickElement = document.querySelector("#joystick");
-        
-        joystickElement.addClass("joystick");
-
-        var joystick = new VirtualJoystick({
-            container: joystickElement,
-            mouseSupport: true
+        socket = io.connect('http://127.0.0.1:5000', {
+            'reconnect': true
+            , 'reconnection delay': 500
+            , 'max reconnection attempts': 5
         });
 
-    });    
+        socket.on('connect', function () {
+            connection_ready = true;
+            if(DEBUG) console.log('OPEN');
+        });
+
+        socket.on('new', function (data) {
+            if(DEBUG) console.log('NEW: ', data);
+            instance = parseInt(data.id);
+            init(data.mapUrl);
+        });
+
+        socket.on('move', function (data) {
+            if(ready) {
+                enemy.bmpAnimation.x = data.x;
+                enemy.bmpAnimation.y = data.y;
+            }
+            if(DEBUG) console.log('MOVE: ', data);
+        });
+
+        socket.on('join', function (data) {
+            /*enemy.bmpAnimation.x = data.x;
+            enemy.bmpAnimation.y = data.y;
+            if(DEBUG) console.log('MOVE: ', data);*/
+            init(data);
+        });
+
+        socket.on('ready', function (data) {
+            /*enemy.bmpAnimation.x = data.x;
+            enemy.bmpAnimation.y = data.y;
+            if(DEBUG) console.log('MOVE: ', data);*/
+            //init(data);
+            /* INICIO: Esto cuando el otro jugador se conecte */
+            document.onkeydown = handleKeyDown;
+            document.onkeyup = handleKeyUp;
+
+            Ticker.addListener(window);
+            Ticker.useRAF = true;
+            Ticker.setFPS(60);
+            /* FIN: Esto cuando el otro jugador se conecte */ 
+            
+            player.bmpAnimation.x = player.position.x;
+            player.bmpAnimation.y = player.position.y;
+
+            enemy.bmpAnimation.x = enemy.position.x;
+            enemy.bmpAnimation.y = enemy.position.y;
+            //console.log(player)
+            ready = true;
+
+            document.querySelector('.alert_waiting').style.display = 'none';
+            document.querySelector('.alert_waiting_join').style.display = 'none';
+
+            var joystickElement = document.querySelector("#joystick");
+            
+            joystickElement.addClass("joystick");
+
+            var joystick = new VirtualJoystick({
+                container: joystickElement,
+                mouseSupport: true
+            });
+
+        });
 
     }
 
