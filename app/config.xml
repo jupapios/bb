@@ -2,7 +2,7 @@
 <widget xmlns="http://www.w3.org/ns/widgets"
        xmlns:rim="http://www.blackberry.com/ns/widgets" version="1.0.0">
  
-       <name>Caju</name>
+       <name>CaJu</name>
        <author>@jp_pinilla</author>
        <description>la app for testing</description>
        <icon src="img/icon.png" />

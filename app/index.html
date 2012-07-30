@@ -27,7 +27,7 @@
     </script>
 
     <script src="js/libs/easel.js"></script>
-    <script src="http://10.20.0.113:5000/socket.io/socket.io.js"></script>
+    <script src="http://10.20.0.129:5000/socket.io/socket.io.js"></script>
 
 </head>
 <body>
@@ -41,6 +41,7 @@
             <ul>
                 <li><a href="javascript:;" onclick="document.querySelector('.new_game').addClass('active')">new game</a></li>
                 <li><a href="javascript:;" onclick="document.querySelector('.join_game').addClass('active')">join a game</a></li>
+                <li><a href="javascript:;">your player</a></li>
                 <li><a href="javascript:;">options</a></li>
             </ul>
         </nav>
@@ -59,9 +60,9 @@
             <h1>new game</h1>
             <p>choose a world</p>
             <div class="img_container">
-                <img src="img/map_01.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map.json">
-                <img src="img/map_02.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map_03.json">
-                <img src="" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map.json">
+                <img src="map/map_01.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map.json">
+                <img src="map/map_02.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map_03.json">
+                <img src="map/map_03.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map_03.json">
             </div>
             <a class="close ir" href="javascript:;" onclick="this.parentElement.removeClass('active')"></a>
         </div>        
@@ -623,7 +624,10 @@ window.Colider = Colider;
      * Socket
      ************************************/
 
-    socket = io.connect('http://10.20.0.113:5000', {
+    if(typeof io !== "undefined") {
+
+
+    socket = io.connect('http://10.20.0.129:5000', {
         'reconnect': true
         , 'reconnection delay': 500
         , 'max reconnection attempts': 5
@@ -691,11 +695,19 @@ window.Colider = Colider;
 
     });    
 
+    }
+
     game = {
 
         // Create new instance at server
         // server returns the instance id
         new: function (map_url) {
+
+            if(typeof io === "undefined") {
+                alert("There is not conection to the world :(");
+                return;
+            }
+
             document.querySelector('.new_game').removeClass('active');
 
             setTimeout(function() {
