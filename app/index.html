@@ -7,6 +7,7 @@
 
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
     <link href='http://fonts.googleapis.com/css?family=Dosis:200,300,400,500,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/main.css">
 
     <script>
@@ -31,8 +32,51 @@
 
 </head>
 <body>
-    <section class="intro">
-        <img class="player" src="img/home.png" width="310">
+    <section class="first_state">
+        <h1>Welcome</h1>
+
+        <div class="container">
+            <input type="text" placeholder="your name">
+            <a href="javascript:;" onclick="caju.save(this.parentElement.querySelector('input').value)" class="button-continue ir">continue</a>
+        </div>
+    </section>
+
+    <section class="second_state">
+        <h1><span class="userName"></span></h1>
+
+        <p>choose your player</p>
+
+        <div class="players">
+
+            <a href="javascript:;" class="button-prev">prev</a>
+
+            <img src="img/players/001.png" height="400" class="active">
+            <img src="img/players/002.png" height="400">
+            <img src="img/players/003.png" height="400">
+            <img src="img/players/004.png" height="400">
+            <img src="img/players/005.png" height="400">
+            <img src="img/players/006.png" height="400">
+            <img src="img/players/007.png" height="400">
+            <img src="img/players/008.png" height="400">
+            <img src="img/players/009.png" height="400">
+            <img src="img/players/010.png" height="400">
+            <img src="img/players/011.png" height="400">
+            <img src="img/players/012.png" height="400">
+            <img src="img/players/013.png" height="400">
+            <img src="img/players/014.png" height="400">
+            <img src="img/players/015.png" height="400">
+            <img src="img/players/016.png" height="400">
+            <img src="img/players/017.png" height="400">
+            <img src="img/players/018.png" height="400">
+
+            <a href="javascript:;" class="button-next">next</a>
+        </div>
+
+        <a href="javascript:;" class="button button-choose-player">play</a>
+    </section>    
+
+    <section class="third_state">
+        <img class="me_player" src="img/home.png" width="50%">
         <!--<img class="parasite" src="img/bicho1.png" width="200">-->
         <!--<img class="octo" src="img/bicho2.png" width="200">-->
 
@@ -47,7 +91,7 @@
                     <li><a href="javascript:;" onclick="document.querySelector('.join_game').addClass('active')">join a game</a></li>
                     <li><a href="javascript:;" onclick="document.querySelector('.your_player').addClass('active')">your player</a></li>
                     <li><a href="javascript:;">options</a></li>-->
-                    <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">new game</a></li>
+                    <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide');document.querySelector('.new_game').addClass('active')">new game</a></li>
                     <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">join a game</a></li>
                     <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">your player</a></li>
                     <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">options</a></li>
@@ -59,6 +103,15 @@
         <p class="alert">To play please rotate your device to landscape mode</p>
         <img class="landspace" src="img/landspace.png" width="200">
 
+        <div class="new_game">
+            <img src="map/map_01.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map.json">
+            <img src="map/map_02.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map_03.json">
+            <img src="map/map_03.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map_03.json">
+            <img src="" class="deactive" width="200" height="160">
+            <img src="" class="deactive" width="200" height="160">
+            <img src="" class="deactive" width="200" height="160">    
+        </div>
+
         <div class="join_game popup">
             <h1>join a game</h1>
             <input type="text" placeholder="game's id">
@@ -66,7 +119,7 @@
             <a class="close ir" href="javascript:;" onclick="this.parentElement.removeClass('active')"></a>
         </div>
 
-        <div class="new_game popup">
+        <!--<div class="new_game popup">
             <h1>new game</h1>
             <p>choose a world</p>
             <div class="img_container">
@@ -75,7 +128,7 @@
                 <img src="map/map_03.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map_03.json">
             </div>
             <a class="close ir" href="javascript:;" onclick="this.parentElement.removeClass('active')"></a>
-        </div>
+        </div>-->
 
         <div class="your_player popup">
             <h1>your player</h1>
@@ -86,7 +139,7 @@
     </section>
 
 
-    <section class="game" style="display:none">
+    <section class="game">
         <canvas id="app" width="707" height="742"></canvas>
         <div class="alert_waiting" style="display:none">
             <p>waiting your friend</p>
@@ -103,6 +156,75 @@
 <script src="js/libs/joystick.js"></script>
 <script src="js/libs/gum.js"></script>
 <script>
+
+
+var caju_state = localStorage.getItem("caju_state");
+var user_name = localStorage.getItem("caju_name");
+var caju_player = localStorage.getItem("caju_player");
+
+var caju = {
+    save: function (userName) {
+        if(userName !== "") {
+            localStorage.setItem("caju_name", userName);
+
+            localStorage.setItem("caju_state", 1);
+            caju_state = 1;
+            user_name = userName;
+
+            document.querySelector(".first_state").style.display = "none";
+            document.querySelector(".second_state").style.display = "block";
+
+            document.querySelector(".userName").innerText = userName;
+
+        }
+    }
+};
+
+
+if(!caju_state) {
+    document.querySelector(".first_state").style.display = "block";
+} else if(caju_state == 1) {
+    document.querySelector(".second_state").style.display = "block";
+    document.querySelector(".userName").innerText = user_name;
+} else if(caju_state == 2) {
+    document.querySelector(".second_state").style.display = "none";
+    document.querySelector(".third_state").style.display = "block";
+
+    document.querySelector(".me_player").src = caju_player;
+}
+
+var players = document.querySelectorAll(".second_state .players img");
+var actual_player = 0;
+
+document.querySelector(".button-prev").addEventListener("click", function () {
+    if(actual_player > 0) {
+        players[actual_player].removeClass("active");
+        actual_player--;
+        players[actual_player].addClass("active");
+    }
+});
+
+document.querySelector(".button-next").addEventListener("click", function () {
+    if(actual_player < players.length - 1) {
+        players[actual_player].removeClass("active");
+        actual_player++;
+        players[actual_player].addClass("active");
+    }
+});
+
+
+document.querySelector(".button-choose-player").addEventListener("click", function () {
+    caju_player = document.querySelector(".second_state .players .active").getAttribute("src");
+    localStorage.setItem("caju_player", caju_player);
+    localStorage.setItem("caju_state", 2);
+    caju_state = 2;
+
+    document.querySelector(".second_state").style.display = "none";
+    document.querySelector(".third_state").style.display = "block";
+
+    document.querySelector(".me_player").src = caju_player;
+
+});
 
 /**
  * Basic rectangle class with intersection
