@@ -1,9 +1,9 @@
 html
 body
 :root
-	border 1px solid gray
 	height 600px
 	position relative
+	overflow hidden
 	width 1024px
 
 body
@@ -62,24 +62,28 @@ section
 .first_state
 	h1
 		font-size 7em
+		margin-bottom .5em
 
 	input
 		border-radius 2px
-		border none
-		box-shadow 1px 1px 2px #313
+		border 1px solid rgba(0,0,0,.2)
+		box-shadow 1px 1px 4px #313
 		margin auto
 		padding 10px 20px
 		width 400px
 
 	input
-	.button-continue
 		display inline-block
 		vertical-align top
 
 	.button-continue
 		background url("../img/continue.png") no-repeat
-		height 78px
-		width 60px
+		display block
+		height 106px
+		margin-left auto
+		margin-right auto
+		margin-top 60px
+		width 117px
 
 	.container
 		text-align center
