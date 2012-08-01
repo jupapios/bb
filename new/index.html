@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+		<title>caju</title>
+		<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
+		<link href='css/normalize.css' rel='stylesheet'>
+		<link href='css/main.css' rel='stylesheet'>
+		<script>
+				Element.prototype.hasClass = function(name) {
+					return new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)").test(this.className);
+				};
+				Element.prototype.addClass = function(name) {
+					if (!this.hasClass(name)) {
+							this.className = this.className ? [this.className, name].join(' ') : name;
+					}
+				};
+				Element.prototype.removeClass = function(name) {
+					if (this.hasClass(name)) {
+							var c = this.className;
+							this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), "");
+					}
+				};
+				window.$ = function () {
+					return document.querySelector.apply(document, arguments)
+				}
+				window.$$ = function () {
+					return document.querySelectorAll.apply(document, arguments)
+				}
+		</script>   
+</head>
+<body>
+
+		<div class="main" role="main">
+				<section class="caju">
+						<h1>caju</h1>
+				</section>
+		</div>
+
+		<script src="js/lib/handlebars.js"></script>
+
+		<script id="section-welcome" type="text/x-handlebars-template">
+			<section>
+				<div>
+					<h1>welcome</h1>
+					<p>what is your name?</p>
+					<input type="text" placeholder="name">
+					<a href="javascript:;">continue!</a>
+				</div>
+			</section>
+		</script>
+		<script id="section-intro" type="text/x-handlebars-template">
+			<section>
+				<span>{{user}}</span>
+				<nav>
+					<ul>
+						<li>Play</li>
+						<li>Join</li>
+					</ul>
+				</nav>
+			</section>
+		</script>  
+
+		<script>
+			
+			const DEBUG = true;
+
+			var container = $('.main');
+			var source;
+			var template;
+			var init;
+
+			// Data from localStorage
+			var caju_user = null;
+
+			var time_1 = DEBUG ? 0: 1400;
+			var time_2 = DEBUG ? 0: 800;
+
+			window.del = function (element, callback) {
+				//var element = $(selector);
+				element.addClass("hide");
+				setTimeout(function () {
+					element.innerHTML = '';
+					element.removeClass("hide");
+					callback();
+				}, time_2);
+			}
+
+			// GAME DEFINITION
+
+			var game = {
+				play: function () {
+					console.log('play');
+				},
+				join: function () {
+					console.log('join');
+				},
+				save: function () {
+					caju_user = this.parentElement.querySelector("input").value;
+					init();
+				}
+			}
+
+
+			init = function() {
+				if(caju_user) {
+					source  = $("#section-intro").innerHTML;
+				} else {
+					source  = $("#section-welcome").innerHTML;
+				}
+
+				template = Handlebars.compile(source);
+
+				setTimeout(function () {
+					del(container, function () {
+
+						if(caju_user) { // rendering intro section
+							container.innerHTML = template({user:caju_user});
+
+							var li = container.querySelectorAll('li');
+
+							if(DEBUG) {
+								li[0].addEventListener('click', game.play);
+								li[1].addEventListener('click', game.join);
+							} else {
+								li[0].addEventListener('touch', game.play);
+								li[1].addEventListener('touch', game.join);
+							}
+
+							document.body.className = "intro";
+						} else { //rendering welcome section
+							container.innerHTML = template();
+
+							var anchor = container.querySelector('a');
+
+							if(DEBUG) {
+								anchor.addEventListener('click', game.save);
+							} else {
+								anchor.addEventListener('touch', game.save);
+							}
+							document.body.className = "welcome";
+						}
+					});
+				}, time_1);
+			};
+
+			init();
+
+		</script>
+</body>
+</html>
