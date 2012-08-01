@@ -1,4 +1,4 @@
-<!doctype html>
+    <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -32,6 +32,10 @@
 
 </head>
 <body>
+    <section class="rotate">
+        nah!
+    </section>
+
     <section class="first_state">
         <h1>Welcome</h1>
 
@@ -92,7 +96,7 @@
                     <li><a href="javascript:;" onclick="document.querySelector('.your_player').addClass('active')">your player</a></li>
                     <li><a href="javascript:;">options</a></li>-->
                     <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide');document.querySelector('.new_game').addClass('active')">new game</a></li>
-                    <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">join a game</a></li>
+                    <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide');document.querySelector('.join_game').addClass('active')">join a game</a></li>
                     <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">your player</a></li>
                     <li><a href="javascript:;" onclick="document.querySelector('.menu').addClass('hide')">options</a></li>
                 </ul>
@@ -104,20 +108,25 @@
         <img class="landspace" src="img/landspace.png" width="200">
 
         <div class="new_game">
-            <img src="map/map_01.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map.json">
-            <img src="map/map_02.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map_03.json">
-            <img src="map/map_03.png" width="200" height="160" onclick="game.new(this.getAttribute('data-url'))" data-url="map/map_03.json">
+            <img src="map/map_01.png" width="200" height="160" onclick="document.querySelector('.third_state').style.display = 'none';game.new(this.getAttribute('data-url'))" data-url="map/map_01.json">
+            <img src="map/map_02.png" width="200" height="160" onclick="document.querySelector('.third_state').style.display = 'none';game.new(this.getAttribute('data-url'))" data-url="map/map_02.json">
+            <img src="map/map_03.png" width="200" height="160" onclick="document.querySelector('.third_state').style.display = 'none';game.new(this.getAttribute('data-url'))" data-url="map/map_03.json">
             <img src="img/pixel.png" class="deactive" width="200" height="160">
             <img src="img/pixel.png" class="deactive" width="200" height="160">
             <img src="img/pixel.png" class="deactive" width="200" height="160">    
         </div>
 
-        <div class="join_game popup">
+        <div class="join_game">
+            <input type="text" placeholder="game's id">
+            <a class="play" href="javascript:;" onclick="game.join(this.parentElement.querySelector('input').value)">play!</a>
+        </div>
+
+        <!--<div class="join_game popup">
             <h1>join a game</h1>
             <input type="text" placeholder="game's id">
             <a class="play" href="javascript:;" onclick="game.join(this.parentElement.querySelector('input').value)">play!</a>
             <a class="close ir" href="javascript:;" onclick="this.parentElement.removeClass('active')"></a>
-        </div>
+        </div>-->
 
         <!--<div class="new_game popup">
             <h1>new game</h1>
@@ -140,7 +149,7 @@
 
 
     <section class="game">
-        <canvas id="app" width="707" height="742"></canvas>
+        <canvas id="app" width="1010" height="589"></canvas>
         <div class="alert_waiting" style="display:none">
             <p>waiting your friend</p>
             <p>remember give him the id <span id="instanceId"></span></p>
@@ -422,7 +431,7 @@ window.Colider = Colider;
         , KEYCODE_RIGHT = 39
     ;
 
-    const DEBUG = false;
+    const DEBUG = true;
     var LOADED = false;
 
 
@@ -457,8 +466,8 @@ window.Colider = Colider;
         if(DEBUG) console.log('CALL: init('+map_url+')');
 
         canvas = document.getElementById('app');
-        canvas.width = document.width;
-        canvas.height = document.height;
+        /*canvas.width = document.width;
+        canvas.height = document.height;*/
         stage = new Stage(canvas);
 
         var xhr = new XMLHttpRequest();
@@ -717,28 +726,32 @@ window.Colider = Colider;
 
     function tick () {
         if(player.bmpAnimation.direction == KEYCODE_UP) {
-            player.bmpAnimation.y -= player.bmpAnimation.vY;
+            if((player.bmpAnimation.y - player.bmpAnimation.vY) > 0)
+                player.bmpAnimation.y -= player.bmpAnimation.vY;
             //Test if movement is possible
             var testRect = colider.hitTest(player);
             if(testRect && testRect.height != 0 && testRect.width != 0){
                 player.bmpAnimation.y += testRect.height + 1;
             }            
         } else if(player.bmpAnimation.direction == KEYCODE_DOWN) {
-            player.bmpAnimation.y += player.bmpAnimation.vY;
+            if((player.bmpAnimation.y + player.bmpAnimation.vY) < canvas.height)
+                player.bmpAnimation.y += player.bmpAnimation.vY;
             //Test if movement is possible
             var testRect = colider.hitTest(player);
             if(testRect && testRect.height != 0 && testRect.width != 0){
                 player.bmpAnimation.y -= testRect.height;
             }
         } else if(player.bmpAnimation.direction == KEYCODE_LEFT) {
-            player.bmpAnimation.x -= player.bmpAnimation.vX;
+            if((player.bmpAnimation.x - player.bmpAnimation.vX) > 0)
+                player.bmpAnimation.x -= player.bmpAnimation.vX;
             //Test if movement is possible
             var testRect = colider.hitTest(player);
             if(testRect && testRect.height != 0 && testRect.width != 0){
                     player.bmpAnimation.x += testRect.width + 1;
             }            
         } else if(player.bmpAnimation.direction == KEYCODE_RIGHT) {
-            player.bmpAnimation.x += player.bmpAnimation.vX;
+            if((player.bmpAnimation.x + player.bmpAnimation.vX) < canvas.width)
+                player.bmpAnimation.x += player.bmpAnimation.vX;
             //Test if movement is possible
             var testRect = colider.hitTest(player);
             if(testRect && testRect.height != 0 && testRect.width != 0){
@@ -830,6 +843,13 @@ window.Colider = Colider;
                 mouseSupport: true
             });
 
+            window.addEventListener("devicemotion", function(event) {
+                if((player.bmpAnimation.x - player.bmpAnimation.vX) > 0 && (player.bmpAnimation.x - player.bmpAnimation.vX) < canvas.width)
+                    player.bmpAnimation.x = event.accelerationIncludingGravity.x;
+                if((player.bmpAnimation.y - player.bmpAnimation.vY) > 0 && (player.bmpAnimation.y - player.bmpAnimation.vY) < canvas.height)
+                player.bmpAnimation.y = -event.accelerationIncludingGravity.y;
+            }, true);            
+
         });
 
     }
@@ -848,7 +868,7 @@ window.Colider = Colider;
             document.querySelector('.new_game').removeClass('active');
 
             setTimeout(function() {
-                document.querySelector('.intro').style.display = 'none';
+                //document.querySelector('.intro').style.display = 'none';
 
                 setTimeout(function() {
                     //show waiting
@@ -870,7 +890,7 @@ window.Colider = Colider;
             document.querySelector('.join_game').removeClass('active');
 
             setTimeout(function() {
-                document.querySelector('.intro').style.display = 'none';
+                //document.querySelector('.intro').style.display = 'none';
 
                 setTimeout(function() {
                     //show waiting

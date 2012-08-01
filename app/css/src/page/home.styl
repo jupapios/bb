@@ -48,6 +48,9 @@ section
 	overflow hidden	
 	user-select none
 	position absolute
+	top 0
+	left 0
+	z-index 999999
 
 
 .first_state
@@ -139,6 +142,17 @@ section
 		&.active
 			margin-top 0
 
+	.join_game
+		left 50%
+		margin-top -900px
+		position absolute
+		transition all 400ms linear
+		top 20px
+		width 49%
+
+		&.active
+			margin-top 0
+
 		img
 			margin 10px
 
@@ -165,7 +179,7 @@ section
 			&:nth-child(3)
 				transform rotate(-3deg)
 			&:nth-child(4)
-				transform rotate(3deg)				
+				transform rotate(3deg)
 		a
 			/*padding 0px 10px
 			text-decoration none
@@ -272,12 +286,29 @@ section
 
 
 .game
+	background-color rgba(0,0,0,.1)
+	height 100%
+	position absolute
+	text-align center
+	top 0
+	left 0
+	width 100%
+
 	.alert_waiting
-		background-color #F9EDBE
+		/*background-color #F9EDBE
 		border 1px solid #F0C36D
 		border-radius 4px
+		
+		padding 4px 8px	*/
+		background #313
+		border 1px solid #313
+		border-radius 4px
+		box-shadow 1px 1px 8px #313
+		color #E98	
+		font-weight bold
+		font-size 2em
 		height 130px
-		padding 4px 8px	
+		padding 4px 10px
 		position absolute
 		margin-left -150px
 		margin-top -65px
@@ -285,8 +316,16 @@ section
 		left 50%
 		width 300px
 
-@media screen and (max-width: 400px)
-	.intro
+		p
+			margin .1em
+
+.rotate
+	display none
+
+@media screen and (max-width: 600px)
+	.rotate
+		display block
+	/*.intro
 		.parasite
 			display none
 
@@ -312,12 +351,12 @@ section
 		h1
 		nav
 			text-align left
-			padding-left 20px
+			padding-left 20px*/
 
-canvas
+/*canvas
 	position absolute !important
 	top 0
-	left 0
+	left 0*/
 /*
 @keyframes cloud
 	from

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="10" height="31" tilewidth="101" tileheight="19">
+ <tileset firstgid="1" name="sprite" tilewidth="101" tileheight="19">
+  <image source="sprite.png" width="505" height="1881"/>
+ </tileset>
+ <layer name="Capa de Patrones 1" width="10" height="31">
+  <data encoding="base64" compression="zlib">
+   eJzV0yEOgEAQQ9EhGAwXxWAwXBCDwXCONWvWEIIrTSepBPH8zzRTIqIYqqmZLlPfebBhIlnfTLK+hWR9a7ypvqdnI9iIbTvBRmw7CDZi20mw8S99VfRl+3Jfti/3ZftyX7avou6nqPsp6n6Kut8X/3cwjaYbFtbKrQ==
+  </data>
+ </layer>
+ <layer name="Capa de patrones 3" width="10" height="31">
+  <data encoding="base64" compression="zlib">
+   eJztysEKQFAUhOF7FIr7/s9owQKFupS5ma2hWJ6pf1ZfCD6f7+u6l2ZA/YPLZkKjMDPNihbhNpodJeEOGrN8966wy1SoFK6maVEjXKT5eyd2jhB/
+  </data>
+ </layer>
+ <layer name="Capa de patrones 4" width="10" height="31">
+  <data encoding="base64" compression="zlib">
+   eJxjYKANOESk2HEixc4QKXaRSLFrRIrdJlLsAZFiwwWMxu/wjt+hDgCFaxbd
+  </data>
+ </layer>
+ <layer name="Capa de patrones 2" width="10" height="31">
+  <data encoding="base64" compression="zlib">
+   eJxjYBjc4D0Ug0AqGkaXHwgAsx/knoNoOJVhcLkPHQwm95ErT2uAHH7Y8EC7Dwbe48AjFQAACEIg0Q==
+  </data>
+ </layer>
+ <objectgroup name="players" width="10" height="31">
+  <object x="35" y="257"/>
+  <object x="924" y="241"/>
+ </objectgroup>
+</map>

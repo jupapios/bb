@@ -295,6 +295,9 @@ section {
   -ms-user-select: none;
   user-select: none;
   position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999999;
 }
 .first_state h1,
 .second_state h1 {
@@ -395,10 +398,25 @@ section {
 .third_state .new_game.active {
   margin-top: 0;
 }
-.third_state .new_game img {
+.third_state .join_game {
+  left: 50%;
+  margin-top: -900px;
+  position: absolute;
+  -webkit-transition: all 400ms linear;
+  -moz-transition: all 400ms linear;
+  -o-transition: all 400ms linear;
+  -ms-transition: all 400ms linear;
+  transition: all 400ms linear;
+  top: 20px;
+  width: 49%;
+}
+.third_state .join_game.active {
+  margin-top: 0;
+}
+.third_state .join_game img {
   margin: 10px;
 }
-.third_state .new_game .deactive {
+.third_state .join_game .deactive {
   border: 1px solid #808080;
   background-color: #fff;
 }
@@ -551,13 +569,32 @@ section {
   right: -10px;
   width: 20px;
 }
+.game {
+  background-color: rgba(0,0,0,0.1);
+  height: 100%;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
 .game .alert_waiting {
-  background-color: #f9edbe;
-  border: 1px solid #f0c36d;
+/*background-color #F9EDBE
+		border 1px solid #F0C36D
+		border-radius 4px
+		
+		padding 4px 8px	*/
+  background: #313;
+  border: 1px solid #313;
   -webkit-border-radius: 4px;
   border-radius: 4px;
+  -webkit-box-shadow: 1px 1px 8px #313;
+  box-shadow: 1px 1px 8px #313;
+  color: #e98;
+  font-weight: bold;
+  font-size: 2em;
   height: 130px;
-  padding: 4px 8px;
+  padding: 4px 10px;
   position: absolute;
   margin-left: -150px;
   margin-top: -65px;
@@ -565,40 +602,16 @@ section {
   left: 50%;
   width: 300px;
 }
-@media screen and (max-width: 400px) {
-  .intro .parasite {
-    display: none;
-  }
-  .intro .alert {
-    border: 1px solid #f0c36d;
-    background-color: #f9edbe;
-    -webkit-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    margin-top: 50px;
-    padding: 0 2%;
-  }
-  .intro .alert,
-  .intro .landspace {
+.game .alert_waiting p {
+  margin: 0.1em;
+}
+.rotate {
+  display: none;
+}
+@media screen and (max-width: 600px) {
+  .rotate {
     display: block;
   }
-  .intro .landspace {
-    margin: auto;
-  }
-  .intro .popup {
-    margin-left: 10%;
-    margin-right: 10%;
-    width: 80%;
-  }
-  .intro h1,
-  .intro nav {
-    text-align: left;
-    padding-left: 20px;
-  }
-}
-canvas {
-  position: absolute !important;
-  top: 0;
-  left: 0;
 }
 .ir {
   border: 0;
