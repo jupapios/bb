@@ -1,9 +1,9 @@
 html
 body
 :root
-	border 1px solid gray
 	height 600px
 	position relative
+	overflow hidden
 	width 1024px
 
 body
@@ -65,24 +65,28 @@ section
 .first_state
 	h1
 		font-size 7em
+		margin-bottom .5em
 
 	input
 		border-radius 2px
-		border none
-		box-shadow 1px 1px 2px #313
+		border 1px solid rgba(0,0,0,.2)
+		box-shadow 1px 1px 4px #313
 		margin auto
 		padding 10px 20px
 		width 400px
 
 	input
-	.button-continue
 		display inline-block
 		vertical-align top
 
 	.button-continue
 		background url("../img/continue.png") no-repeat
-		height 78px
-		width 60px
+		display block
+		height 106px
+		margin-left auto
+		margin-right auto
+		margin-top 60px
+		width 117px
 
 	.container
 		text-align center
@@ -282,12 +286,29 @@ section
 
 
 .game
+	background-color rgba(0,0,0,.1)
+	height 100%
+	position absolute
+	text-align center
+	top 0
+	left 0
+	width 100%
+
 	.alert_waiting
-		background-color #F9EDBE
+		/*background-color #F9EDBE
 		border 1px solid #F0C36D
 		border-radius 4px
+		
+		padding 4px 8px	*/
+		background #313
+		border 1px solid #313
+		border-radius 4px
+		box-shadow 1px 1px 8px #313
+		color #E98	
+		font-weight bold
+		font-size 2em
 		height 130px
-		padding 4px 8px	
+		padding 4px 10px
 		position absolute
 		margin-left -150px
 		margin-top -65px
@@ -295,8 +316,16 @@ section
 		left 50%
 		width 300px
 
-@media screen and (max-width: 400px)
-	.intro
+		p
+			margin .1em
+
+.rotate
+	display none
+
+@media screen and (max-width: 600px)
+	.rotate
+		display block
+	/*.intro
 		.parasite
 			display none
 
@@ -322,12 +351,12 @@ section
 		h1
 		nav
 			text-align left
-			padding-left 20px
+			padding-left 20px*/
 
-canvas
+/*canvas
 	position absolute !important
 	top 0
-	left 0
+	left 0*/
 /*
 @keyframes cloud
 	from
