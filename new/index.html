@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
 		<title>caju</title>
 		<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
 		<link href='css/normalize.css' rel='stylesheet'>
@@ -26,9 +27,13 @@
 				window.$$ = function () {
 					return document.querySelectorAll.apply(document, arguments)
 				}
-		</script>   
+		</script>
+		<script src="js/lib/socket.js"></script>
+		<script src="js/lib/handlebars.js"></script>
 </head>
 <body>
+
+		<div class="ball" style="top:20px;left:20px;"></div>
 
 		<div class="main" role="main">
 				<section class="caju">
@@ -36,7 +41,6 @@
 				</section>
 		</div>
 
-		<script src="js/lib/handlebars.js"></script>
 
 		<script id="section-welcome" type="text/x-handlebars-template">
 			<section>
@@ -48,6 +52,7 @@
 				</div>
 			</section>
 		</script>
+
 		<script id="section-intro" type="text/x-handlebars-template">
 			<section>
 				<span>{{user}}</span>
@@ -58,11 +63,41 @@
 					</ul>
 				</nav>
 			</section>
-		</script>  
+		</script> 
+
+		<script id="section-new" type="text/x-handlebars-template">
+			<section>
+				<span>{{user}}</span>
+				<nav>
+					<ul>
+						<li>Play</li>
+						<li>Join</li>
+					</ul>
+				</nav>
+			</section>
+		</script>
+
+		<script id="section-join" type="text/x-handlebars-template">
+			<section>
+				<span>{{user}}</span>
+				<div>
+					<input type="text" placeholder="invitation">
+					<a href="javascript:;">continue!</a>
+				</div>
+			</section>
+		</script>
 
 		<script>
 			
 			const DEBUG = true;
+			const socket_url = "http://127.0.0.1:5000";
+
+		 	/************************************
+		     * Game
+		     ************************************/		    
+
+			var time_1 = DEBUG ? 0: 1400;
+			var time_2 = DEBUG ? 0: 800;
 
 			var container = $('.main');
 			var source;
@@ -70,10 +105,11 @@
 			var init;
 
 			// Data from localStorage
-			var caju_user = null;
+			var caju_user = localStorage.getItem("caju_name");
 
-			var time_1 = DEBUG ? 0: 1400;
-			var time_2 = DEBUG ? 0: 800;
+			var template_join = Handlebars.compile($("#section-join").innerHTML);
+			var template_new = Handlebars.compile($("#section-new").innerHTML);
+
 
 			window.del = function (element, callback) {
 				//var element = $(selector);
@@ -90,13 +126,42 @@
 			var game = {
 				play: function () {
 					console.log('play');
+					blackberry.launch.launchCamera();
 				},
 				join: function () {
-					console.log('join');
+					del(container, function () {
+						container.innerHTML = template_join({user:caju_user});
+						document.body.className = "join";
+
+						var anchor = container.querySelector('a');
+
+						function join_game () {
+							socket.emit('join', instanceId);
+
+                			instance = instanceId;
+               				other_player = 0;
+						}
+
+						if(DEBUG) {
+							anchor.addEventListener('click', null);
+						} else {
+							anchor.addEventListener('touch', null);
+						}
+					});
 				},
 				save: function () {
-					caju_user = this.parentElement.querySelector("input").value;
-					init();
+					var input_value = this.parentElement.querySelector("input").value;
+					if(input_value) {
+						caju_user = input_value;
+						localStorage.setItem("caju_name", caju_user);
+						init();
+					} else {
+						var self = this;
+						self.parentElement.addClass("error");
+						setTimeout(function () {
+							self.parentElement.removeClass("error");
+						}, 700);
+					}
 				}
 			}
 
@@ -125,7 +190,6 @@
 								li[0].addEventListener('touch', game.play);
 								li[1].addEventListener('touch', game.join);
 							}
-
 							document.body.className = "intro";
 						} else { //rendering welcome section
 							container.innerHTML = template();
@@ -143,7 +207,103 @@
 				}, time_1);
 			};
 
-			init();
+		 	/************************************
+		     * Ball
+		     ************************************/
+
+			var ball = $(".ball");
+			var moving = false;
+			var initial_x, initial_y;
+
+			function move_ball (e) {
+
+				e.preventDefault();
+
+				var x = e.x || e.offsetX || (e.pageX - ball.offsetLeft);
+				var y = e.y || e.offsetY || (e.pageY - ball.offsetTop);
+				if(moving) {
+					if(y > 0 && y < (window.innerHeight - 40)) {
+						ball.style.top = parseInt(ball.style.top) + (y-initial_y) +"px";	
+					}
+					if(x > 0 && x < (window.innerWidth - 40)) {
+						ball.style.left = parseInt(ball.style.left) + (x-initial_x) +"px";	
+					}
+					initial_x = x;
+					initial_y = y;
+				}
+			}
+			window.addEventListener("mousemove", move_ball, false);
+			window.addEventListener("touchmove", move_ball, false);
+
+			window.addEventListener("mouseup", function () {
+				document.body.removeClass("no-select");
+				moving = false;
+			}, false);
+
+			window.addEventListener("touchend", function () {
+				document.body.removeClass("no-select");
+				moving = false;
+			}, false);
+
+			ball.addEventListener("mousedown", function (e) {
+				initial_x = e.x || e.offsetX || (e.pageX - ball.offsetLeft);
+				initial_y = e.y || e.offsetY || (e.pageY - ball.offsetTop);
+				document.body.addClass("no-select");
+				moving = true;
+			}, false);
+
+			ball.addEventListener("touchstart", function (e) {
+				initial_x = e.x || e.offsetX || (e.pageX - ball.offsetLeft);
+				initial_y = e.y || e.offsetY || (e.pageY - ball.offsetTop);;
+				document.body.addClass("no-select");
+				moving = true;
+			}, false);			
+
+
+            window.addEventListener("devicemotion", function(event) {
+            	if(window.orientation == 0) {
+            		var x = parseInt(ball.style.left) + event.accelerationIncludingGravity.x;
+            		var y = parseInt(ball.style.top) - event.accelerationIncludingGravity.y;
+
+					if(x > 0 && x < (window.innerWidth - 40)) ball.style.left =  x + 'px'; 
+                	if(y > 0 && y < (window.innerHeight - 40)) ball.style.top = y + 'px';            		
+            	} /*else if(window.orientation == 90) {
+            		var x = parseInt(ball.style.top) - event.accelerationIncludingGravity.x;
+            		var y = parseInt(ball.style.left) - event.accelerationIncludingGravity.y;
+
+					if(x < window.innerHeight && x > 0) ball.style.top =  x + 'px'; 
+                	if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
+            	} else if(window.orientation == -90) {
+            		var x = parseInt(ball.style.top) + event.accelerationIncludingGravity.x;
+            		var y = parseInt(ball.style.left) + event.accelerationIncludingGravity.y;
+
+					if(x < window.innerHeight && x > 0) ball.style.top =  x + 'px'; 
+                	if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
+            	}*/
+            }, true); 
+
+
+
+		 	/************************************
+		     * Socket
+		     ************************************/
+
+		    var connection_ready = false;
+
+		    if(typeof io !== "undefined") {
+
+		        socket = io.connect('http://192.168.1.21:5000', {
+		            'reconnect': true
+		            , 'reconnection delay': 500
+		            , 'max reconnection attempts': 5
+		        });
+
+		        socket.on('connect', function () {
+		            connection_ready = true;
+		            init();
+		            if(DEBUG) console.log('OPEN');
+		        });
+		    }
 
 		</script>
 </body>

@@ -3,6 +3,35 @@ body
 	font-family font-1
 	transition background-color 800ms linear
 
+	&.no-select
+		user-select none
+
+section
+	& > div
+		left 50%
+		position absolute
+		top 50%
+		margin-left -105px
+		margin-top -100px
+		width 210px
+
+		&.error
+			animation error 160ms linear 100ms 4 alternate
+
+			input
+				border 1px solid red
+				box-shadow 0px 0px 5px red
+
+		a
+			display block
+			float right
+
+	span
+		color white
+		margin-top 10px
+		float right
+		margin-right 10px
+
 .caju
 	h1
 		position absolute
@@ -16,3 +45,13 @@ body
 
 .hide
 	opacity 0
+
+.ball
+	background-color color-highlight-3
+	box-shadow 0 0 0 4px white, 0 0 0 8px color-highlight-3
+	border-radius 40px
+	height @border-radius
+	position absolute
+	transition box-shadow 800ms linear
+	width @height
+	z-index 9999
