@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets"
-       xmlns:rim="http://www.blackberry.com/ns/widgets" version="1.0.0">
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:rim="http://www.blackberry.com/ns/widgets" version="1.0.0">
  
        <name>CaJu</name>
        <author>@jp_pinilla</author>
@@ -8,4 +7,10 @@
        <icon src="img/icon.png" />
        <content src="index.html" />
        <feature id="blackberry.app" />
+       <rim:orientation mode="portrait" />
+       <rim:category name="games" />
+		<rim:permissions>
+		    <rim:permit>use_camera</rim:permit> 
+		    <rim:permit>record_audio</rim:permit> 
+		</rim:permissions>       
 </widget>

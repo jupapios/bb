@@ -3,11 +3,14 @@ body {
   font-family: 'Quicksand', sans-serif;
   -webkit-transition: background-color 800ms linear;
   -moz-transition: background-color 800ms linear;
+  -o-transition: background-color 800ms linear;
+  -ms-transition: background-color 800ms linear;
   transition: background-color 800ms linear;
 }
 body.no-select {
   -webkit-user-select: none;
   -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 section > div {
@@ -21,52 +24,49 @@ section > div {
 section > div.error {
   -webkit-animation: error 160ms linear 100ms 4 alternate;
   -moz-animation: error 160ms linear 100ms 4 alternate;
+  -o-animation: error 160ms linear 100ms 4 alternate;
+  -ms-animation: error 160ms linear 100ms 4 alternate;
   animation: error 160ms linear 100ms 4 alternate;
 }
 section > div.error input {
   border: 1px solid #f00;
   -webkit-box-shadow: 0px 0px 5px #f00;
-  -moz-box-shadow: 0px 0px 5px #f00;
   box-shadow: 0px 0px 5px #f00;
 }
-section > div a {
+section > div .button {
   display: block;
   float: right;
 }
 section span {
   color: #fff;
-  margin-top: 10px;
-  float: right;
-  margin-right: 10px;
-}
-.caju h1 {
+  top: 10px;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -1em;
-  margin-left: -2em;
+  right: 10px;
 }
 .main {
   -webkit-transition: opacity 800ms linear;
   -moz-transition: opacity 800ms linear;
+  -o-transition: opacity 800ms linear;
+  -ms-transition: opacity 800ms linear;
   transition: opacity 800ms linear;
 }
 .hide {
   opacity: 0;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  filter: alpha(opacity=0);
 }
 .ball {
   background-color: #d8ffb4;
   -webkit-box-shadow: 0 0 0 4px #fff, 0 0 0 8px #d8ffb4;
-  -moz-box-shadow: 0 0 0 4px #fff, 0 0 0 8px #d8ffb4;
   box-shadow: 0 0 0 4px #fff, 0 0 0 8px #d8ffb4;
   -webkit-border-radius: 40px;
-  -moz-border-radius: 40px;
   border-radius: 40px;
   height: 40px;
   position: absolute;
   -webkit-transition: box-shadow 800ms linear;
   -moz-transition: box-shadow 800ms linear;
+  -o-transition: box-shadow 800ms linear;
+  -ms-transition: box-shadow 800ms linear;
   transition: box-shadow 800ms linear;
   width: 40px;
   z-index: 9999;
@@ -156,6 +156,16 @@ section span {
     left: 49%;
   }
 }
+.caju h1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -1em;
+  margin-left: -2em;
+}
+.caju .ball {
+  display: none;
+}
 .intro {
   background-color: #ff7600;
 }
@@ -179,27 +189,25 @@ section span {
 }
 .intro .ball {
   -webkit-box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
-  -moz-box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
   box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
 }
 .welcome input {
   -webkit-box-shadow: 0 0 5px #ff7600;
-  -moz-box-shadow: 0 0 5px #ff7600;
   box-shadow: 0 0 5px #ff7600;
   border: 1px solid #ff7600;
   -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
   border-radius: 4px;
   padding: 10px 15px;
   -webkit-transition: box-shadow 300ms linear;
   -moz-transition: box-shadow 300ms linear;
+  -o-transition: box-shadow 300ms linear;
+  -ms-transition: box-shadow 300ms linear;
   transition: box-shadow 300ms linear;
 }
 .welcome input:active,
 .welcome input:focus {
   border: 1px solid #43ae39;
   -webkit-box-shadow: 0 0 5px #43ae39;
-  -moz-box-shadow: 0 0 5px #43ae39;
   box-shadow: 0 0 5px #43ae39;
   outline: none;
 }
@@ -217,15 +225,31 @@ section span {
   background-color: #fff;
   border: 1px solid transparent;
   -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
   border-radius: 4px;
   padding: 10px 15px;
   -webkit-transition: box-shadow 300ms linear;
   -moz-transition: box-shadow 300ms linear;
+  -o-transition: box-shadow 300ms linear;
+  -ms-transition: box-shadow 300ms linear;
   transition: box-shadow 300ms linear;
 }
 .join .ball {
   -webkit-box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
-  -moz-box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
   box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
+}
+.waiting {
+  background-color: #ffd300;
+}
+.waiting section div {
+  text-align: center;
+}
+.waiting h2 {
+  color: #fff;
+  font-size: 8em;
+  margin: 0.1em;
+  -webkit-text-stroke: 1px #ff7600;
+}
+.waiting .ball {
+  -webkit-box-shadow: 0 0 0 4px #ffd300, 0 0 0 8px #d8ffb4;
+  box-shadow: 0 0 0 4px #ffd300, 0 0 0 8px #d8ffb4;
 }

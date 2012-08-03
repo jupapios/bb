@@ -30,15 +30,24 @@
 		</script>
 		<script src="js/lib/socket.js"></script>
 		<script src="js/lib/handlebars.js"></script>
+		<script>
+		Handlebars.registerHelper('ifCond', function(v1, v2, options) {
+		  if(v1 == v2) {
+		    return options.fn(this);
+		  } else {
+		    return options.inverse(this);
+		  }
+		});
+		</script>
 </head>
-<body>
+<body class="caju">
 
 		<div class="ball" style="top:20px;left:20px;"></div>
 
 		<div class="main" role="main">
-				<section class="caju">
-						<h1>caju</h1>
-				</section>
+			<section class="caju">
+				<h1>caju</h1>
+			</section>
 		</div>
 
 
@@ -82,22 +91,47 @@
 				<span>{{user}}</span>
 				<div>
 					<input type="text" placeholder="invitation">
-					<a href="javascript:;">continue!</a>
+					<a class="button" href="javascript:;">continue!</a>
 				</div>
 			</section>
 		</script>
 
-		<script id="section-game" type="text/x-handlebars-template">
+		<script id="section-waiting" type="text/x-handlebars-template">
 			<section>
-				<span>{{player}}</span>
-				<span>{{enemy}}</span>
+				<span>{{user}}</span>
+				<div>
+					<h2>{{id}}</h2>
+					<a href="javascript:;">pin it</a>
+					<a href="javascript:;">tweet it</a>
+					<a href="javascript:;">face it</a>
+				</div>
 			</section>
+		</script>
+
+		<!-- NOT SURE IF CHOOSE A CHARACTER PER GAME OR ONE PER PLAYER
+		<script id="section-choose" type="text/x-handlebars-template">
+			<section>
+				<span>{{user}}</span>
+				{{#ifCond player 1}}
+				    <img class="active" src="">
+					<img src="">
+				{{else}}
+					<img src="">
+					<img class="active" src="">
+				{{/ifCond}}
+			</section>
+		</script>		
+		-->
+
+		<script id="section-game" type="text/x-handlebars-template">
+			<p>hola</p>
+			<canvas></canvas>
 		</script>
 
 		<script>
 			
 			const DEBUG = true;
-			const socket_url = "http://192.168.0.18:5000";
+			const socket_url = "http://192.168.1.21:5000";
 
 			/************************************
 			 * Game
@@ -115,8 +149,12 @@
 			// Data from localStorage
 			var caju_user = localStorage.getItem("caju_name");
 
+			// Templates
 			var template_join = Handlebars.compile($("#section-join").innerHTML);
 			var template_new = Handlebars.compile($("#section-new").innerHTML);
+			var template_waiting = Handlebars.compile($("#section-waiting").innerHTML);
+			//var template_choose = Handlebars.compile($("#section-choose").innerHTML);
+			var template_game = Handlebars.compile($("#section-game").innerHTML);
 
 
 			window.del = function (element, callback) {
@@ -194,8 +232,29 @@
 				},
 
 				// GAME FUNCTIONS
-				start: function () {
+				wait: function (id) {
+					del(container, function () {
+						container.innerHTML = template_waiting({user:caju_user, id:id});
+						document.body.className = "waiting";
+					});
+				},
 
+				start: function () {
+					container.innerHTML = template_game({player:caju_user});
+					document.body.className = "game";
+					document.body.removeChild($('.ball'));
+
+					//Canvas work
+					var canvas = $('canvas');
+					var context = canvas.getContext("2d");
+
+					/*canvas.height = window.innerHeight;
+					canvas.width = window.innerWidth;*/
+
+					canvas.width = 1024;
+					canvas.height = 600;
+
+					context.stroke();
 				}
 			}
 
@@ -339,7 +398,7 @@
 				});
 
 				socket.on('join', function (data) {
-					console.log(data)
+					//console.log(data)
 					if(data) {
 						//do something
 					} else {
@@ -352,13 +411,23 @@
 				});
 
 				socket.on('new', function (data) {
-					console.log(data);
-					game.start();
+					//console.log(data);
+					game.wait(data.id);
 				});
 
 				socket.on('bye', function (data) {
 					console.log("BYE: ",data);
 				});				
+
+				socket.on('ready', function () {
+					del(container, function () {
+						game.start();
+					});
+					/*del(container, function () {
+						container.innerHTML = template_choose({user:caju_user, player:other_player});
+						document.body.className = "choose";
+					});*/
+				});
 			}
 
 		</script>

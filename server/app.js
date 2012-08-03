@@ -52,6 +52,9 @@ io.sockets.on('connection', function (socket) {
                 console.log(key, instances[key].id);
             }
 
+            socket.emit('ready');
+            socketB.emit('ready');
+
         } else {
             socket.emit('join', false);
         }
