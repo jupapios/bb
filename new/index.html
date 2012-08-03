@@ -30,14 +30,15 @@
 		</script>
 		<script src="js/lib/socket.js"></script>
 		<script src="js/lib/handlebars.js"></script>
+		<script src="js/lib/box2d.js"></script>
 		<script>
-		Handlebars.registerHelper('ifCond', function(v1, v2, options) {
+		/*Handlebars.registerHelper('ifCond', function(v1, v2, options) {
 		  if(v1 == v2) {
-		    return options.fn(this);
+			return options.fn(this);
 		  } else {
-		    return options.inverse(this);
+			return options.inverse(this);
 		  }
-		});
+		});*/
 		</script>
 </head>
 <body class="caju">
@@ -54,10 +55,8 @@
 		<script id="section-welcome" type="text/x-handlebars-template">
 			<section>
 				<div>
-					<h1>welcome</h1>
-					<p>what is your name?</p>
-					<input type="text" placeholder="name">
-					<a href="javascript:;">continue!</a>
+					<input type="text" placeholder="what's your name?">
+					<a class="button" href="javascript:;">continue!</a>
 				</div>
 			</section>
 		</script>
@@ -113,7 +112,7 @@
 			<section>
 				<span>{{user}}</span>
 				{{#ifCond player 1}}
-				    <img class="active" src="">
+					<img class="active" src="">
 					<img src="">
 				{{else}}
 					<img src="">
@@ -124,14 +123,18 @@
 		-->
 
 		<script id="section-game" type="text/x-handlebars-template">
-			<p>hola</p>
-			<canvas></canvas>
+			<section>
+				<div>
+					<p>your friend ran!</p>
+				</div>
+				<canvas></canvas>
+			</section>
 		</script>
 
 		<script>
 			
 			const DEBUG = true;
-			const socket_url = "http://192.168.1.21:5000";
+			const socket_url = "http://192.168.0.18:5000";
 
 			/************************************
 			 * Game
@@ -179,11 +182,11 @@
 					} else {
 						blackberry.launch.launchCamera();
 					}
-		            if(DEBUG) console.log('Click: new');
-		            if(connection_ready) {
-		                socket.emit('new');
-		                other_player = 1
-		            }					
+					if(DEBUG) console.log('Click: new');
+					if(connection_ready) {
+						socket.emit('new');
+						other_player = 1
+					}					
 				},
 				join: function () {
 					del(container, function () {
@@ -248,13 +251,277 @@
 					var canvas = $('canvas');
 					var context = canvas.getContext("2d");
 
-					/*canvas.height = window.innerHeight;
-					canvas.width = window.innerWidth;*/
+					canvas.width = 600;
+					canvas.height = 1024;
 
-					canvas.width = 1024;
-					canvas.height = 600;
 
-					context.stroke();
+					// box2d objects
+					var
+						  b2Vec2 = Box2D.Common.Math.b2Vec2
+						, b2AABB = Box2D.Collision.b2AABB
+						, b2BodyDef = Box2D.Dynamics.b2BodyDef
+						, b2Body = Box2D.Dynamics.b2Body
+						, b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+						, b2Fixture = Box2D.Dynamics.b2Fixture
+						, b2World = Box2D.Dynamics.b2World
+						, b2MassData = Box2D.Collision.Shapes.b2MassData
+						, b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+						, b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+						, b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+						, b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+					;
+
+					var world = new b2World(
+						new b2Vec2(0,0) // gravity
+						, true          // sleep
+					);
+
+					var bodyDef = new b2BodyDef;
+					bodyDef.type = b2Body.b2_dynamicBody; //define object type
+					bodyDef.position.Set(2, 2);           //define position
+
+					var fixDef = new b2FixtureDef;
+					fixDef.density = 10.0;                //define density
+					fixDef.friction = 0.5;                //define friction
+					fixDef.restitution =0.2;              //define restitution
+					 
+					fixDef.shape = new b2PolygonShape;    //define shape
+					fixDef.shape.SetAsBox(1, 1);          //define size
+
+					world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+
+					var bodyDef = new b2BodyDef;
+					bodyDef.type = b2Body.b2_dynamicBody; //define object type
+					bodyDef.position.Set(4, 6);           //define position
+
+					var fixDef = new b2FixtureDef;
+					fixDef.density = 10.0;                //define density
+					fixDef.friction = 0.5;                //define friction
+					fixDef.restitution =0.2;              //define restitution
+					 
+					fixDef.shape = new b2PolygonShape;    //define shape
+					fixDef.shape.SetAsBox(1, 1);          //define size
+
+					world.CreateBody(bodyDef).CreateFixture(fixDef);					
+
+
+					/**** BEGIN TEST *******/
+					//setup debug draw
+		         	var debugDraw = new b2DebugDraw();
+					debugDraw.SetSprite(context);
+					debugDraw.SetDrawScale(30.0);
+					debugDraw.SetFillAlpha(0.5);
+					debugDraw.SetLineThickness(1.0);
+					debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+					world.SetDebugDraw(debugDraw);
+
+					function update() {
+						world.Step(1 / 60, 10, 10);
+						world.DrawDebugData();
+						world.ClearForces();
+					};
+
+					window.setInterval(update, 1000 / 60);
+					/**** END TEST *******/
+
+					/***********************
+						COPY FROM DEMO.HTML
+					************************/
+				  /*function init_canvas() {
+					 var   b2Vec2 = Box2D.Common.Math.b2Vec2
+						,  b2AABB = Box2D.Collision.b2AABB
+						,	b2BodyDef = Box2D.Dynamics.b2BodyDef
+						,	b2Body = Box2D.Dynamics.b2Body
+						,	b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+						,	b2Fixture = Box2D.Dynamics.b2Fixture
+						,	b2World = Box2D.Dynamics.b2World
+						,	b2MassData = Box2D.Collision.Shapes.b2MassData
+						,	b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+						,	b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+						,	b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+						,  b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+						;
+					 
+					 var world = new b2World(
+						   new b2Vec2(0, 0)    //gravity
+						,  true                 //allow sleep
+					 );
+					 
+					 var fixDef = new b2FixtureDef;
+					 fixDef.density = 1.0;
+					 fixDef.friction = 0.5;
+					 fixDef.restitution = 0.2;
+					 
+					 var bodyDef = new b2BodyDef;
+					 
+					 //create ground
+					 bodyDef.type = b2Body.b2_staticBody;
+					 fixDef.shape = new b2PolygonShape;
+					 fixDef.shape.SetAsBox(20, 2);
+					 bodyDef.position.Set(10, 400 / 30 + 1.8);
+					 world.CreateBody(bodyDef).CreateFixture(fixDef);
+					 bodyDef.position.Set(10, -1.8);
+					 world.CreateBody(bodyDef).CreateFixture(fixDef);
+					 fixDef.shape.SetAsBox(2, 14);
+					 bodyDef.position.Set(-1.8, 13);
+					 world.CreateBody(bodyDef).CreateFixture(fixDef);
+					 bodyDef.position.Set(21.8, 13);
+					 world.CreateBody(bodyDef).CreateFixture(fixDef);
+					 
+					 
+					 //create some objects
+					 bodyDef.type = b2Body.b2_dynamicBody;
+					 for(var i = 0; i < 10; ++i) {
+						if(Math.random() > 0.5) {
+						   fixDef.shape = new b2PolygonShape;
+						   fixDef.shape.SetAsBox(
+								 Math.random() + 0.1 //half width
+							  ,  Math.random() + 0.1 //half height
+						   );
+						} else {
+						   fixDef.shape = new b2CircleShape(
+							  Math.random() + 0.1 //radius
+						   );
+						}
+						bodyDef.position.x = Math.random() * 10;
+						bodyDef.position.y = Math.random() * 10;
+						world.CreateBody(bodyDef).CreateFixture(fixDef);
+					 }
+					 
+					 //setup debug draw
+					 var debugDraw = new b2DebugDraw();
+						debugDraw.SetSprite(context);
+						debugDraw.SetDrawScale(30.0);
+						debugDraw.SetFillAlpha(0.5);
+						debugDraw.SetLineThickness(1.0);
+						debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+						world.SetDebugDraw(debugDraw);
+					 
+					 window.setInterval(update, 1000 / 60);
+					 
+					 //mouse
+					 
+					 var mouseX, mouseY, mousePVec, isMouseDown, selectedBody, mouseJoint;
+					 var canvasPosition = getElementPosition(canvas);
+					 
+					 document.addEventListener("mousedown", function(e) {
+						isMouseDown = true;
+						handleMouseMove(e);
+						document.addEventListener("mousemove", handleMouseMove, true);
+					 }, true);
+
+					 document.addEventListener("touchstart", function(e) {
+						isMouseDown = true;
+						handleMouseMove(e);
+						document.addEventListener("touchmove", handleMouseMove, true);
+					 }, true);
+					 
+					 document.addEventListener("mouseup", function() {
+						document.removeEventListener("mousemove", handleMouseMove, true);
+						isMouseDown = false;
+						mouseX = undefined;
+						mouseY = undefined;
+					 }, true);
+
+					 document.addEventListener("touchend", function() {
+						document.removeEventListener("touchmove", handleMouseMove, true);
+						isMouseDown = false;
+						mouseX = undefined;
+						mouseY = undefined;
+					 }, true);
+					 
+					 function handleMouseMove(e) {
+						mouseX = (e.clientX - canvasPosition.x) / 30;
+						mouseY = (e.clientY - canvasPosition.y) / 30;
+					 };
+					 
+					 function getBodyAtMouse() {
+						mousePVec = new b2Vec2(mouseX, mouseY);
+						var aabb = new b2AABB();
+						aabb.lowerBound.Set(mouseX - 0.001, mouseY - 0.001);
+						aabb.upperBound.Set(mouseX + 0.001, mouseY + 0.001);
+						
+						// Query the world for overlapping shapes.
+
+						selectedBody = null;
+						world.QueryAABB(getBodyCB, aabb);
+						return selectedBody;
+					 }
+
+					 function getBodyCB(fixture) {
+						if(fixture.GetBody().GetType() != b2Body.b2_staticBody) {
+						   if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), mousePVec)) {
+							  selectedBody = fixture.GetBody();
+							  return false;
+						   }
+						}
+						return true;
+					 }
+					 
+					 //update
+					 
+					 function update() {
+					 
+						if(isMouseDown && (!mouseJoint)) {
+						   var body = getBodyAtMouse();
+						   if(body) {
+							  var md = new b2MouseJointDef();
+							  md.bodyA = world.GetGroundBody();
+							  md.bodyB = body;
+							  md.target.Set(mouseX, mouseY);
+							  md.collideConnected = true;
+							  md.maxForce = 300.0 * body.GetMass();
+							  mouseJoint = world.CreateJoint(md);
+							  body.SetAwake(true);
+						   }
+						}
+						
+						if(mouseJoint) {
+						   if(isMouseDown) {
+							  mouseJoint.SetTarget(new b2Vec2(mouseX, mouseY));
+						   } else {
+							  world.DestroyJoint(mouseJoint);
+							  mouseJoint = null;
+						   }
+						}
+					 
+						world.Step(1 / 60, 10, 10);
+						world.DrawDebugData();
+						world.ClearForces();
+					 };
+					 
+					 //helpers
+					 
+					 //http://js-tut.aardon.de/js-tut/tutorial/position.html
+					 function getElementPosition(element) {
+						var elem=element, tagname="", x=0, y=0;
+					   
+						while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
+						   y += elem.offsetTop;
+						   x += elem.offsetLeft;
+						   tagname = elem.tagName.toUpperCase();
+
+						   if(tagname == "BODY")
+							  elem=0;
+
+						   if(typeof(elem) == "object") {
+							  if(typeof(elem.offsetParent) == "object")
+								 elem = elem.offsetParent;
+						   }
+						}
+
+						return {x: x, y: y};
+					 }
+
+
+				  };
+
+				  init_canvas();  				
+					*/
+
+
+
 				}
 			}
 
@@ -287,14 +554,15 @@
 						} else { //rendering welcome section
 							container.innerHTML = template();
 
-							var anchor = container.querySelector('a');
+							/*var anchor = container.querySelector('a');
 
 							if(DEBUG) {
 								anchor.addEventListener('click', game.save);
 							} else {
 								anchor.addEventListener('touch', game.save);
 							}
-							document.body.className = "welcome";
+							document.body.className = "welcome";*/
+							game.start();
 						}
 					});
 				}, time_1);
@@ -360,7 +628,7 @@
 
 					if(x > 0 && x < (window.innerWidth - 40)) ball.style.left =  x + 'px'; 
 					if(y > 0 && y < (window.innerHeight - 40)) ball.style.top = y + 'px';            		
-				} /*else if(window.orientation == 90) {
+				} else if(window.orientation == 90) {
 					var x = parseInt(ball.style.top) - event.accelerationIncludingGravity.x;
 					var y = parseInt(ball.style.left) - event.accelerationIncludingGravity.y;
 
@@ -372,7 +640,7 @@
 
 					if(x < window.innerHeight && x > 0) ball.style.top =  x + 'px'; 
 					if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
-				}*/
+				}
 			}, true); 
 
 
@@ -416,7 +684,7 @@
 				});
 
 				socket.on('bye', function (data) {
-					console.log("BYE: ",data);
+					container.addClass("no-active");
 				});				
 
 				socket.on('ready', function () {
