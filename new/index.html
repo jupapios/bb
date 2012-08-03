@@ -87,14 +87,21 @@
 			</section>
 		</script>
 
+		<script id="section-game" type="text/x-handlebars-template">
+			<section>
+				<span>{{player}}</span>
+				<span>{{enemy}}</span>
+			</section>
+		</script>
+
 		<script>
 			
 			const DEBUG = true;
-			const socket_url = "http://127.0.0.1:5000";
+			const socket_url = "http://192.168.0.18:5000";
 
-		 	/************************************
-		     * Game
-		     ************************************/		    
+			/************************************
+			 * Game
+			 ************************************/
 
 			var time_1 = DEBUG ? 0: 1400;
 			var time_2 = DEBUG ? 0: 800;
@@ -103,6 +110,7 @@
 			var source;
 			var template;
 			var init;
+			var instance;
 
 			// Data from localStorage
 			var caju_user = localStorage.getItem("caju_name");
@@ -122,11 +130,22 @@
 			}
 
 			// GAME DEFINITION
-
 			var game = {
+
+				//BUTTON FUNCTIONS
 				play: function () {
 					console.log('play');
-					blackberry.launch.launchCamera();
+					if(typeof blackberry == "undefined") {
+						//webrtc
+						if(DEBUG) console.log("TODO: webrtc");
+					} else {
+						blackberry.launch.launchCamera();
+					}
+		            if(DEBUG) console.log('Click: new');
+		            if(connection_ready) {
+		                socket.emit('new');
+		                other_player = 1
+		            }					
 				},
 				join: function () {
 					del(container, function () {
@@ -136,17 +155,27 @@
 						var anchor = container.querySelector('a');
 
 						function join_game () {
-							socket.emit('join', instanceId);
+							var instanceId = this.parentElement.querySelector("input").value;
+							if(instanceId) {
+								socket.emit('join', instanceId);
 
-                			instance = instanceId;
-               				other_player = 0;
+								instance = instanceId;
+								other_player = 0;
+							} else {
+								var self = this;
+								self.parentElement.addClass("error");
+								setTimeout(function () {
+									self.parentElement.removeClass("error");
+								}, 700);
+							}
 						}
-
+						
 						if(DEBUG) {
-							anchor.addEventListener('click', null);
+							anchor.addEventListener('click', join_game);
 						} else {
-							anchor.addEventListener('touch', null);
+							anchor.addEventListener('touch', join_game);
 						}
+
 					});
 				},
 				save: function () {
@@ -162,6 +191,11 @@
 							self.parentElement.removeClass("error");
 						}, 700);
 					}
+				},
+
+				// GAME FUNCTIONS
+				start: function () {
+
 				}
 			}
 
@@ -207,9 +241,9 @@
 				}, time_1);
 			};
 
-		 	/************************************
-		     * Ball
-		     ************************************/
+			/************************************
+			 * Ball
+			 ************************************/
 
 			var ball = $(".ball");
 			var moving = false;
@@ -260,50 +294,72 @@
 			}, false);			
 
 
-            window.addEventListener("devicemotion", function(event) {
-            	if(window.orientation == 0) {
-            		var x = parseInt(ball.style.left) + event.accelerationIncludingGravity.x;
-            		var y = parseInt(ball.style.top) - event.accelerationIncludingGravity.y;
+			window.addEventListener("devicemotion", function(event) {
+				if(window.orientation == 0) {
+					var x = parseInt(ball.style.left) + event.accelerationIncludingGravity.x;
+					var y = parseInt(ball.style.top) - event.accelerationIncludingGravity.y;
 
 					if(x > 0 && x < (window.innerWidth - 40)) ball.style.left =  x + 'px'; 
-                	if(y > 0 && y < (window.innerHeight - 40)) ball.style.top = y + 'px';            		
-            	} /*else if(window.orientation == 90) {
-            		var x = parseInt(ball.style.top) - event.accelerationIncludingGravity.x;
-            		var y = parseInt(ball.style.left) - event.accelerationIncludingGravity.y;
+					if(y > 0 && y < (window.innerHeight - 40)) ball.style.top = y + 'px';            		
+				} /*else if(window.orientation == 90) {
+					var x = parseInt(ball.style.top) - event.accelerationIncludingGravity.x;
+					var y = parseInt(ball.style.left) - event.accelerationIncludingGravity.y;
 
 					if(x < window.innerHeight && x > 0) ball.style.top =  x + 'px'; 
-                	if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
-            	} else if(window.orientation == -90) {
-            		var x = parseInt(ball.style.top) + event.accelerationIncludingGravity.x;
-            		var y = parseInt(ball.style.left) + event.accelerationIncludingGravity.y;
+					if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
+				} else if(window.orientation == -90) {
+					var x = parseInt(ball.style.top) + event.accelerationIncludingGravity.x;
+					var y = parseInt(ball.style.left) + event.accelerationIncludingGravity.y;
 
 					if(x < window.innerHeight && x > 0) ball.style.top =  x + 'px'; 
-                	if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
-            	}*/
-            }, true); 
+					if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
+				}*/
+			}, true); 
 
 
 
-		 	/************************************
-		     * Socket
-		     ************************************/
+			/************************************
+			 * Socket
+			 ************************************/
 
-		    var connection_ready = false;
+			var connection_ready = false;
 
-		    if(typeof io !== "undefined") {
+			if(typeof io !== "undefined") {
 
-		        socket = io.connect('http://192.168.1.21:5000', {
-		            'reconnect': true
-		            , 'reconnection delay': 500
-		            , 'max reconnection attempts': 5
-		        });
+				socket = io.connect(socket_url, {
+					'reconnect': true
+					, 'reconnection delay': 500
+					, 'max reconnection attempts': 5
+				});
 
-		        socket.on('connect', function () {
-		            connection_ready = true;
-		            init();
-		            if(DEBUG) console.log('OPEN');
-		        });
-		    }
+				socket.on('connect', function () {
+					connection_ready = true;
+					init();
+					if(DEBUG) console.log('OPEN');
+				});
+
+				socket.on('join', function (data) {
+					console.log(data)
+					if(data) {
+						//do something
+					} else {
+						var div = $('.main div');
+						div.addClass("error");
+						setTimeout(function () {
+							div.removeClass("error");
+						}, 700);
+					}
+				});
+
+				socket.on('new', function (data) {
+					console.log(data);
+					game.start();
+				});
+
+				socket.on('bye', function (data) {
+					console.log("BYE: ",data);
+				});				
+			}
 
 		</script>
 </body>
