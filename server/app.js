@@ -21,9 +21,9 @@ io.set('log level', 1);
 
 io.sockets.on('connection', function (socket) {
 
-    socket.on('new', function () {
+    socket.on('new', function (player) {
 
-        instances_tmp[id] = socket;
+        instances_tmp[id] = [socket, player];
         socket.emit('new', {id: id});
         id++;
 
@@ -33,27 +33,33 @@ io.sockets.on('connection', function (socket) {
         id++;*/
     });
 
-    socket.on('join', function (instanceId) {
+    socket.on('join', function (data) {
+        var instanceId = data.instanceId;
+        var playerB = data.player;
 
+        var socketAFull = instances_tmp[instanceId];
+
+        var socketA = socketAFull[0];
+
+        var playerA = socketAFull[1];
         // Conectados los sockets :)
-        var socketB = instances_tmp[instanceId];
 
-        if(socketB) {
+        if(socketA) {
 
             //console.log(socketB.id, socket.id)
 
             delete instances_tmp[instanceId];
 
-            instances[socketB.id] = socket;
-            instances[socket.id] = socketB;
+            instances[socketA.id] = socket;
+            instances[socket.id] = socketA;
 
 
             for(var key in instances) {
                 console.log(key, instances[key].id);
             }
 
-            socket.emit('ready');
-            socketB.emit('ready');
+            socket.emit('ready', playerA);
+            socketA.emit('ready', playerB);
 
         } else {
             socket.emit('join', false);
@@ -77,8 +83,12 @@ io.sockets.on('connection', function (socket) {
     socket.on('move', function (data) {
         //console.log(data.id, data.py);
         //if(instances[data.id][data.py]) instances[data.id][data.py].emit('move', data.data);
-        instances[socket].emit('move', data.data);
+        instances[socket.id].emit('move', data.data);
     });
+
+    /*socket.on('data', function (data) {
+
+    });*/
 
     socket.on('disconnect', function () {
         //TODO
@@ -91,4 +101,5 @@ io.sockets.on('connection', function (socket) {
             delete instances[socketB.id];
         }
     });
+
 })

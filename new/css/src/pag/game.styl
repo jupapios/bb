@@ -1,14 +1,51 @@
 .game
 
+	section
+		border 1px solid gray
+		height 1024px
+		position relative
+		overflow hidden
+		width 600px
+
+		.player_bear
+		.player_bunny
+			position absolute
+			left 50%
+
+		.player_bear
+			transform rotate(180deg)
+			bottom 0
+			margin-bottom -250px
+			margin-left -100px
+
+		.player_bunny
+			margin-left -64px
+			margin-top -250px
+
+	.user-stats
+		margin 0
+		position absolute
+		width 100%
+
+		&.player
+			bottom 0
+
+		&.enemy
+			transform rotate(180deg)
+			top 0
+
+		span:nth-child(2)
+			float right
+
 	.no-active 
 		canvas
 			opacity .5
 
-		section div
+		.alert
 			animation error 160ms linear 100ms 8 alternate
 			display block
 
-	section div
+	.alert
 		background-color color-base-1
 		border-radius 4px
 		color white

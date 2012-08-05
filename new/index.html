@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="viewport" content="width=600, height=1024, initial-scale=1">
 		<title>caju</title>
 		<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
 		<link href='css/normalize.css' rel='stylesheet'>
@@ -31,6 +31,7 @@
 		<script src="js/lib/socket.js"></script>
 		<script src="js/lib/handlebars.js"></script>
 		<script src="js/lib/box2d.js"></script>
+		<script src="js/lib/easel.js"></script>
 		<script>
 		/*Handlebars.registerHelper('ifCond', function(v1, v2, options) {
 		  if(v1 == v2) {
@@ -54,7 +55,7 @@
 
 		<script id="section-welcome" type="text/x-handlebars-template">
 			<section>
-				<div>
+				<div class="popup">
 					<input type="text" placeholder="what's your name?">
 					<a class="button" href="javascript:;">continue!</a>
 				</div>
@@ -63,7 +64,7 @@
 
 		<script id="section-intro" type="text/x-handlebars-template">
 			<section>
-				<span>{{user}}</span>
+				<span><img src="img/user4.png">{{user}}</span>
 				<nav>
 					<ul>
 						<li>Play</li>
@@ -87,8 +88,8 @@
 
 		<script id="section-join" type="text/x-handlebars-template">
 			<section>
-				<span>{{user}}</span>
-				<div>
+				<span><img src="img/user4.png">{{user}}</span>
+				<div class="popup">
 					<input type="text" placeholder="invitation">
 					<a class="button" href="javascript:;">continue!</a>
 				</div>
@@ -97,8 +98,8 @@
 
 		<script id="section-waiting" type="text/x-handlebars-template">
 			<section>
-				<span>{{user}}</span>
-				<div>
+				<span><img src="img/user4.png">{{user}}</span>
+				<div class="popup">
 					<h2>{{id}}</h2>
 					<a href="javascript:;">pin it</a>
 					<a href="javascript:;">tweet it</a>
@@ -124,17 +125,21 @@
 
 		<script id="section-game" type="text/x-handlebars-template">
 			<section>
-				<div>
+				<div class="alert popup">
 					<p>your friend ran!</p>
 				</div>
+				<div class="user-stats enemy"><span>0</span><span>{{player}}</span></div>
+				<div class="user-stats player"><span>0</span><span>{{player}}</span></div>
 				<canvas></canvas>
+				<!--<img class="player_bear" src="img/player_01.png">
+				<img class="player_bunny" src="img/player_02.png">-->
 			</section>
 		</script>
 
 		<script>
 			
-			const DEBUG = true;
-			const socket_url = "http://192.168.0.18:5000";
+			const DEBUG = false;
+			const socket_url = "http://192.168.1.21:5000";
 
 			/************************************
 			 * Game
@@ -148,6 +153,10 @@
 			var template;
 			var init;
 			var instance;
+			var stage;
+
+			var player_01 = new Image();
+			var player_02 = new Image();
 
 			// Data from localStorage
 			var caju_user = localStorage.getItem("caju_name");
@@ -170,6 +179,85 @@
 				}, time_2);
 			}
 
+			var mouseTarget;	// the display object currently under the mouse, or being dragged
+			var dragStarted;	// indicates whether we are currently in a drag operation
+			var offset;
+			var update = true;			
+
+
+			function handleImageLoad(event) {
+				//console.log(event);
+				var image = event.target;
+				//var bitmap;
+				var container = new Container();
+				stage.addChild(container);
+
+				// create and populate the screen with random daisies:
+				this.bitmap = new Bitmap(image);
+				container.addChild(this.bitmap);
+
+				for(var option in this.options) {
+			        this.bitmap[option] = this.options[option];
+			    }
+			    //console.log(bitmap)
+				/*bitmap.x = 300;
+				bitmap.y = -60;
+				bitmap.rotation = 0;*/
+				this.bitmap.regX = this.bitmap.image.width/2|0;
+				this.bitmap.regY = this.bitmap.image.height/2|0;
+				//bitmap.scaleX = bitmap.scaleY = bitmap.scale = 1;
+				//bitmap.name = "bmp_1";
+
+				// wrapper function to provide scope for the event handlers:
+				if(this.name == other_player) {
+					(function(target) {
+						target.onPress = function(evt) {
+							// bump the target in front of it's siblings:
+							container.addChild(target);
+							var offset = {x:target.x-evt.stageX, y:target.y-evt.stageY};
+
+							// add a handler to the event object's onMouseMove callback
+							// this will be active until the user releases the mouse button:
+							evt.onMouseMove = function(ev) {
+								var x = ev.stageX+offset.x;
+								var y = ev.stageY+offset.y;
+								
+								if((other_player === 1 && y > 864) || (other_player === 0 && y < 160)) {
+									target.x = x;
+									target.y = y;
+									socket.emit('move', {
+						                data: {
+						                    x: x,
+						                    y: y
+						                }
+						            });			
+									// indicate that the stage should be updated on the next tick:
+									update = true;
+								}							
+							}
+						}
+						target.onMouseOver = function() {
+							//target.scaleX = target.scaleY = target.scale*1.2;
+							update = true;
+						}
+						target.onMouseOut = function() {
+							//target.scaleX = target.scaleY = target.scale;
+							update = true;
+						}
+					})(this.bitmap);
+				}
+
+				Ticker.addListener(window);
+			}
+
+			function tick() {
+				// this set makes it so the stage only re-renders when an event handler indicates a change has happened.
+				if (update) {
+					update = false; // only update once
+					stage.update();
+				}
+			}				
+
 			// GAME DEFINITION
 			var game = {
 
@@ -184,7 +272,7 @@
 					}
 					if(DEBUG) console.log('Click: new');
 					if(connection_ready) {
-						socket.emit('new');
+						socket.emit('new', caju_user);
 						other_player = 1
 					}					
 				},
@@ -198,7 +286,7 @@
 						function join_game () {
 							var instanceId = this.parentElement.querySelector("input").value;
 							if(instanceId) {
-								socket.emit('join', instanceId);
+								socket.emit('join', {instanceId:instanceId, player:caju_user});
 
 								instance = instanceId;
 								other_player = 0;
@@ -211,11 +299,8 @@
 							}
 						}
 						
-						if(DEBUG) {
 							anchor.addEventListener('click', join_game);
-						} else {
 							anchor.addEventListener('touch', join_game);
-						}
 
 					});
 				},
@@ -242,8 +327,9 @@
 					});
 				},
 
-				start: function () {
-					container.innerHTML = template_game({player:caju_user});
+				start: function (enemy) {
+					//container.innerHTML = template_game({player:caju_user});
+					container.innerHTML = template_game({player:caju_user, enemy:enemy});
 					document.body.className = "game";
 					document.body.removeChild($('.ball'));
 
@@ -251,8 +337,13 @@
 					var canvas = $('canvas');
 					var context = canvas.getContext("2d");
 
+					var context01 = canvas.getContext("2d");
+					var context02 = canvas.getContext("2d");
+
 					canvas.width = 600;
 					canvas.height = 1024;
+
+					stage = new Stage(canvas);
 
 
 					// box2d objects
@@ -308,7 +399,7 @@
 
 					/**** BEGIN TEST *******/
 					//setup debug draw
-		         	var debugDraw = new b2DebugDraw();
+		         	/*var debugDraw = new b2DebugDraw();
 					debugDraw.SetSprite(context);
 					debugDraw.SetDrawScale(30.0);
 					debugDraw.SetFillAlpha(0.5);
@@ -322,8 +413,120 @@
 						world.ClearForces();
 					};
 
-					window.setInterval(update, 1000 / 60);
+					//window.setInterval(update, 1000 / 60);*/
 					/**** END TEST *******/
+
+					/*player_01.src = "img/player_01.png"
+					player_02.src = "img/player_02.png"
+
+					player_01.options = {
+						  x: 360
+						, y: 1250
+						, rotation: 180					
+					}
+
+
+					player_02.options = {
+						  x: 233
+						, y: -210
+						, rotation: 0
+					}					
+
+
+					var TOTALIMAGES = 2;
+					var imagesLoaded = 0;
+
+					player_01.onload = drawPlayers;
+					player_02.onload = drawPlayers;
+
+					console.log(other_player);
+
+					var player;
+
+
+					//player_02.addEventListener("load", drawPlayers);
+
+					
+
+					function drawPlayers() {
+						imagesLoaded++;
+						console.log("TO DRAW")
+
+				        this.bmp = new Bitmap(this);
+
+				        for(var option in this.options) {
+				        	this.bmp[option] = this.options[option];
+				        }
+				        console.log(this.bmp);
+				        this.bmp.regX = this.bmp.image.width/2|0;
+						this.bmp.regY = this.bmp.image.height/2|0;
+
+						stage.addChild(this.bmp);
+
+						//function mouseMove
+
+						if(imagesLoaded === TOTALIMAGES) {
+							if(other_player === 1) {
+								console.log('IM LE ONE');
+								// easeljs' onClick
+								player_01.bmp.onPress = movePlayer;
+							} else {
+								player_02.bmp.onPress= movePlayer;
+							}
+					        stage.update();
+						}
+					}
+
+					function movePlayer (e) {
+						var initialX = e.stageX;
+						var initialY = e.stageY;
+						var self = this;
+						e.onMouseMove = function (e) {
+							var x = e.stageX;
+							var y = e.stageY;
+							console.log(e);
+							self.x = x;
+							self.y = y;
+							stage.update();
+							// maybe at player.onTick
+							socket.emit('move', {
+				                data: {
+				                    x: self.x,
+				                    y: self.y
+				                }
+				            });		
+						}
+					}	*/
+
+
+					// enable touch interactions if supported on the current device:
+					Touch.enable(stage);
+
+					// enabled mouse over / out events
+					stage.enableMouseOver(10);
+					stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
+
+					// load the source image:
+					player_01.src = "img/player_01.png";
+					player_01.options = {
+						  x: 310
+						, y: 1100
+						, rotation: 180
+					}
+					player_01.onload = handleImageLoad;
+					player_01.name = 1;
+
+					player_02.options = {
+						  x: 280
+						, y: -80
+						, rotation: 0
+					}
+					player_02.src = "img/player_02.png";
+					player_02.onload = handleImageLoad;
+					player_02.name = 0;
+
+
+
 
 					/***********************
 						COPY FROM DEMO.HTML
@@ -543,26 +746,23 @@
 
 							var li = container.querySelectorAll('li');
 
-							if(DEBUG) {
 								li[0].addEventListener('click', game.play);
 								li[1].addEventListener('click', game.join);
-							} else {
 								li[0].addEventListener('touch', game.play);
 								li[1].addEventListener('touch', game.join);
-							}
 							document.body.className = "intro";
 						} else { //rendering welcome section
 							container.innerHTML = template();
 
-							/*var anchor = container.querySelector('a');
-
 							if(DEBUG) {
-								anchor.addEventListener('click', game.save);
+								game.start();
 							} else {
-								anchor.addEventListener('touch', game.save);
+								var anchor = container.querySelector('a');
+
+									anchor.addEventListener('click', game.save);
+									anchor.addEventListener('touch', game.save);
+								document.body.className = "welcome";
 							}
-							document.body.className = "welcome";*/
-							game.start();
 						}
 					});
 				}, time_1);
@@ -594,7 +794,7 @@
 				}
 			}
 			window.addEventListener("mousemove", move_ball, false);
-			window.addEventListener("touchmove", move_ball, false);
+			//window.addEventListener("touchmove", move_ball, false);
 
 			window.addEventListener("mouseup", function () {
 				document.body.removeClass("no-select");
@@ -666,7 +866,7 @@
 				});
 
 				socket.on('join', function (data) {
-					//console.log(data)
+					other_player = 0;
 					if(data) {
 						//do something
 					} else {
@@ -683,13 +883,24 @@
 					game.wait(data.id);
 				});
 
+				socket.on('move', function (data) {
+					if(other_player === 1) {
+						player_02.bitmap.x = data.x;
+						player_02.bitmap.y = data.y;
+					} else {
+						player_01.bitmap.x = data.x;
+						player_01.bitmap.y = data.y;
+					}
+					update = true;
+				});
+
 				socket.on('bye', function (data) {
 					container.addClass("no-active");
 				});				
 
-				socket.on('ready', function () {
+				socket.on('ready', function (enemy) {
 					del(container, function () {
-						game.start();
+						game.start(enemy);
 					});
 					/*del(container, function () {
 						container.innerHTML = template_choose({user:caju_user, player:other_player});

@@ -7,7 +7,7 @@ body
 		user-select none
 
 section
-	& > div
+	.popup
 		left 50%
 		position absolute
 		top 50%
@@ -25,11 +25,15 @@ section
 			display block
 			float right
 
-	span
+	& > span
 		color white
 		top 10px
 		position absolute
 		right 10px
+
+		img
+			vertical-align middle
+			margin-right 8px
 
 .main
 	transition opacity 800ms linear
