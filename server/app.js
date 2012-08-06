@@ -39,12 +39,12 @@ io.sockets.on('connection', function (socket) {
 
         var socketAFull = instances_tmp[instanceId];
 
-        var socketA = socketAFull[0];
-
-        var playerA = socketAFull[1];
         // Conectados los sockets :)
 
-        if(socketA) {
+        if(socketAFull) {
+            var socketA = socketAFull[0];
+
+            var playerA = socketAFull[1];
 
             //console.log(socketB.id, socket.id)
 
@@ -54,9 +54,9 @@ io.sockets.on('connection', function (socket) {
             instances[socket.id] = socketA;
 
 
-            for(var key in instances) {
+            /*for(var key in instances) {
                 console.log(key, instances[key].id);
-            }
+            }*/
 
             socket.emit('ready', playerA);
             socketA.emit('ready', playerB);

@@ -260,14 +260,12 @@ section > span img {
   color: #fff;
   font-size: 8em;
   margin: 0.1em;
-  -webkit-text-stroke: 1px #ff7600;
 }
 .waiting .ball {
   -webkit-box-shadow: 0 0 0 4px #ffd300, 0 0 0 8px #d8ffb4;
   box-shadow: 0 0 0 4px #ffd300, 0 0 0 8px #d8ffb4;
 }
 .game section {
-  border: 1px solid #808080;
   height: 1024px;
   position: relative;
   overflow: hidden;
@@ -293,9 +291,20 @@ section > span img {
   margin-top: -250px;
 }
 .game .user-stats {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #ff7600;
   margin: 0;
+  padding: 0 15px;
   position: absolute;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   width: 100%;
+/*span:nth-child(2)
+			float right*/
 }
 .game .user-stats.player {
   bottom: 0;
@@ -308,8 +317,9 @@ section > span img {
   transform: rotate(180deg);
   top: 0;
 }
-.game .user-stats span:nth-child(2) {
-  float: right;
+.game .user-stats span:nth-child(1) {
+  font-size: 5em;
+  font-weight: bold;
 }
 .game .no-active canvas {
   opacity: 0.5;
