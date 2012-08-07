@@ -36,21 +36,23 @@
 
 		.badge
 			display inline-block
-			height 280px
+			height 132px
 			position relative
 			perspective 600px
 			margin 10px
-			width 250px
+			width 218px
 
 			&.active
 				.front
 					z-index 900
 					//border-color #eee
 					transform rotateY(-180deg)
+					opacity .2
 
 				.back
 					z-index 1000
 					transform rotateX(0deg) rotateY(0deg)
+					opacity 1
 
 			.face
 				box-sizing border-box
@@ -63,7 +65,7 @@
 				height inherit
 				//border 1px solid #ccc
 				transform-style preserve-3d
-				backface-visibility hidden
+				//backface-visibility hidden
 				transition all .4s ease-in-out
 
 				ul
@@ -74,15 +76,11 @@
 					display inline-block
 				p
 					color white
-				img
-					margin-right 5px
-					margin-top 5px
-					vertical-align bottom
 				
 
 			.front
-				background-color color-base-5
-				border 2px solid transparent
+				//background-color color-base-5
+				//border 2px solid transparent
 				text-align center
 				//box-shadow 1px 1px 4px rgba(0,0,0,0.5)
 				transform rotateX(0deg) rotateY(0deg)
@@ -93,15 +91,24 @@
 
 
 			.back
-				background-color color-base-5
-				border-radius 0 30px
+				background-color rgba(0,0,0,.4)
+				//border-radius 0 30px
 				//border 1px solid color-base-1
 				//border 1px solid rgba(255,255,255,.2)
 				//box-shadow 2px 2px 5px rgba(0,0,0,0.4)
+				border-radius 110px
 				padding 0 30px
+				padding-top 40px
+				height 218px
+				width 218px
 				transform rotateY(180deg)
+				opacity 0
 				z-index 800
 
+				img
+					margin-right 5px
+					margin-top 5px
+					vertical-align bottom
 				h2
 					color white
 					text-transform uppercase
@@ -111,7 +118,7 @@
 					color color-highlight2-4
 
 			// Specific colors
-			&.beta-tester .back
+			/*&.beta-tester .back
 				border 2px solid #E8DE2F
 			&.strategist .back
 				border 2px solid #8CC63F
@@ -120,7 +127,7 @@
 			&.wins-100 .back
 				border 2px solid #FABF15
 			&.agile .back
-				border 2px solid #F47722
+				border 2px solid #F47722*/
 	.ball
 		box-shadow 0 0 0 4px color-base-5, 0 0 0 8px color-highlight2-3
 

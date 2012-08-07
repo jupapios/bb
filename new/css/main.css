@@ -411,14 +411,24 @@ section .popup input:focus {
 }
 .profile .badges .badge {
   display: inline-block;
-  height: 280px;
+  height: 132px;
   position: relative;
   -webkit-perspective: 600px;
   -moz-perspective: 600px;
   -ms-perspective: 600px;
   perspective: 600px;
   margin: 10px;
-  width: 250px;
+  width: 218px;
+/*&.beta-tester .back
+				border 2px solid #E8DE2F
+			&.strategist .back
+				border 2px solid #8CC63F
+			&.team .back
+				border 2px solid #D9519D
+			&.wins-100 .back
+				border 2px solid #FABF15
+			&.agile .back
+				border 2px solid #F47722*/
 }
 .profile .badges .badge.active .front {
   z-index: 900;
@@ -427,6 +437,9 @@ section .popup input:focus {
   -o-transform: rotateY(-180deg);
   -ms-transform: rotateY(-180deg);
   transform: rotateY(-180deg);
+  opacity: 0.2;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=20);
+  filter: alpha(opacity=20);
 }
 .profile .badges .badge.active .back {
   z-index: 1000;
@@ -435,6 +448,9 @@ section .popup input:focus {
   -o-transform: rotateX(0deg) rotateY(0deg);
   -ms-transform: rotateX(0deg) rotateY(0deg);
   transform: rotateX(0deg) rotateY(0deg);
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
 }
 .profile .badges .badge .face {
   -webkit-box-sizing: border-box;
@@ -451,10 +467,6 @@ section .popup input:focus {
   -o-transform-style: preserve-3d;
   -ms-transform-style: preserve-3d;
   transform-style: preserve-3d;
-  -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  -ms-backface-visibility: hidden;
-  backface-visibility: hidden;
   -webkit-transition: all 0.4s ease-in-out;
   -moz-transition: all 0.4s ease-in-out;
   -o-transition: all 0.4s ease-in-out;
@@ -470,14 +482,7 @@ section .popup input:focus {
 .profile .badges .badge .face p {
   color: #fff;
 }
-.profile .badges .badge .face img {
-  margin-right: 5px;
-  margin-top: 5px;
-  vertical-align: bottom;
-}
 .profile .badges .badge .front {
-  background-color: #d7576c;
-  border: 2px solid transparent;
   text-align: center;
   -webkit-transform: rotateX(0deg) rotateY(0deg);
   -moz-transform: rotateX(0deg) rotateY(0deg);
@@ -490,16 +495,27 @@ section .popup input:focus {
   text-decoration: underline;
 }
 .profile .badges .badge .back {
-  background-color: #d7576c;
-  -webkit-border-radius: 0 30px;
-  border-radius: 0 30px;
+  background-color: rgba(0,0,0,0.4);
+  -webkit-border-radius: 110px;
+  border-radius: 110px;
   padding: 0 30px;
+  padding-top: 40px;
+  height: 218px;
+  width: 218px;
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
   -o-transform: rotateY(180deg);
   -ms-transform: rotateY(180deg);
   transform: rotateY(180deg);
+  opacity: 0;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
+  filter: alpha(opacity=0);
   z-index: 800;
+}
+.profile .badges .badge .back img {
+  margin-right: 5px;
+  margin-top: 5px;
+  vertical-align: bottom;
 }
 .profile .badges .badge .back h2 {
   color: #fff;
@@ -508,21 +524,6 @@ section .popup input:focus {
 .profile .badges .badge .back a,
 .profile .badges .badge .back a:visited {
   color: #d5eaff;
-}
-.profile .badges .badge.beta-tester .back {
-  border: 2px solid #e8de2f;
-}
-.profile .badges .badge.strategist .back {
-  border: 2px solid #8cc63f;
-}
-.profile .badges .badge.team .back {
-  border: 2px solid #d9519d;
-}
-.profile .badges .badge.wins-100 .back {
-  border: 2px solid #fabf15;
-}
-.profile .badges .badge.agile .back {
-  border: 2px solid #f47722;
 }
 .profile .ball {
   -webkit-box-shadow: 0 0 0 4px #d7576c, 0 0 0 8px #d8ffb4;
