@@ -12,7 +12,7 @@
     A sample application to demonstrate some of the possibilities.
   </description>
 
-  <rim:orientation mode="landspace"/>
+  <rim:orientation mode="landscape"/>
 		
   <rim:category name="games"/>	
 

@@ -50,14 +50,16 @@ section .popup .button {
   -ms-transition: opacity 800ms linear;
   transition: opacity 800ms linear;
 }
-.permanent aside span {
-  color: #fff;
+.permanent aside div {
   top: 10px;
   position: absolute;
   right: 10px;
+}
+.permanent aside div > span {
+  color: #fff;
   text-decoration: underline;
 }
-.permanent aside span img {
+.permanent aside div img {
   vertical-align: top;
   margin-right: 8px;
   text-decoration: none;
@@ -172,8 +174,9 @@ section .popup .button {
   position: absolute;
   top: 50%;
   left: 50%;
-  margin-top: -1em;
-  margin-left: -2em;
+  margin-top: -20px;
+  margin-left: -22px;
+  font-size: 20px;
 }
 .caju .ball {
   display: none;
@@ -370,6 +373,19 @@ section .popup .button {
 .profile {
   background-color: #d7576c;
 }
+.profile section > div {
+  display: inline-block;
+  -webkit-transition: margin 600ms linear;
+  -moz-transition: margin 600ms linear;
+  -o-transition: margin 600ms linear;
+  -ms-transition: margin 600ms linear;
+  transition: margin 600ms linear;
+  max-width: 1024px;
+  vertical-align: top;
+}
+.profile .to-left {
+  margin-left: -1024px;
+}
 .profile nav ul {
   text-align: center;
 }
@@ -378,6 +394,9 @@ section .popup .button {
   display: inline-block;
   margin: 10px;
   text-decoration: underline;
+}
+.profile nav li.active {
+  text-decoration: none;
 }
 .profile .badges {
   padding: 10px 20px;

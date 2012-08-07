@@ -1,6 +1,15 @@
 .profile
 	background-color color-base-5
 
+	section > div
+		display inline-block
+		transition margin 600ms linear
+		max-width 1024px
+		vertical-align top
+
+	.to-left
+		margin-left -1024px
+
 	nav
 		ul
 			text-align center
@@ -9,6 +18,9 @@
 			display inline-block
 			margin 10px
 			text-decoration underline
+
+			&.active
+				text-decoration none
 
 	.badges
 		padding 10px 20px

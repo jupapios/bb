@@ -1,7 +1,6 @@
 <!doctype html>
 <html>
 <head>
-	<meta name="viewport" content="width=device-width">
 	<title>caju</title>
 	<link href='css/normalize.css' rel='stylesheet'>
 	<link href='css/main.css' rel='stylesheet'>
@@ -79,7 +78,7 @@
 
 		<script id="aside-user" type="text/x-handlebars-template">
 			<aside>
-				<span><img src="img/user4.png">{{user}}</span>
+				<div><img src="img/user4.png"><span>{{user}}</span></div>
 			</aside>
 		</script>
 
@@ -128,11 +127,11 @@
 			<section>
 				<nav>
 					<ul>
-						<li>my badges</li>
+						<li class="active">my badges</li>
 						<li>options</li>
 					</ul>
 				</nav>
-				<div class="badges">
+				<div class="badges to-left">
 					{{#each badges}}
 					<div class="badge" onclick="this.toggleClass('active')">
 						<div class="face front">
@@ -152,6 +151,9 @@
 					</div>
 					{{/each}}
 				</div>
+				<div class="options">
+					le options
+				</div>				
 			</section>
 		</script>
 
@@ -1007,7 +1009,7 @@
 							containerAside.innerHTML = templateAside({user:cajuUser});
 
 							// user action
-							var userLink = containerAside.querySelector("aside span");
+							var userLink = containerAside.querySelector("aside div");
 
 							var li = containerMain.querySelectorAll('li');
 
@@ -1061,10 +1063,10 @@
 				var y = e.y || e.offsetY || (e.pageY - ball.offsetTop);
 				if(moving) {
 					if(y > 0 && y < (window.innerHeight - 40)) {
-						ball.style.top = parseInt(ball.style.top) + (y-initial_y) +"px";	
+						ball.style.top = parseInt(ball.style.top) + (y-initialY) +"px";	
 					}
 					if(x > 0 && x < (window.innerWidth - 40)) {
-						ball.style.left = parseInt(ball.style.left) + (x-initial_x) +"px";	
+						ball.style.left = parseInt(ball.style.left) + (x-initialX) +"px";	
 					}
 					initialX = x;
 					initialY = y;
@@ -1106,15 +1108,21 @@
 			}
 
 			window.addEventListener("devicemotion", function(event) {
-				if(window.orientation == 0) {
-					var x = parseInt(ball.style.left) + event.accelerationIncludingGravity.x;
-					var y = parseInt(ball.style.top) - event.accelerationIncludingGravity.y;
+				if(window.orientation == 90) {
+					var x = parseInt(ball.style.left) - event.accelerationIncludingGravity.y;
+					var y = parseInt(ball.style.top) - event.accelerationIncludingGravity.x;
 
 					if(x > 0 && x < (window.innerWidth - 40)) ball.style.left =  x + 'px'; 
 					if(y > 0 && y < (window.innerHeight - 40)) ball.style.top = y + 'px';            		
-				} 
+				} else if(window.orientation == -90) {
+					var x = parseInt(ball.style.left) + event.accelerationIncludingGravity.y;
+					var y = parseInt(ball.style.top) + event.accelerationIncludingGravity.x;
 
-				if(DEBUG) {
+					if(x > 0 && x < (window.innerWidth - 40)) ball.style.left =  x + 'px'; 
+					if(y > 0 && y < (window.innerHeight - 40)) ball.style.top = y + 'px';       
+				}
+
+				/*if(DEBUG) {
 					if(window.orientation == 90) {
 						var x = parseInt(ball.style.top) - event.accelerationIncludingGravity.x;
 						var y = parseInt(ball.style.left) - event.accelerationIncludingGravity.y;
@@ -1128,7 +1136,7 @@
 						if(x < window.innerHeight && x > 0) ball.style.top =  x + 'px'; 
 						if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
 					}
-				}
+				}*/
 			}, true); 
 
 
