@@ -1,15 +1,18 @@
 {
-  "name": "gotik",
-  "version": "0.0.1-11",
+  "name": "cajuws",
+  "version": "0.0.1-13",
   "private": true,
   "dependencies": {
     "socket.io": "*"
   },
-  "subdomain": "ws",
+  "subdomain": "cajuws",
+  "domains": [
+    "cajuws.juan.io"
+  ],
   "scripts": {
     "start": "app.js"
   },
   "engines": {
-    "node": "0.6.x"
+    "node": "0.8.x"
   }
 }

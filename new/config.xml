@@ -6,19 +6,18 @@
   <author href="http://juan.io" 
           rim:copyright="Copyright 2012 Juan.io">@jp_pinilla</author>
 
-  <name>caju2</name>
+  <name>caju</name>
 
   <description>
     A sample application to demonstrate some of the possibilities.
   </description>
 
-  <rim:orientation mode="portrait"/>
+  <rim:orientation mode="landspace"/>
 		
   <rim:category name="games"/>	
 
   <rim:permissions>
     <rim:permit>access_shared</rim:permit>
-    <rim:permit>read_geolocation</rim:permit>
     <rim:permit>use_camera</rim:permit>  
   </rim:permissions>
 

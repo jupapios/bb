@@ -31,7 +31,7 @@ The project name will be used to generate your .zip archive and .bar file
 			destfile="${build.dir}/${ant.project.name}.zip"
 			basedir="${basedir}"
 			excludes="*.project,*.settings/"
-			includes="*,img/,js/,css/main.css"
+			includes="*,img/,js/,font/,css/main.css"
 		/>
 	</target>
 

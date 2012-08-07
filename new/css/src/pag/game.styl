@@ -2,10 +2,10 @@
 
 	section
 		//border 1px solid gray
-		height 1024px
+		height 600px
 		position relative
 		overflow hidden
-		width 600px
+		width 1024px
 
 		.player_bear
 		.player_bunny
@@ -21,6 +21,9 @@
 		.player_bunny
 			margin-left -64px
 			margin-top -250px
+
+	.permanent
+		display none
 
 	.user-stats
 		box-sizing border-box
@@ -48,6 +51,7 @@
 	.no-active 
 		canvas
 			opacity .5
+			pointer-events none
 
 		.alert
 			animation error 160ms linear 100ms 8 alternate

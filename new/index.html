@@ -1,46 +1,69 @@
 <!doctype html>
 <html>
 <head>
-	<meta name="viewport" content="width=600, height=1024, initial-scale=1">
-		<title>caju</title>
-		<link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
-		<link href='css/normalize.css' rel='stylesheet'>
-		<link href='css/main.css' rel='stylesheet'>
-		<script>
-			Element.prototype.hasClass = function(name) {
-				return new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)").test(this.className);
-			};
-			Element.prototype.addClass = function(name) {
-				if (!this.hasClass(name)) {
-						this.className = this.className ? [this.className, name].join(' ') : name;
+	<meta name="viewport" content="width=device-width">
+	<title>caju</title>
+	<link href='css/normalize.css' rel='stylesheet'>
+	<link href='css/main.css' rel='stylesheet'>
+	<script>
+		Element.prototype.hasClass = function(name) {
+			return new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)").test(this.className);
+		};
+		Element.prototype.addClass = function(name) {
+			if (!this.hasClass(name)) {
+					this.className = this.className ? [this.className, name].join(' ') : name;
+			}
+		};
+		Element.prototype.toggleClass = function(name) {
+			if (!this.hasClass(name)) {
+					this.addClass(name);
+			} else {
+				this.removeClass(name);
+			}
+		};			
+		Element.prototype.removeClass = function(name) {
+			if (this.hasClass(name)) {
+					var c = this.className;
+					this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), "");
+			}
+		};
+		NodeList.prototype.addClass = function(name) {
+			for(var i=0, len=this.length; i<len; i++) {
+				var el = this[i];
+				if (!el.hasClass(name)) {
+					el.className = el.className ? [el.className, name].join(' ') : name;
 				}
-			};
-			Element.prototype.removeClass = function(name) {
-				if (this.hasClass(name)) {
-						var c = this.className;
-						this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), "");
+			}
+		};			
+		NodeList.prototype.removeClass = function(name) {
+			for(var i=0, len=this.length; i<len; i++) {
+				var el = this[i];
+				if (el.hasClass(name)) {
+						var c = el.className;
+						el.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), "");
 				}
-			};
-			window.$ = function () {
-				return document.querySelector.apply(document, arguments);
-			};
-			window.$$ = function () {
-				return document.querySelectorAll.apply(document, arguments);
-			};
-		</script>
-		<script src="js/lib/socket.js"></script>
-		<script src="js/lib/handlebars.js"></script>
-		<script src="js/lib/box2d.js"></script>
-		<script src="js/lib/easel.js"></script>
-		<script>
-		/*Handlebars.registerHelper('ifCond', function(v1, v2, options) {
-		  if(v1 == v2) {
-			return options.fn(this);
-		  } else {
-			return options.inverse(this);
-		  }
-		});*/
-		</script>
+			}
+		};
+		window.$ = function () {
+			return document.querySelector.apply(document, arguments);
+		};
+		window.$$ = function () {
+			return document.querySelectorAll.apply(document, arguments);
+		};
+	</script>
+	<script src="js/lib/socket.js"></script>
+	<script src="js/lib/handlebars.js"></script>
+	<script src="js/lib/box2d.js"></script>
+	<script src="js/lib/easel.js"></script>
+	<script>
+	/*Handlebars.registerHelper('ifCond', function(v1, v2, options) {
+	  if(v1 == v2) {
+		return options.fn(this);
+	  } else {
+		return options.inverse(this);
+	  }
+	});*/
+	</script>
 </head>
 <body class="caju">
 
@@ -52,6 +75,13 @@
 			</section>
 		</div>
 
+		<div class="permanent"></div>
+
+		<script id="aside-user" type="text/x-handlebars-template">
+			<aside>
+				<span><img src="img/user4.png">{{user}}</span>
+			</aside>
+		</script>
 
 		<script id="section-welcome" type="text/x-handlebars-template">
 			<section>
@@ -64,7 +94,6 @@
 
 		<script id="section-intro" type="text/x-handlebars-template">
 			<section>
-				<span><img src="img/user4.png">{{user}}</span>
 				<nav>
 					<ul>
 						<li>Play</li>
@@ -74,21 +103,8 @@
 			</section>
 		</script> 
 
-		<script id="section-new" type="text/x-handlebars-template">
-			<section>
-				<span>{{user}}</span>
-				<nav>
-					<ul>
-						<li>Play</li>
-						<li>Join</li>
-					</ul>
-				</nav>
-			</section>
-		</script>
-
 		<script id="section-join" type="text/x-handlebars-template">
 			<section>
-				<span><img src="img/user4.png">{{user}}</span>
 				<div class="popup">
 					<input type="text" placeholder="invitation">
 					<a class="button" href="javascript:;">continue!</a>
@@ -98,7 +114,6 @@
 
 		<script id="section-waiting" type="text/x-handlebars-template">
 			<section>
-				<span><img src="img/user4.png">{{user}}</span>
 				<div class="popup">
 					<p>waiting your friend</p>
 					<h2>{{id}}</h2>
@@ -109,20 +124,36 @@
 			</section>
 		</script>
 
-		<!-- NOT SURE IF CHOOSE A CHARACTER PER GAME OR ONE PER PLAYER
-		<script id="section-choose" type="text/x-handlebars-template">
+		<script id="section-profile" type="text/x-handlebars-template">
 			<section>
-				<span>{{user}}</span>
-				{{#ifCond player 1}}
-					<img class="active" src="">
-					<img src="">
-				{{else}}
-					<img src="">
-					<img class="active" src="">
-				{{/ifCond}}
+				<nav>
+					<ul>
+						<li>my badges</li>
+						<li>options</li>
+					</ul>
+				</nav>
+				<div class="badges">
+					{{#each badges}}
+					<div class="badge" onclick="this.toggleClass('active')">
+						<div class="face front">
+							<img src="img/badges/{{this.id}}.png">
+							<p>share</p>
+						</div>
+						<div class="face back">
+							<h2>{{this.title}}</h2>
+							<p>{{this.description}}</p>
+							<ul>
+								<li><img src="img/social/facebook.png" width="20" height="20"><a href="javascript:;">share at facebook</a></li>
+								<li><img src="img/social/twitter.png" width="20" height="20"><a href="javascript:;">tweet your badge</a></li>
+								<li><img src="img/social/google.png" width="20" height="20"><a href="javascript:;">post at google +</a></li>
+								<li><img src="img/social/rim.png" width="20" height="20"><a href="javascript:;">pin to a friend</a></li>
+							</ul>
+						</div>
+					</div>
+					{{/each}}
+				</div>
 			</section>
-		</script>		
-		-->
+		</script>
 
 		<script id="section-game" type="text/x-handlebars-template">
 			<section>
@@ -139,7 +170,11 @@
 		<script>
 			
 			const DEBUG = false;
-			const socket_url = "http://192.168.1.21:5000";
+			const TOUCH_LISTENER = false;
+			const CLICK_LISTENER = true;
+
+			const SOCKET_URL = "http://cajuws.juan.io:80";
+			//const SOCKET_URL = "http://127.0.0.1:5000";
 
 			// Box2d vars
 			var b2Vec2 = Box2D.Common.Math.b2Vec2;
@@ -161,7 +196,8 @@
 			var time_1 = DEBUG ? 0: 1400;
 			var time_2 = DEBUG ? 0: 800;
 
-			var container = $('.main');
+			var containerMain = $('.main');
+			var containerAside = $('.permanent');
 			var source;
 			var template;
 			var init;
@@ -175,15 +211,14 @@
 			var stageContainer = new Container();
 
 			// Data from localStorage
-			var caju_user = localStorage.getItem("caju_name");
+			var cajuUser = localStorage.getItem("caju_name");
 
 			// Templates
-			var template_join = Handlebars.compile($("#section-join").innerHTML);
-			var template_new = Handlebars.compile($("#section-new").innerHTML);
-			var template_waiting = Handlebars.compile($("#section-waiting").innerHTML);
-			//var template_choose = Handlebars.compile($("#section-choose").innerHTML);
-			var template_game = Handlebars.compile($("#section-game").innerHTML);
-
+			var templateJoin = Handlebars.compile($("#section-join").innerHTML);
+			var templateWaiting = Handlebars.compile($("#section-waiting").innerHTML);
+			var templateGame = Handlebars.compile($("#section-game").innerHTML);
+			var templateProfile = Handlebars.compile($("#section-profile").innerHTML);
+			var templateAside = Handlebars.compile($("#aside-user").innerHTML);
 
 			window.del = function (element, callback) {
 				//var element = $(selector);
@@ -363,10 +398,10 @@
 								var x = ev.stageX+offset.x;
 								var y = ev.stageY+offset.y;
 								
-								if((other_player === 1 && y > 864) || (other_player === 0 && y < 160)) {
-									target.y = y;
+								if((other_player === 1 && x > 864) || (other_player === 0 && x < 160)) {
+									target.x = x;
 								}							
-								target.x = x;
+								target.y = y;
 								socket.emit('move', {
 					                data: {
 					                    x: x,
@@ -408,7 +443,6 @@
 
 				//BUTTON FUNCTIONS
 				play: function () {
-					console.log('play');
 					if(typeof blackberry == "undefined") {
 						//webrtc
 						if(DEBUG) console.log("TODO: webrtc");
@@ -417,21 +451,21 @@
 					}
 					if(DEBUG) console.log('Click: new');
 					if(connection_ready) {
-						socket.emit('new', caju_user);
+						socket.emit('new', cajuUser);
 						other_player = 1
 					}					
 				},
 				join: function () {
-					del(container, function () {
-						container.innerHTML = template_join({user:caju_user});
+					del(containerMain, function () {
+						containerMain.innerHTML = templateJoin();
 						document.body.className = "join";
 
-						var anchor = container.querySelector('a');
+						var anchor = containerMain.querySelector('a');
 
-						function join_game () {
+						function joinGame () {
 							var instanceId = this.parentElement.querySelector("input").value;
 							if(instanceId) {
-								socket.emit('join', {instanceId:instanceId, player:caju_user});
+								socket.emit('join', {instanceId:instanceId, player:cajuUser});
 
 								instance = instanceId;
 								other_player = 0;
@@ -444,16 +478,66 @@
 							}
 						}
 						
-						anchor.addEventListener('click', join_game);
-						anchor.addEventListener('touch', join_game);
+						anchor.addEventListener('click', joinGame);
+						anchor.addEventListener('touch', joinGame);
 
 					});
 				},
+
+				showProfile: function () {
+					del(containerMain, function () {
+						containerMain.innerHTML = templateProfile({
+																	badges: [
+																		{
+																			  id: 'beta-tester'
+																			, title: 'Beta Tester'
+																			, description : 'le description'
+																		}
+																		, {
+																			id: 'strategist'
+																			, title: 'Strategist'
+																			, description : 'le description'
+																		}
+																		, {
+																			id: 'team'
+																			, title: 'Caju Team'
+																			, description : 'le description'
+																		}
+																		, {
+																			id: '100-wins'
+																			, title: 'Winner Master'
+																			, description : 'le description'
+																		}
+																		, {
+																			id: 'agile'
+																			, title: 'Agile'
+																			, description : 'le description'
+																		}
+																	]
+																});
+
+						/*var badges = containerMain.querySelectorAll(".badge");
+						var badge = null;
+						for(var i=0, len=badges.length; i<len; i++) {
+							badge = badges[i];
+							badge.addEventListener('click', function () {
+								if(this.hasClass('active')) {
+									this.removeClass('active');
+								} else {
+									badges.removeClass('active');
+									this.addClass('active');
+								}
+							});
+						}*/
+						document.body.className = "profile";
+					});
+				},
+
 				save: function () {
-					var input_value = this.parentElement.querySelector("input").value;
-					if(input_value) {
-						caju_user = input_value;
-						localStorage.setItem("caju_name", caju_user);
+					var inputValue = this.parentElement.querySelector("input").value;
+					if(inputValue) {
+						cajuUser = inputValue;
+						localStorage.setItem("caju_name", cajuUser);
 						init();
 					} else {
 						var self = this;
@@ -466,15 +550,15 @@
 
 				// GAME FUNCTIONS
 				wait: function (id) {
-					del(container, function () {
-						container.innerHTML = template_waiting({user:caju_user, id:id});
+					del(containerMain, function () {
+						containerMain.innerHTML = templateWaiting({id:id});
 						document.body.className = "waiting";
 					});
 				},
 
 				start: function (enemy) {
-					//container.innerHTML = template_game({player:caju_user});
-					container.innerHTML = template_game({player:caju_user, enemy:enemy});
+					//containerMain.innerHTML = templateGame({player:cajuUser});
+					containerMain.innerHTML = templateGame({player:cajuUser, enemy:enemy});
 					document.body.className = "game";
 					document.body.removeChild($('.ball'));
 
@@ -488,8 +572,8 @@
 					/*var context01 = canvas.getContext("2d");
 					var context02 = canvas.getContext("2d");*/
 
-					canvas.width = 600;
-					canvas.height = 1024;
+					canvas.width = 1024;
+					canvas.height = 600;
 
 					stage = new Stage(canvas);
 					stage.snapPixelsEnabled = true;
@@ -682,9 +766,9 @@
 					// PLAYERS
 					// load the source image:
 					player_01.options = {
-						  x: 310
-						, y: 1100
-						, rotation: 180
+						  x: 1100
+						, y: 310
+						, rotation: 90
 					}
 					player_01.onload = handleImageLoad;
 					player_01.name = 1;
@@ -692,9 +776,9 @@
 
 
 					player_02.options = {
-						  x: 280
-						, y: -80
-						, rotation: 0
+						  x: -80
+						, y: 280
+						, rotation: -90
 					}
 					player_02.onload = handleImageLoad;
 					player_02.name = 0;
@@ -907,7 +991,7 @@
 
 
 			init = function() {
-				if(caju_user) {
+				if(cajuUser) {
 					source  = $("#section-intro").innerHTML;
 				} else {
 					source  = $("#section-welcome").innerHTML;
@@ -916,30 +1000,46 @@
 				template = Handlebars.compile(source);
 
 				setTimeout(function () {
-					del(container, function () {
+					del(containerMain, function () {
 
-						if(caju_user) { // rendering intro section
-							container.innerHTML = template({user:caju_user});
+						if(cajuUser) { // rendering intro section
+							containerMain.innerHTML = template();
+							containerAside.innerHTML = templateAside({user:cajuUser});
 
-							var li = container.querySelectorAll('li');
+							// user action
+							var userLink = containerAside.querySelector("aside span");
 
-								li[0].addEventListener('click', game.play);
-								li[1].addEventListener('click', game.join);
+							var li = containerMain.querySelectorAll('li');
+
+							if(TOUCH_LISTENER) {
 								li[0].addEventListener('touch', game.play);
 								li[1].addEventListener('touch', game.join);
-							document.body.className = "intro";
-						} else { //rendering welcome section
-							container.innerHTML = template();
 
-							if(DEBUG) {
-								game.start();
-							} else {
-								var anchor = container.querySelector('a');
-
-									anchor.addEventListener('click', game.save);
-									anchor.addEventListener('touch', game.save);
-								document.body.className = "welcome";
+								userLink.addEventListener('touch', game.showProfile);
 							}
+
+							if(CLICK_LISTENER) {
+								li[0].addEventListener('click', game.play);
+								li[1].addEventListener('click', game.join);
+
+								userLink.addEventListener('click', game.showProfile);
+							}
+
+							document.body.className = "intro";
+
+						} else { //rendering welcome section
+							containerMain.innerHTML = template();
+							var anchor = containerMain.querySelector('a');
+
+							if(TOUCH_LISTENER) {
+								anchor.addEventListener('touch', game.save);
+							}
+
+							if(CLICK_LISTENER) {
+								anchor.addEventListener('click', game.save);
+							}
+
+							document.body.className = "welcome";
 						}
 					});
 				}, time_1);
@@ -951,7 +1051,7 @@
 
 			var ball = $(".ball");
 			var moving = false;
-			var initial_x, initial_y;
+			var initialX, initialY;
 
 			function move_ball (e) {
 
@@ -966,37 +1066,44 @@
 					if(x > 0 && x < (window.innerWidth - 40)) {
 						ball.style.left = parseInt(ball.style.left) + (x-initial_x) +"px";	
 					}
-					initial_x = x;
-					initial_y = y;
+					initialX = x;
+					initialY = y;
 				}
 			}
-			window.addEventListener("mousemove", move_ball, false);
-			//window.addEventListener("touchmove", move_ball, false);
 
-			window.addEventListener("mouseup", function () {
-				document.body.removeClass("no-select");
-				moving = false;
-			}, false);
+			if(TOUCH_LISTENER) {
 
-			window.addEventListener("touchend", function () {
-				document.body.removeClass("no-select");
-				moving = false;
-			}, false);
+				window.addEventListener("touchend", function () {
+					document.body.removeClass("no-select");
+					moving = false;
+				}, false);
 
-			ball.addEventListener("mousedown", function (e) {
-				initial_x = e.x || e.offsetX || (e.pageX - ball.offsetLeft);
-				initial_y = e.y || e.offsetY || (e.pageY - ball.offsetTop);
-				document.body.addClass("no-select");
-				moving = true;
-			}, false);
+				ball.addEventListener("touchstart", function (e) {
+					initialX = e.x || e.offsetX || (e.pageX - ball.offsetLeft);
+					initialY = e.y || e.offsetY || (e.pageY - ball.offsetTop);;
+					document.body.addClass("no-select");
+					moving = true;
+				}, false);
 
-			ball.addEventListener("touchstart", function (e) {
-				initial_x = e.x || e.offsetX || (e.pageX - ball.offsetLeft);
-				initial_y = e.y || e.offsetY || (e.pageY - ball.offsetTop);;
-				document.body.addClass("no-select");
-				moving = true;
-			}, false);			
+			}
 
+			if(CLICK_LISTENER) {
+
+				window.addEventListener("mousemove", move_ball, false);
+
+				window.addEventListener("mouseup", function () {
+					document.body.removeClass("no-select");
+					moving = false;
+				}, false);
+
+
+				ball.addEventListener("mousedown", function (e) {
+					initialX = e.x || e.offsetX || (e.pageX - ball.offsetLeft);
+					initialY = e.y || e.offsetY || (e.pageY - ball.offsetTop);
+					document.body.addClass("no-select");
+					moving = true;
+				}, false);
+			}
 
 			window.addEventListener("devicemotion", function(event) {
 				if(window.orientation == 0) {
@@ -1005,18 +1112,22 @@
 
 					if(x > 0 && x < (window.innerWidth - 40)) ball.style.left =  x + 'px'; 
 					if(y > 0 && y < (window.innerHeight - 40)) ball.style.top = y + 'px';            		
-				} else if(window.orientation == 90) {
-					var x = parseInt(ball.style.top) - event.accelerationIncludingGravity.x;
-					var y = parseInt(ball.style.left) - event.accelerationIncludingGravity.y;
+				} 
 
-					if(x < window.innerHeight && x > 0) ball.style.top =  x + 'px'; 
-					if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
-				} else if(window.orientation == -90) {
-					var x = parseInt(ball.style.top) + event.accelerationIncludingGravity.x;
-					var y = parseInt(ball.style.left) + event.accelerationIncludingGravity.y;
+				if(DEBUG) {
+					if(window.orientation == 90) {
+						var x = parseInt(ball.style.top) - event.accelerationIncludingGravity.x;
+						var y = parseInt(ball.style.left) - event.accelerationIncludingGravity.y;
 
-					if(x < window.innerHeight && x > 0) ball.style.top =  x + 'px'; 
-					if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
+						if(x < window.innerHeight && x > 0) ball.style.top =  x + 'px'; 
+						if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
+					} else if(window.orientation == -90) {
+						var x = parseInt(ball.style.top) + event.accelerationIncludingGravity.x;
+						var y = parseInt(ball.style.left) + event.accelerationIncludingGravity.y;
+
+						if(x < window.innerHeight && x > 0) ball.style.top =  x + 'px'; 
+						if(y < window.innerWidth && y > 0) ball.style.left = y + 'px'; 
+					}
 				}
 			}, true); 
 
@@ -1030,7 +1141,7 @@
 
 			if(typeof io !== "undefined") {
 
-				socket = io.connect(socket_url, {
+				socket = io.connect(SOCKET_URL, {
 					'reconnect': true
 					, 'reconnection delay': 500
 					, 'max reconnection attempts': 5
@@ -1062,29 +1173,29 @@
 
 				socket.on('move', function (data) {
 					if(other_player === 1) {
-						player_02.bitmap.x = data.x;
-						if(data.y < 160) {
-							player_02.bitmap.y = data.y;
+						if(data.x < 160) {
+							player_02.bitmap.x = data.x;
 						}
+						player_02.bitmap.y = data.y;
 					} else {
-						player_01.bitmap.x = data.x;
-						if(data.y > 864) {
-							player_01.bitmap.y = data.y;
+						if(data.x > 864) {
+							player_01.bitmap.x = data.x;
 						}
+						player_01.bitmap.y = data.y;
 					}
 					update = true;
 				});
 
 				socket.on('bye', function (data) {
-					container.addClass("no-active");
+					containerMain.addClass("no-active");
 				});				
 
 				socket.on('ready', function (enemy) {
-					del(container, function () {
+					del(containerMain, function () {
 						game.start(enemy);
 					});
 					/*del(container, function () {
-						container.innerHTML = template_choose({user:caju_user, player:other_player});
+						container.innerHTML = template_choose({user:cajuUser, player:other_player});
 						document.body.className = "choose";
 					});*/
 				});

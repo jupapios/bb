@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Quicksand Regular'), local('Quicksand-Regular'), url("../font/quicksand.woff") format('woff');
+}
 body {
   margin: 0;
   font-family: 'Quicksand', sans-serif;
@@ -33,18 +39,9 @@ section .popup.error input {
   box-shadow: 0px 0px 5px #f00;
 }
 section .popup .button {
+  color: #fff;
   display: block;
   float: right;
-}
-section > span {
-  color: #fff;
-  top: 10px;
-  position: absolute;
-  right: 10px;
-}
-section > span img {
-  vertical-align: middle;
-  margin-right: 8px;
 }
 .main {
   -webkit-transition: opacity 800ms linear;
@@ -52,6 +49,18 @@ section > span img {
   -o-transition: opacity 800ms linear;
   -ms-transition: opacity 800ms linear;
   transition: opacity 800ms linear;
+}
+.permanent aside span {
+  color: #fff;
+  top: 10px;
+  position: absolute;
+  right: 10px;
+  text-decoration: underline;
+}
+.permanent aside span img {
+  vertical-align: top;
+  margin-right: 8px;
+  text-decoration: none;
 }
 .hide {
   opacity: 0;
@@ -172,6 +181,9 @@ section > span img {
 .intro {
   background-color: #ff7600;
 }
+.intro section > span {
+  text-decoration: underline;
+}
 .intro nav {
   position: absolute;
   margin-top: -2em;
@@ -194,6 +206,9 @@ section > span img {
   -webkit-box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
   box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
 }
+.welcome {
+  background-color: #43ae39;
+}
 .welcome .popup {
   margin-top: -32px;
 }
@@ -201,8 +216,6 @@ section > span img {
   border: 1px solid #43ae39;
   -webkit-box-shadow: 0 0 5px #43ae39;
   box-shadow: 0 0 5px #43ae39;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
   padding: 10px 15px;
   -webkit-transition: box-shadow 300ms linear;
   -moz-transition: box-shadow 300ms linear;
@@ -214,8 +227,12 @@ section > span img {
 .welcome input:focus {
   outline: none;
 }
+.welcome .ball {
+  -webkit-box-shadow: 0 0 0 4px #43ae39, 0 0 0 8px #d8ffb4;
+  box-shadow: 0 0 0 4px #43ae39, 0 0 0 8px #d8ffb4;
+}
 .join {
-  background-color: #ff7600;
+  background-color: #3cabb5;
 }
 .join .popup {
   margin-top: -20px;
@@ -227,8 +244,6 @@ section > span img {
 .join input {
   background-color: #fff;
   border: 1px solid transparent;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
   padding: 10px 15px;
   -webkit-transition: box-shadow 300ms linear;
   -moz-transition: box-shadow 300ms linear;
@@ -237,8 +252,8 @@ section > span img {
   transition: box-shadow 300ms linear;
 }
 .join .ball {
-  -webkit-box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
-  box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
+  -webkit-box-shadow: 0 0 0 4px #3cabb5, 0 0 0 8px #d8ffb4;
+  box-shadow: 0 0 0 4px #3cabb5, 0 0 0 8px #d8ffb4;
 }
 .waiting {
   background-color: #ffd300;
@@ -266,10 +281,10 @@ section > span img {
   box-shadow: 0 0 0 4px #ffd300, 0 0 0 8px #d8ffb4;
 }
 .game section {
-  height: 1024px;
+  height: 600px;
   position: relative;
   overflow: hidden;
-  width: 600px;
+  width: 1024px;
 }
 .game section .player_bear,
 .game section .player_bunny {
@@ -289,6 +304,9 @@ section > span img {
 .game section .player_bunny {
   margin-left: -64px;
   margin-top: -250px;
+}
+.game .permanent {
+  display: none;
 }
 .game .user-stats {
   -webkit-box-sizing: border-box;
@@ -325,6 +343,7 @@ section > span img {
   opacity: 0.5;
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
   filter: alpha(opacity=50);
+  pointer-events: none;
 }
 .game .no-active .alert {
   -webkit-animation: error 160ms linear 100ms 8 alternate;
@@ -347,4 +366,125 @@ section > span img {
   left: 0;
   position: absolute;
   top: 0;
+}
+.profile {
+  background-color: #d7576c;
+}
+.profile nav ul {
+  text-align: center;
+}
+.profile nav li {
+  color: #fff;
+  display: inline-block;
+  margin: 10px;
+  text-decoration: underline;
+}
+.profile .badges {
+  padding: 10px 20px;
+  text-align: center;
+}
+.profile .badges .badge {
+  display: inline-block;
+  height: 280px;
+  position: relative;
+  -webkit-perspective: 600px;
+  -moz-perspective: 600px;
+  -ms-perspective: 600px;
+  perspective: 600px;
+  margin: 0 10px;
+  width: 250px;
+}
+.profile .badges .badge.active .front {
+  z-index: 900;
+  border-color: #eee;
+  -webkit-transform: rotateY(-180deg);
+  -moz-transform: rotateY(-180deg);
+  -o-transform: rotateY(-180deg);
+  -ms-transform: rotateY(-180deg);
+  transform: rotateY(-180deg);
+}
+.profile .badges .badge.active .back {
+  z-index: 1000;
+  -webkit-transform: rotateX(0deg) rotateY(0deg);
+  -moz-transform: rotateX(0deg) rotateY(0deg);
+  -o-transform: rotateX(0deg) rotateY(0deg);
+  -ms-transform: rotateX(0deg) rotateY(0deg);
+  transform: rotateX(0deg) rotateY(0deg);
+}
+.profile .badges .badge .face {
+  float: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: inherit;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -o-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transition: all 0.4s ease-in-out;
+  -moz-transition: all 0.4s ease-in-out;
+  -o-transition: all 0.4s ease-in-out;
+  -ms-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+.profile .badges .badge .face ul {
+  list-style: none;
+  text-align: left;
+}
+.profile .badges .badge .face p {
+  color: #fff;
+}
+.profile .badges .badge .face img {
+  margin-right: 8px;
+  margin-top: 10px;
+  vertical-align: bottom;
+}
+.profile .badges .badge .front {
+  border: 1px solid transparent;
+  text-align: center;
+  -webkit-transform: rotateX(0deg) rotateY(0deg);
+  -moz-transform: rotateX(0deg) rotateY(0deg);
+  -o-transform: rotateX(0deg) rotateY(0deg);
+  -ms-transform: rotateX(0deg) rotateY(0deg);
+  transform: rotateX(0deg) rotateY(0deg);
+  z-index: 900;
+}
+.profile .badges .badge .front p {
+  text-decoration: underline;
+}
+.profile .badges .badge .back {
+  background-color: rgba(255,255,255,0.2);
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+  padding: 0 30px;
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+  z-index: 800;
+}
+.profile .badges .badge .back h2 {
+  color: #fff;
+  text-transform: uppercase;
+}
+.profile .badges .badge .back a,
+.profile .badges .badge .back a:visited {
+  color: #d5eaff;
+}
+.profile .ball {
+  -webkit-box-shadow: 0 0 0 4px #d7576c, 0 0 0 8px #d8ffb4;
+  box-shadow: 0 0 0 4px #d7576c, 0 0 0 8px #d8ffb4;
+}
+.profile .permanent {
+  display: none;
 }
