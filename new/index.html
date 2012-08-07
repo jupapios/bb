@@ -127,8 +127,8 @@
 			<section>
 				<nav>
 					<ul>
-						<li class="active" onclick="this.parentElement.querySelector('li:nth-child(2)').removeClass('active'); this.addClass('active');document.querySelector('.badges').removeClass('to-left');">my badges</li>
-						<li onclick="this.parentElement.querySelector('li:nth-child(1)').removeClass('active'); this.addClass('active');document.querySelector('.badges').addClass('to-left');">options</li>
+						<li class="active">my badges</li>
+						<li>options</li>
 					</ul>
 				</nav>
 				<div class="badges">
@@ -176,7 +176,7 @@
 		<script>
 			
 			const DEBUG = false;
-			const TOUCH_LISTENER = false;
+			const TOUCH_LISTENER = true;
 			const CLICK_LISTENER = true;
 
 			const SOCKET_URL = "http://cajuws.juan.io:80";
@@ -523,6 +523,42 @@
 																	]
 																});
 
+						var mainMenu = containerMain.querySelectorAll("nav li");
+
+						if(TOUCH_LISTENER) {
+							mainMenu[0].addEventListener('touch', function () {
+								document.querySelector('.options').style.display = 'none';
+								this.parentElement.querySelector('li:nth-child(2)').removeClass('active');
+								this.addClass('active');
+								document.querySelector('.badges').removeClass('to-left');
+							});
+							mainMenu[1].addEventListener('touch', function () {
+								this.parentElement.querySelector('li:nth-child(1)').removeClass('active');
+								this.addClass('active');
+								document.querySelector('.badges').addClass('to-left');
+								setTimeout(function () {
+									document.querySelector('.options').style.display = 'inline-block';
+								}, 300);
+							});
+						}
+
+
+						if(CLICK_LISTENER) {
+							mainMenu[0].addEventListener('click', function () {
+								document.querySelector('.options').style.display = 'none';
+								this.parentElement.querySelector('li:nth-child(2)').removeClass('active');
+								this.addClass('active');
+								document.querySelector('.badges').removeClass('to-left');
+							});
+							mainMenu[1].addEventListener('click', function () {
+								this.parentElement.querySelector('li:nth-child(1)').removeClass('active');
+								this.addClass('active');
+								document.querySelector('.badges').addClass('to-left');
+								setTimeout(function () {
+									document.querySelector('.options').style.display = 'inline-block';
+								}, 300);
+							});
+						}						
 						var anchor = containerMain.querySelector('.options a');
 
 						if(TOUCH_LISTENER) {

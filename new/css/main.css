@@ -397,7 +397,6 @@ section .popup input:focus {
 }
 .profile .options {
   display: none;
-  position: relative;
 }
 .profile .options .popup {
   margin-top: -65px;
