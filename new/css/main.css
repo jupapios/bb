@@ -43,6 +43,19 @@ section .popup .button {
   display: block;
   float: right;
 }
+section .popup input {
+  border: 1px solid transparent;
+  padding: 10px 15px;
+  -webkit-transition: box-shadow 300ms linear;
+  -moz-transition: box-shadow 300ms linear;
+  -o-transition: box-shadow 300ms linear;
+  -ms-transition: box-shadow 300ms linear;
+  transition: box-shadow 300ms linear;
+}
+section .popup input:active,
+section .popup input:focus {
+  outline: none;
+}
 .main {
   -webkit-transition: opacity 800ms linear;
   -moz-transition: opacity 800ms linear;
@@ -215,21 +228,6 @@ section .popup .button {
 .welcome .popup {
   margin-top: -32px;
 }
-.welcome input {
-  border: 1px solid #43ae39;
-  -webkit-box-shadow: 0 0 5px #43ae39;
-  box-shadow: 0 0 5px #43ae39;
-  padding: 10px 15px;
-  -webkit-transition: box-shadow 300ms linear;
-  -moz-transition: box-shadow 300ms linear;
-  -o-transition: box-shadow 300ms linear;
-  -ms-transition: box-shadow 300ms linear;
-  transition: box-shadow 300ms linear;
-}
-.welcome input:active,
-.welcome input:focus {
-  outline: none;
-}
 .welcome .ball {
   -webkit-box-shadow: 0 0 0 4px #43ae39, 0 0 0 8px #d8ffb4;
   box-shadow: 0 0 0 4px #43ae39, 0 0 0 8px #d8ffb4;
@@ -380,7 +378,6 @@ section .popup .button {
   -o-transition: margin 600ms linear;
   -ms-transition: margin 600ms linear;
   transition: margin 600ms linear;
-  max-width: 1024px;
   vertical-align: top;
 }
 .profile .to-left {
@@ -398,9 +395,20 @@ section .popup .button {
 .profile nav li.active {
   text-decoration: none;
 }
+.profile .options {
+  display: none;
+  position: relative;
+}
+.profile .options .popup {
+  margin-top: -65px;
+}
 .profile .badges {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   padding: 10px 20px;
   text-align: center;
+  max-width: 1024px;
 }
 .profile .badges .badge {
   display: inline-block;
@@ -454,14 +462,16 @@ section .popup .button {
 }
 .profile .badges .badge .face ul {
   list-style: none;
-  text-align: left;
+}
+.profile .badges .badge .face li {
+  display: inline-block;
 }
 .profile .badges .badge .face p {
   color: #fff;
 }
 .profile .badges .badge .face img {
-  margin-right: 8px;
-  margin-top: 10px;
+  margin-right: 5px;
+  margin-top: 5px;
   vertical-align: bottom;
 }
 .profile .badges .badge .front {

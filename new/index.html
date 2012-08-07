@@ -127,11 +127,11 @@
 			<section>
 				<nav>
 					<ul>
-						<li class="active">my badges</li>
-						<li>options</li>
+						<li class="active" onclick="this.parentElement.querySelector('li:nth-child(2)').removeClass('active'); this.addClass('active');document.querySelector('.badges').removeClass('to-left');">my badges</li>
+						<li onclick="this.parentElement.querySelector('li:nth-child(1)').removeClass('active'); this.addClass('active');document.querySelector('.badges').addClass('to-left');">options</li>
 					</ul>
 				</nav>
-				<div class="badges to-left">
+				<div class="badges">
 					{{#each badges}}
 					<div class="badge" onclick="this.toggleClass('active')">
 						<div class="face front">
@@ -142,17 +142,21 @@
 							<h2>{{this.title}}</h2>
 							<p>{{this.description}}</p>
 							<ul>
-								<li><img src="img/social/facebook.png" width="20" height="20"><a href="javascript:;">share at facebook</a></li>
-								<li><img src="img/social/twitter.png" width="20" height="20"><a href="javascript:;">tweet your badge</a></li>
-								<li><img src="img/social/google.png" width="20" height="20"><a href="javascript:;">post at google +</a></li>
-								<li><img src="img/social/rim.png" width="20" height="20"><a href="javascript:;">pin to a friend</a></li>
+								<li><img src="img/social/facebook.png" width="25" height="25"><a href="javascript:;"></a></li>
+								<li><img src="img/social/twitter.png" width="25" height="25"><a href="javascript:;"></a></li>
+								<li><img src="img/social/google.png" width="25" height="25"><a href="javascript:;"></a></li>
+								<li><img src="img/social/rim.png" width="25" height="25"><a href="javascript:;"></a></li>
 							</ul>
 						</div>
 					</div>
 					{{/each}}
 				</div>
 				<div class="options">
-					le options
+					<div class="popup">
+						<p>change your name</p>
+						<input type="text" placeholder="what's your name?" value="{{user}}">
+						<a class="button" href="javascript:;">save!</a>
+					</div>
 				</div>				
 			</section>
 		</script>
@@ -489,6 +493,7 @@
 				showProfile: function () {
 					del(containerMain, function () {
 						containerMain.innerHTML = templateProfile({
+																	user: cajuUser,
 																	badges: [
 																		{
 																			  id: 'beta-tester'
@@ -518,6 +523,38 @@
 																	]
 																});
 
+						var anchor = containerMain.querySelector('.options a');
+
+						if(TOUCH_LISTENER) {
+							anchor.addEventListener('touch', function () {
+								var inputValue = this.parentElement.querySelector("input").value;
+								if(game.save(inputValue)) {
+									init();	
+								} else {
+									var self = this;
+									self.parentElement.addClass("error");
+									setTimeout(function () {
+										self.parentElement.removeClass("error");
+									}, 700);
+								}
+							});
+						}
+
+						if(CLICK_LISTENER) {
+							anchor.addEventListener('click', function () {
+								var inputValue = this.parentElement.querySelector("input").value;
+								if(game.save(inputValue)) {
+									init();	
+								} else {
+									var self = this;
+									self.parentElement.addClass("error");
+									setTimeout(function () {
+										self.parentElement.removeClass("error");
+									}, 700);
+								}
+							});
+						}
+
 						/*var badges = containerMain.querySelectorAll(".badge");
 						var badge = null;
 						for(var i=0, len=badges.length; i<len; i++) {
@@ -535,19 +572,13 @@
 					});
 				},
 
-				save: function () {
-					var inputValue = this.parentElement.querySelector("input").value;
+				save: function (inputValue) {
 					if(inputValue) {
 						cajuUser = inputValue;
 						localStorage.setItem("caju_name", cajuUser);
-						init();
-					} else {
-						var self = this;
-						self.parentElement.addClass("error");
-						setTimeout(function () {
-							self.parentElement.removeClass("error");
-						}, 700);
+						return true;
 					}
+					return false;
 				},
 
 				// GAME FUNCTIONS
@@ -1034,11 +1065,33 @@
 							var anchor = containerMain.querySelector('a');
 
 							if(TOUCH_LISTENER) {
-								anchor.addEventListener('touch', game.save);
+								anchor.addEventListener('touch', function () {
+									var inputValue = this.parentElement.querySelector("input").value;
+									if(game.save(inputValue)) {
+										init();	
+									} else {
+										var self = this;
+										self.parentElement.addClass("error");
+										setTimeout(function () {
+											self.parentElement.removeClass("error");
+										}, 700);
+									}
+								});
 							}
 
 							if(CLICK_LISTENER) {
-								anchor.addEventListener('click', game.save);
+								anchor.addEventListener('click', function () {
+									var inputValue = this.parentElement.querySelector("input").value;
+									if(game.save(inputValue)) {
+										init();	
+									} else {
+										var self = this;
+										self.parentElement.addClass("error");
+										setTimeout(function () {
+											self.parentElement.removeClass("error");
+										}, 700);
+									}
+								});
 							}
 
 							document.body.className = "welcome";

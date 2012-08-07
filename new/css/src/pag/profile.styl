@@ -4,7 +4,6 @@
 	section > div
 		display inline-block
 		transition margin 600ms linear
-		max-width 1024px
 		vertical-align top
 
 	.to-left
@@ -22,9 +21,18 @@
 			&.active
 				text-decoration none
 
+	.options
+		display none
+		position relative
+
+		.popup
+			margin-top -65px
+
 	.badges
+		box-sizing border-box
 		padding 10px 20px
 		text-align center
+		max-width 1024px
 
 		.badge
 			display inline-block
@@ -59,12 +67,15 @@
 
 				ul
 					list-style none
-					text-align left
+					//text-align left
+
+				li
+					display inline-block
 				p
 					color white
 				img
-					margin-right 8px
-					margin-top 10px
+					margin-right 5px
+					margin-top 5px
 					vertical-align bottom
 				
 
