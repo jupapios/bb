@@ -133,7 +133,7 @@
 				</nav>
 				<div class="badges">
 					{{#each badges}}
-					<div class="badge" onclick="this.toggleClass('active')">
+					<div class="badge {{this.id}}" onclick="this.toggleClass('active')">
 						<div class="face front">
 							<img src="img/badges/{{this.id}}.png">
 							<p>share</p>
@@ -501,22 +501,22 @@
 																			, description : 'le description'
 																		}
 																		, {
-																			id: 'strategist'
+																			  id: 'strategist'
 																			, title: 'Strategist'
 																			, description : 'le description'
 																		}
 																		, {
-																			id: 'team'
+																			  id: 'team'
 																			, title: 'Caju Team'
 																			, description : 'le description'
 																		}
 																		, {
-																			id: '100-wins'
+																			  id: 'wins-100'
 																			, title: 'Winner Master'
 																			, description : 'le description'
 																		}
 																		, {
-																			id: 'agile'
+																			  id: 'agile'
 																			, title: 'Agile'
 																			, description : 'le description'
 																		}

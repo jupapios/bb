@@ -477,7 +477,7 @@ section .popup input:focus {
 }
 .profile .badges .badge .front {
   background-color: #d7576c;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
   text-align: center;
   -webkit-transform: rotateX(0deg) rotateY(0deg);
   -moz-transform: rotateX(0deg) rotateY(0deg);
@@ -491,7 +491,8 @@ section .popup input:focus {
 }
 .profile .badges .badge .back {
   background-color: #d7576c;
-  border: 1px solid #ff7600;
+  -webkit-border-radius: 0 30px;
+  border-radius: 0 30px;
   padding: 0 30px;
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
@@ -507,6 +508,21 @@ section .popup input:focus {
 .profile .badges .badge .back a,
 .profile .badges .badge .back a:visited {
   color: #d5eaff;
+}
+.profile .badges .badge.beta-tester .back {
+  border: 2px solid #e8de2f;
+}
+.profile .badges .badge.strategist .back {
+  border: 2px solid #8cc63f;
+}
+.profile .badges .badge.team .back {
+  border: 2px solid #d9519d;
+}
+.profile .badges .badge.wins-100 .back {
+  border: 2px solid #fabf15;
+}
+.profile .badges .badge.agile .back {
+  border: 2px solid #f47722;
 }
 .profile .ball {
   -webkit-box-shadow: 0 0 0 4px #d7576c, 0 0 0 8px #d8ffb4;
