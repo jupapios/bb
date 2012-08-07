@@ -418,12 +418,11 @@ section .popup input:focus {
   -moz-perspective: 600px;
   -ms-perspective: 600px;
   perspective: 600px;
-  margin: 0 10px;
+  margin: 10px;
   width: 250px;
 }
 .profile .badges .badge.active .front {
   z-index: 900;
-  border-color: #eee;
   -webkit-transform: rotateY(-180deg);
   -moz-transform: rotateY(-180deg);
   -o-transform: rotateY(-180deg);
@@ -439,6 +438,9 @@ section .popup input:focus {
   transform: rotateX(0deg) rotateY(0deg);
 }
 .profile .badges .badge .face {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   float: none;
   position: absolute;
   top: 0;
@@ -475,6 +477,7 @@ section .popup input:focus {
   vertical-align: bottom;
 }
 .profile .badges .badge .front {
+  background-color: #d7576c;
   border: 1px solid transparent;
   text-align: center;
   -webkit-transform: rotateX(0deg) rotateY(0deg);
@@ -488,12 +491,8 @@ section .popup input:focus {
   text-decoration: underline;
 }
 .profile .badges .badge .back {
-  background-color: rgba(255,255,255,0.2);
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+  background-color: #d7576c;
+  border: 1px solid #ff7600;
   padding: 0 30px;
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);

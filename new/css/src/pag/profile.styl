@@ -39,13 +39,13 @@
 			height 280px
 			position relative
 			perspective 600px
-			margin 0 10px
+			margin 10px
 			width 250px
 
 			&.active
 				.front
 					z-index 900
-					border-color #eee
+					//border-color #eee
 					transform rotateY(-180deg)
 
 				.back
@@ -53,6 +53,7 @@
 					transform rotateX(0deg) rotateY(0deg)
 
 			.face
+				box-sizing border-box
 				float none
 				position absolute
 				//border-radius 2px
@@ -80,7 +81,7 @@
 				
 
 			.front
-				//background-color rgba(255,255,255,.2)
+				background-color color-base-5
 				border 1px solid transparent
 				text-align center
 				//box-shadow 1px 1px 4px rgba(0,0,0,0.5)
@@ -92,10 +93,10 @@
 
 
 			.back
-				background-color rgba(255,255,255,.2)
+				background-color color-base-5
+				border 1px solid color-base-1
 				//border 1px solid rgba(255,255,255,.2)
-				box-sizing border-box
-				box-shadow 2px 2px 5px rgba(0,0,0,0.4)
+				//box-shadow 2px 2px 5px rgba(0,0,0,0.4)
 				padding 0 30px
 				transform rotateY(180deg)
 				z-index 800
