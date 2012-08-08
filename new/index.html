@@ -116,9 +116,10 @@
 				<div class="popup">
 					<p>waiting your friend</p>
 					<h2>{{id}}</h2>
-					<a href="javascript:;">pin it</a>
+					<!--<a href="javascript:;">mail it</a>
 					<a href="javascript:;">tweet it</a>
-					<a href="javascript:;">face it</a>
+					<a href="javascript:;">face it</a>-->
+					<p>tell your friend use this number to join</p>
 				</div>
 			</section>
 		</script>
@@ -169,31 +170,31 @@
 				<div class="user-stats enemy"><span>0</span><span>{{enemy}}</span></div>
 				<div class="user-stats player"><span>0</span><span>{{player}}</span></div>
 				<canvas id="canvas"></canvas>
-				<!--<canvas id="debugCanvas" width="600" height="1024" style="z-index:99999;"></canvas>-->
+				<canvas id="debugCanvas" width="600" height="1024" style="z-index:99999;pointer-events:none;"></canvas>
 			</section>
 		</script>
 
 		<script>
 			
-			const DEBUG = false;
+			const DEBUG = true;
 			const TOUCH_LISTENER = true;
 			const CLICK_LISTENER = true;
 
-			const SOCKET_URL = "http://cajuws.juan.io:80";
-			//const SOCKET_URL = "http://127.0.0.1:5000";
+			//const SOCKET_URL = "http://cajuws.juan.io:80";
+			const SOCKET_URL = "http://127.0.0.1:5000";
 
 			// Box2d vars
-			var b2Vec2 = Box2D.Common.Math.b2Vec2;
-			var b2BodyDef = Box2D.Dynamics.b2BodyDef;
-			var b2Body = Box2D.Dynamics.b2Body;
-			var b2FixtureDef = Box2D.Dynamics.b2FixtureDef;
-			var b2Fixture = Box2D.Dynamics.b2Fixture;
-			var b2World = Box2D.Dynamics.b2World;
-			var b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
-			var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
-			var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+			var b2Vec2 = Box2D.Common.Math.b2Vec2
+	            , b2BodyDef = Box2D.Dynamics.b2BodyDef
+	            , b2Body = Box2D.Dynamics.b2Body
+	            , b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+	            , b2Fixture = Box2D.Dynamics.b2Fixture
+	            , b2World = Box2D.Dynamics.b2World
+	            , b2MassData = Box2D.Collision.Shapes.b2MassData
+	            , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+	            , b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+	            , b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 
-			var debugCanvas, debugContext;			
 
 			/************************************
 			 * Game
@@ -202,6 +203,8 @@
 			var time_1 = DEBUG ? 0: 1400;
 			var time_2 = DEBUG ? 0: 800;
 
+			var cancel = false;
+
 			var containerMain = $('.main');
 			var containerAside = $('.permanent');
 			var source;
@@ -209,6 +212,10 @@
 			var init;
 			var instance;
 			var stage;
+			var world;
+
+			const TOTAL_IMAGES = 3;
+			var loadedImages = 0;
 
 			var player_01 = new Image();
 			var player_02 = new Image();
@@ -236,6 +243,58 @@
 				}, time_2);
 			}
 
+			var mouseTarget;	// the display object currently under the mouse, or being dragged
+			var dragStarted;	// indicates whether we are currently in a drag operation
+			var offset;
+			var update = true;
+
+			var canvas,
+				context,
+				debugCanvas,
+				debugContext;
+/* ------- Birds --------- */
+// bitmap birds to be sent to box2d
+
+	var gameObjects = (function() {
+
+		var ball = function() {
+			var bmp = new Bitmap("img/ball.png");
+			bmp.x = 800;
+			bmp.y = 300;
+			bmp.regX = 50;   // important to set origin point to center of your bitmap
+			bmp.regY = 48;
+			bmp.snapToPixel = true;
+			bmp.mouseEnabled = true;
+			stage.addChild(bmp);
+			box2d.createBird(bmp);
+		}
+
+		var load = function (event) {
+			var src = event.target;
+
+			// create and populate the screen with random daisies:
+			src.bitmap = new Bitmap(src);
+
+			for(var option in src.options) {
+		        src.bitmap[option] = src.options[option];
+		    }
+
+			src.bitmap.regX = src.bitmap.image.width/2|0;
+			src.bitmap.regY = src.bitmap.image.height/2|0;
+
+			src.bitmap.snapToPixel = true;
+			stage.addChild(src.bitmap);
+			box2d.createPlayer(src.bitmap);
+		}
+
+		return {
+			load: load
+		}
+	})();				
+
+		/* ------- Box2D --------- */
+		// handles all physics movement
+
 			var box2d = (function() {
 
 				// important box2d scale and speed vars
@@ -250,38 +309,59 @@
 
 				// box2d world setup and boundaries
 				var setup = function() {
-					world = new b2World(new b2Vec2(0,0), true);
+					console.log("CALLED SETUP");
+					world = new b2World(new b2Vec2(0,10), true);
 					addDebug();
+
 					// boundaries - floor
 					var floorFixture = new b2FixtureDef;
 					floorFixture.density = 1;
-					floorFixture.restitution = 1;
+					floorFixture.restitution = .9;
 					floorFixture.shape = new b2PolygonShape;
-					floorFixture.shape.SetAsBox(550 / SCALE, 10 / SCALE);
+					floorFixture.shape.SetAsBox(1024 / SCALE, 1 / SCALE);
 					var floorBodyDef = new b2BodyDef;
 					floorBodyDef.type = b2Body.b2_staticBody;
-					floorBodyDef.position.x = -25 / SCALE;
-					floorBodyDef.position.y = 509 / SCALE;
+					floorBodyDef.position.x = 0 / SCALE;
+					floorBodyDef.position.y = 599 / SCALE;
 					var floor = world.CreateBody(floorBodyDef);
 					floor.CreateFixture(floorFixture);
+
+					// boundaries - ceil
+					var ceilFixture = new b2FixtureDef;
+					ceilFixture.density = 1;
+					ceilFixture.restitution = .9;
+					ceilFixture.shape = new b2PolygonShape;
+					ceilFixture.shape.SetAsBox(1024 / SCALE, 1 / SCALE);
+					var ceilBodyDef = new b2BodyDef;
+					ceilBodyDef.type = b2Body.b2_staticBody;
+					ceilBodyDef.position.x = 0 / SCALE;
+					ceilBodyDef.position.y = 0 / SCALE;
+					var ceil = world.CreateBody(ceilBodyDef);
+					ceil.CreateFixture(ceilFixture);
+
 					// boundaries - left
 					var leftFixture = new b2FixtureDef;
+					leftFixture.density = 1;
+					leftFixture.restitution = .9;
 					leftFixture.shape = new b2PolygonShape;
-					leftFixture.shape.SetAsBox(10 / SCALE, 550 / SCALE);
+					leftFixture.shape.SetAsBox(1 / SCALE, 600 / SCALE);
 					var leftBodyDef = new b2BodyDef;
 					leftBodyDef.type = b2Body.b2_staticBody;
-					leftBodyDef.position.x = -9 / SCALE;
-					leftBodyDef.position.y = -25 / SCALE;
+					leftBodyDef.position.x = 0 / SCALE;
+					leftBodyDef.position.y = 0 / SCALE;
 					var left = world.CreateBody(leftBodyDef);
 					left.CreateFixture(leftFixture);
+
 					// boundaries - right
 					var rightFixture = new b2FixtureDef;
+					rightFixture.density = 1;
+					rightFixture.restitution = .9;
 					rightFixture.shape = new b2PolygonShape;
-					rightFixture.shape.SetAsBox(10 / SCALE, 550 / SCALE);
+					rightFixture.shape.SetAsBox(1 / SCALE, 600 / SCALE);
 					var rightBodyDef = new b2BodyDef;
 					rightBodyDef.type = b2Body.b2_staticBody;
-					rightBodyDef.position.x = 509 / SCALE;
-					rightBodyDef.position.y = -25 / SCALE;
+					rightBodyDef.position.x = 1023 / SCALE;
+					rightBodyDef.position.y = 0 / SCALE;
 					var right = world.CreateBody(rightBodyDef);
 					right.CreateFixture(rightFixture);
 				}
@@ -297,6 +377,7 @@
 					world.SetDebugDraw(debugDraw);
 				}
 
+				// actor object - this is responsible for taking the body's position and translating it to your easel display object
 				var actorObject = function(body, skin) {
 					this.body = body;
 					this.skin = skin;
@@ -306,16 +387,14 @@
 						this.skin.y = this.body.GetWorldCenter().y * SCALE;
 					}
 					actors.push(this);
-					console.log(actors, bodies)
-				}				
-
+				}
 
 				// create bird body shape and assign actor object
-				var createPlayer = function(skin) {
+				var createBird = function(skin) {
 					var birdFixture = new b2FixtureDef;
 					birdFixture.density = 1;
 					birdFixture.restitution = 0.6;
-					birdFixture.shape = new b2CircleShape(24 / SCALE);
+					birdFixture.shape = new b2CircleShape(50 / SCALE);
 					var birdBodyDef = new b2BodyDef;
 					birdBodyDef.type = b2Body.b2_dynamicBody;
 					birdBodyDef.position.x = skin.x / SCALE;
@@ -327,6 +406,31 @@
 					var actor = new actorObject(bird, skin);
 					bird.SetUserData(actor);  // set the actor as user data of the body so we can use it later: body.GetUserData()
 					bodies.push(bird);
+				}
+
+				// create bird body shape and assign actor object
+				var createPlayer = function(skin) {
+					var birdFixture = new b2FixtureDef;
+					birdFixture.density = 1;
+					birdFixture.restitution = 0.6;
+					birdFixture.shape = new b2CircleShape(50 / SCALE);
+					var birdBodyDef = new b2BodyDef;
+					birdBodyDef.type = b2Body.b2_dynamicBody;
+					birdBodyDef.position.x = skin.x / SCALE;
+					birdBodyDef.position.y = skin.y / SCALE;
+					var bird = world.CreateBody(birdBodyDef);
+					bird.CreateFixture(birdFixture);
+
+					// assign actor
+					var actor = new actorObject(bird, skin);
+					bird.SetUserData(actor);  // set the actor as user data of the body so we can use it later: body.GetUserData()
+					bodies.push(bird);
+				}				
+
+				// remove actor and it's skin object
+				var removeActor = function(actor) {
+					stage.removeChild(actor.skin);
+					actors.splice(actors.indexOf(actor),1);
 				}
 
 				// box2d update function. delta time is used to avoid differences in simulation if frame rate drops
@@ -362,18 +466,20 @@
 					}
 				}
 
-				return {
-					addDebug: addDebug,
-					createPlayer: createPlayer,
-					setup: setup,
-					update: update
+				var pauseResume = function(p) {
+					if(p) { TIMESTEP = 0;
+					} else { TIMESTEP = 1/STEP; }
+					lastTimestamp = Date.now();
 				}
-			})();
 
-			var mouseTarget;	// the display object currently under the mouse, or being dragged
-			var dragStarted;	// indicates whether we are currently in a drag operation
-			var offset;
-			var update = true;			
+				return {
+					setup: setup,
+					update: update,
+					createBird: createBird,
+					createPlayer: createPlayer,
+					pauseResume: pauseResume
+				}
+			})();					
 
 
 			function handleImageLoad(event) {
@@ -431,17 +537,17 @@
 
 				stageContainer.addChild(this.bitmap);
 				//box2d.createPlayer(this.bitmap);
-				Ticker.useRAF = true;
-				Ticker.addListener(window);
 			}
 
 			function tick() {
-				// this set makes it so the stage only re-renders when an event handler indicates a change has happened.
-				if (update) {
-					update = false; // only update once
-					//box2d.update();
+				if(cancel) return;
+				else {
+					box2d.update();
 					stage.update();
 				}
+				/*if (update) {
+					update = false; // only update once
+				}*/
 			}				
 
 			// GAME DEFINITION
@@ -632,177 +738,22 @@
 					document.body.removeChild($('.ball'));
 
 					//Canvas work
-					var canvas = $('#canvas');
-					var context = canvas.getContext("2d");
+					canvas = $('#canvas');
+					context = canvas.getContext("2d");
 
-					/*debugCanvas = $('#debugCanvas');
-					debugContext = debugCanvas.getContext("2d");*/
-
-					/*var context01 = canvas.getContext("2d");
-					var context02 = canvas.getContext("2d");*/
+					debugCanvas = $('#debugCanvas');
+					debugContext = debugCanvas.getContext("2d");
 
 					canvas.width = 1024;
 					canvas.height = 600;
 
 					stage = new Stage(canvas);
 					stage.snapPixelsEnabled = true;
-					stage.addChild(stageContainer);
 
-					//box2d.setup();
-
-
-					// box2d objects
-					/*var
-						  b2Vec2 = Box2D.Common.Math.b2Vec2
-						, b2AABB = Box2D.Collision.b2AABB
-						, b2BodyDef = Box2D.Dynamics.b2BodyDef
-						, b2Body = Box2D.Dynamics.b2Body
-						, b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-						, b2Fixture = Box2D.Dynamics.b2Fixture
-						, b2World = Box2D.Dynamics.b2World
-						, b2MassData = Box2D.Collision.Shapes.b2MassData
-						, b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
-						, b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
-						, b2DebugDraw = Box2D.Dynamics.b2DebugDraw
-						, b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
-					;
-
-					var world = new b2World(
-						new b2Vec2(0,0) // gravity
-						, true          // sleep
-					);
-
-					var bodyDef = new b2BodyDef;
-					bodyDef.type = b2Body.b2_dynamicBody; //define object type
-					bodyDef.position.Set(2, 2);           //define position
-
-					var fixDef = new b2FixtureDef;
-					fixDef.density = 10.0;                //define density
-					fixDef.friction = 0.5;                //define friction
-					fixDef.restitution =0.2;              //define restitution
-					 
-					fixDef.shape = new b2PolygonShape;    //define shape
-					fixDef.shape.SetAsBox(1, 1);          //define size
-
-					world.CreateBody(bodyDef).CreateFixture(fixDef);
-
-
-					var bodyDef = new b2BodyDef;
-					bodyDef.type = b2Body.b2_dynamicBody; //define object type
-					bodyDef.position.Set(4, 6);           //define position
-
-					var fixDef = new b2FixtureDef;
-					fixDef.density = 10.0;                //define density
-					fixDef.friction = 0.5;                //define friction
-					fixDef.restitution =0.2;              //define restitution
-					 
-					fixDef.shape = new b2PolygonShape;    //define shape
-					fixDef.shape.SetAsBox(1, 1);          //define size
-
-					world.CreateBody(bodyDef).CreateFixture(fixDef);	*/				
-
-
-					/**** BEGIN TEST *******/
-					//setup debug draw
-		         	/*var debugDraw = new b2DebugDraw();
-					debugDraw.SetSprite(context);
-					debugDraw.SetDrawScale(30.0);
-					debugDraw.SetFillAlpha(0.5);
-					debugDraw.SetLineThickness(1.0);
-					debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-					world.SetDebugDraw(debugDraw);
-
-					function update() {
-						world.Step(1 / 60, 10, 10);
-						world.DrawDebugData();
-						world.ClearForces();
-					};
-
-					//window.setInterval(update, 1000 / 60);*/
-					/**** END TEST *******/
-
-					/*player_01.src = "img/player_01.png"
-					player_02.src = "img/player_02.png"
-
-					player_01.options = {
-						  x: 360
-						, y: 1250
-						, rotation: 180					
-					}
-
-
-					player_02.options = {
-						  x: 233
-						, y: -210
-						, rotation: 0
-					}					
-
-
-					var TOTALIMAGES = 2;
-					var imagesLoaded = 0;
-
-					player_01.onload = drawPlayers;
-					player_02.onload = drawPlayers;
-
-					console.log(other_player);
-
-					var player;
-
-
-					//player_02.addEventListener("load", drawPlayers);
-
-					
-
-					function drawPlayers() {
-						imagesLoaded++;
-						console.log("TO DRAW")
-
-				        this.bmp = new Bitmap(this);
-
-				        for(var option in this.options) {
-				        	this.bmp[option] = this.options[option];
-				        }
-				        console.log(this.bmp);
-				        this.bmp.regX = this.bmp.image.width/2|0;
-						this.bmp.regY = this.bmp.image.height/2|0;
-
-						stage.addChild(this.bmp);
-
-						//function mouseMove
-
-						if(imagesLoaded === TOTALIMAGES) {
-							if(other_player === 1) {
-								console.log('IM LE ONE');
-								// easeljs' onClick
-								player_01.bmp.onPress = movePlayer;
-							} else {
-								player_02.bmp.onPress= movePlayer;
-							}
-					        stage.update();
-						}
-					}
-
-					function movePlayer (e) {
-						var initialX = e.stageX;
-						var initialY = e.stageY;
-						var self = this;
-						e.onMouseMove = function (e) {
-							var x = e.stageX;
-							var y = e.stageY;
-							console.log(e);
-							self.x = x;
-							self.y = y;
-							stage.update();
-							// maybe at player.onTick
-							socket.emit('move', {
-				                data: {
-				                    x: self.x,
-				                    y: self.y
-				                }
-				            });		
-						}
-					}	*/
-
+					Ticker.setFPS(30);
+					Ticker.useRAF = true;
+					Ticker.addListener(window);
+					//stage.addChild(stageContainer);
 
 					// enable touch interactions if supported on the current device:
 					Touch.enable(stage);
@@ -812,12 +763,12 @@
 					stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
 
 
-					// BALL
+					/*// BALL
 					ball_01.onload = function (event) {
 						var image = event.target;
 						this.bmp = new Bitmap(image);
 
-				        this.bmp.x = canvas.width/2|0;
+				        this.bmp.x = canvas.width/2|0 + 300;
 				        this.bmp.y = canvas.height/2|0;
 				        this.bmp.regX = this.bmp.image.width/2|0;
 						this.bmp.regY = this.bmp.image.height/2|0;
@@ -831,7 +782,7 @@
 					};
 					ball_01.src = "img/ball.png";
 
-
+*/
 					// PLAYERS
 					// load the source image:
 					player_01.options = {
@@ -839,7 +790,7 @@
 						, y: 310
 						, rotation: 90
 					}
-					player_01.onload = handleImageLoad;
+					player_01.onload = gameObjects.load;
 					player_01.name = 1;
 					player_01.src = "img/player_01.png";
 
@@ -849,211 +800,11 @@
 						, y: 280
 						, rotation: -90
 					}
-					player_02.onload = handleImageLoad;
+					player_02.onload = gameObjects.load;
 					player_02.name = 0;
 					player_02.src = "img/player_02.png";
 
-
-
-
-
-
-					/***********************
-						COPY FROM DEMO.HTML
-					************************/
-				  /*function init_canvas() {
-					 var   b2Vec2 = Box2D.Common.Math.b2Vec2
-						,  b2AABB = Box2D.Collision.b2AABB
-						,	b2BodyDef = Box2D.Dynamics.b2BodyDef
-						,	b2Body = Box2D.Dynamics.b2Body
-						,	b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-						,	b2Fixture = Box2D.Dynamics.b2Fixture
-						,	b2World = Box2D.Dynamics.b2World
-						,	b2MassData = Box2D.Collision.Shapes.b2MassData
-						,	b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
-						,	b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
-						,	b2DebugDraw = Box2D.Dynamics.b2DebugDraw
-						,  b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
-						;
-					 
-					 var world = new b2World(
-						   new b2Vec2(0, 0)    //gravity
-						,  true                 //allow sleep
-					 );
-					 
-					 var fixDef = new b2FixtureDef;
-					 fixDef.density = 1.0;
-					 fixDef.friction = 0.5;
-					 fixDef.restitution = 0.2;
-					 
-					 var bodyDef = new b2BodyDef;
-					 
-					 //create ground
-					 bodyDef.type = b2Body.b2_staticBody;
-					 fixDef.shape = new b2PolygonShape;
-					 fixDef.shape.SetAsBox(20, 2);
-					 bodyDef.position.Set(10, 400 / 30 + 1.8);
-					 world.CreateBody(bodyDef).CreateFixture(fixDef);
-					 bodyDef.position.Set(10, -1.8);
-					 world.CreateBody(bodyDef).CreateFixture(fixDef);
-					 fixDef.shape.SetAsBox(2, 14);
-					 bodyDef.position.Set(-1.8, 13);
-					 world.CreateBody(bodyDef).CreateFixture(fixDef);
-					 bodyDef.position.Set(21.8, 13);
-					 world.CreateBody(bodyDef).CreateFixture(fixDef);
-					 
-					 
-					 //create some objects
-					 bodyDef.type = b2Body.b2_dynamicBody;
-					 for(var i = 0; i < 10; ++i) {
-						if(Math.random() > 0.5) {
-						   fixDef.shape = new b2PolygonShape;
-						   fixDef.shape.SetAsBox(
-								 Math.random() + 0.1 //half width
-							  ,  Math.random() + 0.1 //half height
-						   );
-						} else {
-						   fixDef.shape = new b2CircleShape(
-							  Math.random() + 0.1 //radius
-						   );
-						}
-						bodyDef.position.x = Math.random() * 10;
-						bodyDef.position.y = Math.random() * 10;
-						world.CreateBody(bodyDef).CreateFixture(fixDef);
-					 }
-					 
-					 //setup debug draw
-					 var debugDraw = new b2DebugDraw();
-						debugDraw.SetSprite(context);
-						debugDraw.SetDrawScale(30.0);
-						debugDraw.SetFillAlpha(0.5);
-						debugDraw.SetLineThickness(1.0);
-						debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-						world.SetDebugDraw(debugDraw);
-					 
-					 window.setInterval(update, 1000 / 60);
-					 
-					 //mouse
-					 
-					 var mouseX, mouseY, mousePVec, isMouseDown, selectedBody, mouseJoint;
-					 var canvasPosition = getElementPosition(canvas);
-					 
-					 document.addEventListener("mousedown", function(e) {
-						isMouseDown = true;
-						handleMouseMove(e);
-						document.addEventListener("mousemove", handleMouseMove, true);
-					 }, true);
-
-					 document.addEventListener("touchstart", function(e) {
-						isMouseDown = true;
-						handleMouseMove(e);
-						document.addEventListener("touchmove", handleMouseMove, true);
-					 }, true);
-					 
-					 document.addEventListener("mouseup", function() {
-						document.removeEventListener("mousemove", handleMouseMove, true);
-						isMouseDown = false;
-						mouseX = undefined;
-						mouseY = undefined;
-					 }, true);
-
-					 document.addEventListener("touchend", function() {
-						document.removeEventListener("touchmove", handleMouseMove, true);
-						isMouseDown = false;
-						mouseX = undefined;
-						mouseY = undefined;
-					 }, true);
-					 
-					 function handleMouseMove(e) {
-						mouseX = (e.clientX - canvasPosition.x) / 30;
-						mouseY = (e.clientY - canvasPosition.y) / 30;
-					 };
-					 
-					 function getBodyAtMouse() {
-						mousePVec = new b2Vec2(mouseX, mouseY);
-						var aabb = new b2AABB();
-						aabb.lowerBound.Set(mouseX - 0.001, mouseY - 0.001);
-						aabb.upperBound.Set(mouseX + 0.001, mouseY + 0.001);
-						
-						// Query the world for overlapping shapes.
-
-						selectedBody = null;
-						world.QueryAABB(getBodyCB, aabb);
-						return selectedBody;
-					 }
-
-					 function getBodyCB(fixture) {
-						if(fixture.GetBody().GetType() != b2Body.b2_staticBody) {
-						   if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), mousePVec)) {
-							  selectedBody = fixture.GetBody();
-							  return false;
-						   }
-						}
-						return true;
-					 }
-					 
-					 //update
-					 
-					 function update() {
-					 
-						if(isMouseDown && (!mouseJoint)) {
-						   var body = getBodyAtMouse();
-						   if(body) {
-							  var md = new b2MouseJointDef();
-							  md.bodyA = world.GetGroundBody();
-							  md.bodyB = body;
-							  md.target.Set(mouseX, mouseY);
-							  md.collideConnected = true;
-							  md.maxForce = 300.0 * body.GetMass();
-							  mouseJoint = world.CreateJoint(md);
-							  body.SetAwake(true);
-						   }
-						}
-						
-						if(mouseJoint) {
-						   if(isMouseDown) {
-							  mouseJoint.SetTarget(new b2Vec2(mouseX, mouseY));
-						   } else {
-							  world.DestroyJoint(mouseJoint);
-							  mouseJoint = null;
-						   }
-						}
-					 
-						world.Step(1 / 60, 10, 10);
-						world.DrawDebugData();
-						world.ClearForces();
-					 };
-					 
-					 //helpers
-					 
-					 //http://js-tut.aardon.de/js-tut/tutorial/position.html
-					 function getElementPosition(element) {
-						var elem=element, tagname="", x=0, y=0;
-					   
-						while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
-						   y += elem.offsetTop;
-						   x += elem.offsetLeft;
-						   tagname = elem.tagName.toUpperCase();
-
-						   if(tagname == "BODY")
-							  elem=0;
-
-						   if(typeof(elem) == "object") {
-							  if(typeof(elem.offsetParent) == "object")
-								 elem = elem.offsetParent;
-						   }
-						}
-
-						return {x: x, y: y};
-					 }
-
-
-				  };
-
-				  init_canvas();  				
-					*/
-
-
+					box2d.setup();
 
 				}
 			}
@@ -1284,10 +1035,12 @@
 				});
 
 				socket.on('bye', function (data) {
+					cancel = true;
 					containerMain.addClass("no-active");
 				});				
 
 				socket.on('ready', function (enemy) {
+					cancel = false;
 					del(containerMain, function () {
 						game.start(enemy);
 					});

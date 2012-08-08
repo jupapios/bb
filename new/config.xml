@@ -26,4 +26,5 @@
   <content src="index.html"/>
 
   <feature id="blackberry.ui.dialog"/>
+  <feature id="blackberry.invoke"/>
 </widget>
