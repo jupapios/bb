@@ -1,9 +1,17 @@
 
-<html><head></head><body dir="ltr"><canvas height="400" id="canvas" style="background-color:#333333;" width="600"></canvas>
+<html><head></head><body dir="ltr">
+<div id="container">
+</div>
    <script src="js/lib/box2d.js" type="text/javascript"></script>
+   <script src="js/lib/easel.js" type="text/javascript"></script>
    <script type="text/javascript">
-      
-      function init() {
+
+   var canvas, context, stage;
+
+   var test;
+   var timer = null;
+   var bodyPly01;
+   var bodyPly01;
          var   b2Vec2 = Box2D.Common.Math.b2Vec2
             ,  b2AABB = Box2D.Collision.b2AABB
             ,   b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -16,64 +24,165 @@
             ,   b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
             ,   b2DebugDraw = Box2D.Dynamics.b2DebugDraw
             ,  b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
-            ;
+            ;   
+
+      function init() {
+
+         test = null;
+         state = null;
+         canvas = null;
+         context = null;
+         if(timer) {
+            window.clearTimeout(timer);
+            timer = null;
+         }
+
+         document.getElementById("container").innerHTML ="<canvas height='600' id='canvas' width='1024' style='border:1px solid green;'></canvas><canvas height='600' id='debugcanvas' width='1024' style='border:1px solid red;'></canvas>"
+         canvas = document.getElementById("canvas");
+         context = canvas.getContext("2d");
+      //Canvas work
+               /*canvas = document.getElementById('canvas');
+               context = canvas.getContext("2d");*/
+
+               //debugCanvas = document.getElement'#debugCanvas');
+               //debugContext = debugCanvas.getContext("2d");
+
+               canvas.width = 1024;
+               canvas.height = 600;
+
+               stage = new Stage(canvas);
+               stage.snapPixelsEnabled = true;
+
+               Ticker.setFPS(30);
+               Ticker.useRAF = true;
+               Ticker.addListener(window);
+               //stage.addChild(stageContainer);
+
+               // enable touch interactions if supported on the current device:
+               Touch.enable(stage);
          
          var world = new b2World(
-               new b2Vec2(0, 10)    //gravity
+               new b2Vec2(0, 0)    //gravity
             ,  true                 //allow sleep
          );
          
          var fixDef = new b2FixtureDef;
          fixDef.density = 1.0;
          fixDef.friction = 0.5;
-         fixDef.restitution = 0.2;
+         fixDef.restitution = .9;
          
          var bodyDef = new b2BodyDef;
          
          //create ground
          bodyDef.type = b2Body.b2_staticBody;
          fixDef.shape = new b2PolygonShape;
-         fixDef.shape.SetAsBox(20, 2);
-         bodyDef.position.Set(10, 400 / 30 + 1.8);
+         fixDef.shape.SetAsBox(30, 2);
+
+         bodyDef.position.Set(10, 600 / 30 + 1.8);
          world.CreateBody(bodyDef).CreateFixture(fixDef);
+
          bodyDef.position.Set(10, -1.8);
          world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+
          fixDef.shape.SetAsBox(2, 14);
-         bodyDef.position.Set(-1.8, 13);
+
+         fixDef.density = 0;
+         fixDef.friction = 0;
+         fixDef.restitution = 0;         
+
+         bodyDef.position.Set(-300 / 30, 13);
          world.CreateBody(bodyDef).CreateFixture(fixDef);
-         bodyDef.position.Set(21.8, 13);
+
+         bodyDef.position.Set((1024 + 300) / 30 + 1.8, 13);
          world.CreateBody(bodyDef).CreateFixture(fixDef);
          
+
+         fixDef.density = 1.0;
+         fixDef.friction = 0.5;
+         fixDef.restitution = .9;
+         
+         // BEGIN BALL
+         bodyDef.type = b2Body.b2_dynamicBody;
+         fixDef.shape = new b2CircleShape(50/30);
+         bodyDef.position.x = (1024 / 30) / 2;
+         bodyDef.position.y = (600 / 30) / 2;
+         bodyDef.userData = 0;
+         world.CreateBody(bodyDef).CreateFixture(fixDef);
+         // END BALL
          
          //create some objects
+         //bodyDef.type = b2Body.b2_kinematicBody;
          bodyDef.type = b2Body.b2_dynamicBody;
-         for(var i = 0; i < 10; ++i) {
-            if(Math.random() > 0.5) {
-               fixDef.shape = new b2PolygonShape;
-               fixDef.shape.SetAsBox(
-                     Math.random() + 0.1 //half width
-                  ,  Math.random() + 0.1 //half height
-               );
-            } else {
-               fixDef.shape = new b2CircleShape(
-                  Math.random() + 0.1 //radius
-               );
-            }
-            bodyDef.position.x = Math.random() * 10;
-            bodyDef.position.y = Math.random() * 10;
-            world.CreateBody(bodyDef).CreateFixture(fixDef);
-         }
-         
+         bodyDef.fixedRotation = true;
+
+         // BEGIN PLAYER01
+         fixDef.shape = new b2PolygonShape;
+         fixDef.shape.SetAsBox(356/60,160/60);
+         bodyDef.position.x = -80/30;
+         bodyDef.position.y = 310/30;
+         bodyDef.userData = 1;
+         bodyPly01 = world.CreateBody(bodyDef);
+         bodyPly01.CreateFixture(fixDef);
+        // test.CreateFixture(fixPly01);
+
+          //test.SetLinearVelocity(new b2Vec2(3,0));
+         // END PLAYER01
+
+         // BEGIN PLAYER02
+         fixDef.shape = new b2PolygonShape;
+         //fixDef.shape.SetAsBox(356/60,100/60);
+
+
+           //fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
+           
+           // Define the points in clockwise order relative to the center of the object.
+           var points = [
+             { x: -110, y: -60 },
+             { x: 170, y: -70 },
+             { x: 170, y: 70},
+             { x: -110, y: 60 },
+             { x: -130, y: 65 },
+             { x: -155, y: 65 },
+             { x: -180, y: 60 }
+           ];
+  
+           // Convert the points to an array of b2Vec2 objects.
+           var vecs = [];
+           for(var i = 0; i < points.length; i++) {
+             var point = new b2Vec2;
+             // Multiply the positions by the physics factor.
+             // Pulse and Box2D use different units of measurement.  Box2D
+             // expects numbers much smaller than pixel dimensions.
+             point.Set(
+               points[i].x / 30,
+               points[i].y / 30);
+             vecs.push(point);
+           }
+           
+           // Assign the points to the shape.
+           fixDef.shape.SetAsArray(vecs, vecs.length);
+
+
+
+
+         bodyDef.position.x = 1100/30;
+         bodyDef.position.y = 310/30;
+         bodyDef.userData = 2;
+         bodyPly02 = world.CreateBody(bodyDef);
+         bodyPly02.CreateFixture(fixDef);
+         // END PLAYER02    
+
          //setup debug draw
          var debugDraw = new b2DebugDraw();
-            debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+            debugDraw.SetSprite(document.getElementById("debugcanvas").getContext("2d"));
             debugDraw.SetDrawScale(30.0);
             debugDraw.SetFillAlpha(0.5);
             debugDraw.SetLineThickness(1.0);
             debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
             world.SetDebugDraw(debugDraw);
          
-         window.setInterval(update, 1000 / 60);
+         timer = window.setInterval(tick, 1000 / 60);
          
          //mouse
          
@@ -92,6 +201,19 @@
             mouseX = undefined;
             mouseY = undefined;
          }, true);
+
+         document.addEventListener("touchstart", function(e) {
+            isMouseDown = true;
+            handleMouseMove(e);
+            document.addEventListener("touchmove", handleMouseMove, true);
+         }, true);
+         
+         document.addEventListener("touchend", function() {
+            document.removeEventListener("touchmove", handleMouseMove, true);
+            isMouseDown = false;
+            mouseX = undefined;
+            mouseY = undefined;
+         }, true);         
          
          function handleMouseMove(e) {
             mouseX = (e.clientX - canvasPosition.x) / 30;
@@ -122,13 +244,102 @@
          }
          
          //update
-         
-         function update() {
-         
-            if(isMouseDown && (!mouseJoint)) {
-               var body = getBodyAtMouse();
-               if(body) {
+         var image = new Image();
+         image.src = "img/ball.png";
+         image.onload = function (event) {
+            var image = event.target;
+            this.bmp = new Bitmap(image);
+
+              this.bmp.x = canvas.width/2|0 + 300;
+              this.bmp.y = canvas.height/2|0;
+              this.bmp.regX = this.bmp.image.width/2|0;
+            this.bmp.regY = this.bmp.image.height/2|0;
+
+            stage.addChild(this.bmp);
+            update = true;
+         };
+
+         var player02 = new Image();
+         player02.src = "img/player_01.png";
+         player02.onload = function (event) {
+            var image = event.target;
+            this.bmp = new Bitmap(image);
+
+              this.bmp.x = 1100;
+              this.bmp.y = 310;
+              this.bmp.rotation = 90;
+              this.bmp.regX = this.bmp.image.width/2|0;
+            this.bmp.regY = this.bmp.image.height/2|0;
+
+               (function(target) {
+                  target.onPress = function(evt) {
+                     // bump the target in front of it's siblings:
+                     stage.addChild(target);
+                     var offset = {x:target.x-evt.stageX, y:target.y-evt.stageY};
+
+                     // add a handler to the event object's onMouseMove callback
+                     // this will be active until the user releases the mouse button:
+                     evt.onMouseMove = function(ev) {
+                        var x = ev.stageX+offset.x;
+                        var y = ev.stageY+offset.y;
+                        
+                       // if((other_player === 1 && x > 864) || (other_player === 0 && x < 160)) {
+                           //target.x = x;
+                       // }                    
+                        //target.y = y;
+                        bodyPly02.SetPosition(new b2Vec2(x/30,y/30));
+                        /*socket.emit('move', {
+                               data: {
+                                   x: x,
+                                   y: y
+                               }
+                           });  */       
+                        // indicate that the stage should be updated on the next tick:
+                        //update = true;
+                     }
+                  }
+                  target.onMouseOver = function() {
+                     //target.scaleX = target.scaleY = target.scale*1.2;
+                     update = true;
+                  }
+                  target.onMouseOut = function() {
+                     //target.scaleX = target.scaleY = target.scale;
+                     update = true;
+                  }
+               })(this.bmp);            
+
+            stage.addChild(this.bmp);
+            update = true;
+         };
+
+         var player01 = new Image();
+         player01.src = "img/player_02.png";
+         player01.onload = function (event) {
+            var image = event.target;
+            this.bmp = new Bitmap(image);
+
+              this.bmp.x = -80;
+              this.bmp.y = 280;
+              this.bmp.rotation = -90;
+              this.bmp.regX = this.bmp.image.width/2|0;
+            this.bmp.regY = this.bmp.image.height/2|0;
+
+            stage.addChild(this.bmp);
+            update = true;
+         };
+         var k =0;
+
+
+         function tick() {
+
+            stage.update();
+            var body = getBodyAtMouse();
+
+            if(body) {
+               if(isMouseDown && (!mouseJoint)) {
+
                   var md = new b2MouseJointDef();
+
                   md.bodyA = world.GetGroundBody();
                   md.bodyB = body;
                   md.target.Set(mouseX, mouseY);
@@ -136,7 +347,9 @@
                   md.maxForce = 300.0 * body.GetMass();
                   mouseJoint = world.CreateJoint(md);
                   body.SetAwake(true);
+
                }
+            
             }
             
             if(mouseJoint) {
@@ -147,10 +360,41 @@
                   mouseJoint = null;
                }
             }
-         
+
             world.Step(1 / 60, 10, 10);
             world.DrawDebugData();
             world.ClearForces();
+
+            for (b = world.GetBodyList() ; b; b = b.GetNext()) {
+               var type = b.GetUserData();
+               var pos = b.GetPosition();
+
+               //ball
+               if (type === 0) {
+                  image.bmp.x = pos.x * 30;
+                  image.bmp.y = pos.y * 30;
+
+                  if(image.bmp.x <= 4) {
+                     console.log('PUNTO PA 0');
+                     init();
+                  } else if(image.bmp.x >= 1020) {
+                     console.log('PUNTO PAL 1');
+                     init();
+                  }
+               }
+               //players
+               else {
+                  if(type === 1) {
+                     player01.bmp.x = pos.x * 30;
+                     player01.bmp.y = pos.y * 30;
+                  } else if(type === 2) {
+                     player02.bmp.x = pos.x * 30;
+                     player02.bmp.y = pos.y * 30;
+                  }
+               }
+
+            }            
+
          };
          
          //helpers
