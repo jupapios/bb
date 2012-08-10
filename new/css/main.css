@@ -281,12 +281,6 @@ section .popup input:focus {
   -webkit-box-shadow: 0 0 0 4px #ffd300, 0 0 0 8px #d8ffb4;
   box-shadow: 0 0 0 4px #ffd300, 0 0 0 8px #d8ffb4;
 }
-.game section {
-  height: 600px;
-  position: relative;
-  overflow: hidden;
-  width: 1024px;
-}
 .game section .player_bear,
 .game section .player_bunny {
   position: absolute;
@@ -362,11 +356,6 @@ section .popup input:focus {
   display: none;
   text-align: center;
   z-index: 9999;
-}
-.game canvas {
-  left: 0;
-  position: absolute;
-  top: 0;
 }
 .profile {
   background-color: #d7576c;

@@ -57,9 +57,15 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('move', function (data) {
         if(instances[socket.id]) {
-            instances[socket.id].emit('move', data.data);
+            instances[socket.id].emit('move', data);
         }
     });
+
+    socket.on('ball', function (data) {
+        if(instances[socket.id]) {
+            instances[socket.id].emit('ball', data);
+        }
+    });    
 
     socket.on('disconnect', function () {
         var socketB = instances[socket.id];
