@@ -98,6 +98,7 @@
 						<li>Play</li>
 						<li>Join</li>
 					</ul>
+					<div class="other">I have my friend right here!</div>
 				</nav>
 			</section>
 		</script> 
@@ -183,6 +184,8 @@
 			//const SOCKET_URL = "http://cajuws.juan.io:80";
 			const SOCKET_URL = "http://127.0.0.1:5000";
 
+			var alone = false;
+
 			// Box2d vars
 			var b2Vec2 = Box2D.Common.Math.b2Vec2
 				, b2AABB = Box2D.Collision.b2AABB
@@ -209,7 +212,7 @@
 	         var fixDef = new b2FixtureDef;
 	         fixDef.density = 1.0;
 	         fixDef.friction = 0.5;
-	         fixDef.restitution = 1.1;
+	         fixDef.restitution = 0.9;
 	         
 	         var bodyDef = new b2BodyDef;
 	         
@@ -225,14 +228,12 @@
 	         world.CreateBody(bodyDef).CreateFixture(fixDef);
 
 
-	         fixDef.shape.SetAsBox(2, 14);
-	         /*fixDef.friction = 0;
-	         fixDef.restitution = 0;   */      
+	         fixDef.shape.SetAsBox(2, 14);    
 
-	         bodyDef.position.Set(-300 / 30, 13);
+	         bodyDef.position.Set(-310 / 30, 13);
 	         world.CreateBody(bodyDef).CreateFixture(fixDef);
 
-	         bodyDef.position.Set((1024 + 300) / 30 + 1.8, 13);
+	         bodyDef.position.Set((1024 + 310) / 30 + 1.8, 13);
 	         world.CreateBody(bodyDef).CreateFixture(fixDef);
 	         
 
@@ -360,7 +361,7 @@
 
 
 				// wrapper function to provide scope for the event handlers:
-				if(this.name == other_player) {
+				/*if(this.name == other_player) {
 					(function(target) {
 						target.onPress = function(evt) {
 							// bump the target in front of it's siblings:
@@ -384,11 +385,6 @@
 									x = target.x;
 								}						
 								target.y = y;
-								/*if(other_player === 1) {
-									bodyPly01.SetPosition(new b2Vec2(x/30,y/30));
-								} else {
-									bodyPly02.SetPosition(new b2Vec2(x/30,y/30));
-								}*/
 								socket.emit('move', {
 				                    x: x,
 				                    y: y
@@ -406,7 +402,7 @@
 							update = true;
 						}
 					})(this.bitmap);
-				}
+				}*/
 
 				stageContainer.addChild(this.bitmap);
 				//box2d.createPlayer(this.bitmap);
@@ -426,7 +422,7 @@
 					if(DEBUG) console.log('Click: new');
 					if(connection_ready) {
 						socket.emit('new', cajuUser);
-						other_player = 1
+						other_player = 2
 					}					
 				},
 				join: function () {
@@ -442,7 +438,7 @@
 								socket.emit('join', {instanceId:instanceId, player:cajuUser});
 
 								instance = instanceId;
-								other_player = 0;
+								other_player = 1;
 							} else {
 								var self = this;
 								self.parentElement.addClass("error");
@@ -456,6 +452,13 @@
 						anchor.addEventListener('touch', joinGame);
 
 					});
+				},
+
+				playAlone: function () {
+					console.log("CALLED PLAY ALONE");
+					other_player = 2;
+					alone = true;
+					game.start("FRIEND");
 				},
 
 				showProfile: function () {
@@ -611,7 +614,7 @@
 
 
 
-					if(other_player === 1) {
+					if(other_player === 2) { // It's player 1 (clicked new)!!
 				         // BEGIN BALL
 				         bodyDef.type = b2Body.b2_dynamicBody;
 				         fixDef.shape = new b2CircleShape(50/30);
@@ -631,29 +634,29 @@
 	         bodyDef.type = b2Body.b2_dynamicBody;
 	         //bodyDef.angularDamping = 3;
 	         bodyDef.fixedRotation = true;
-	         fixDef.restitution = 1.2;
+	         fixDef.restitution = 1.0;
 
 	         // BEGIN PLAYER01
 	         fixDef.shape = new b2PolygonShape;
 	         fixDef.shape.SetAsBox(356/60,160/60);
-	         bodyDef.position.x = -80/30;
+	         bodyDef.position.x = 1100/30;
 	         bodyDef.position.y = 310/30;
 	         bodyDef.userData = 1;
 	         bodyPly01 = world.CreateBody(bodyDef);
 	         bodyPly01.CreateFixture(fixDef);
-	         bodyPly01.SetLinearVelocity(new b2Vec2(3,0));
+	         //bodyPly01.SetLinearVelocity(new b2Vec2(3,0));
 	         // END PLAYER01
 
 
 	         // BEGIN PLAYER02
 	         fixDef.shape = new b2PolygonShape;
 	         fixDef.shape.SetAsBox(356/60,160/60);
-	         bodyDef.position.x = 1100/30;
+	         bodyDef.position.x = -80/30;
 	         bodyDef.position.y = 310/30;
 	         bodyDef.userData = 2;
 	         bodyPly02 = world.CreateBody(bodyDef);
 	         bodyPly02.CreateFixture(fixDef);
-	         bodyPly02.SetLinearVelocity(new b2Vec2(-3,0));
+	         //bodyPly02.SetLinearVelocity(new b2Vec2(-3,0));
 	         // END PLAYER02
 
 
@@ -669,7 +672,7 @@
 
 		            canvasPosition = getElementPosition(document.getElementById("canvas"));
 
-			var listener = new Box2D.Dynamics.b2ContactListener;
+			/*var listener = new Box2D.Dynamics.b2ContactListener;
 			var k=150;
 		    listener.BeginContact = function(contact) {
 		    	console.log(contact.GetFixtureA().GetBody().GetUserData(), contact.GetFixtureB().GetBody().GetUserData())
@@ -688,7 +691,7 @@
 		         }
 		     }
 
-             world.SetContactListener(listener);
+             world.SetContactListener(listener);*/
 
 
 			         function handleMouseMove(e) {
@@ -696,19 +699,36 @@
 			            mouseY = (e.clientY - canvasPosition.y) / 30;
 			         };
 
-			       /* document.addEventListener("mousedown", function(e) {
-			            isMouseDown = true;
-			            handleMouseMove(e);
-			            document.addEventListener("mousemove", handleMouseMove, true);
-			         }, true);
-			         
-			         document.addEventListener("mouseup", function() {
-			            document.removeEventListener("mousemove", handleMouseMove, true);
-			            isMouseDown = false;
-			            mouseX = undefined;
-			            mouseY = undefined;
-			         }, true);*/
 
+			        if(CLICK_LISTENER) {
+						document.addEventListener("mousedown", function(e) {
+				            isMouseDown = true;
+				            handleMouseMove(e);
+				            document.addEventListener("mousemove", handleMouseMove, true);
+						}, true);
+				         
+						document.addEventListener("mouseup", function() {
+				            document.removeEventListener("mousemove", handleMouseMove, true);
+				            isMouseDown = false;
+				            mouseX = undefined;
+				            mouseY = undefined;
+						}, true);
+			        }
+
+			        if(TOUCH_LISTENER) {
+						document.addEventListener("touchstart", function(e) {
+				            isMouseDown = true;
+				            handleMouseMove(e);
+				            document.addEventListener("touchmove", handleMouseMove, true);
+						}, true);
+				         
+						document.addEventListener("touchend", function() {
+				            document.removeEventListener("touchmove", handleMouseMove, true);
+				            isMouseDown = false;
+				            mouseX = undefined;
+				            mouseY = undefined;
+						}, true);
+			        }			        
 
 					stage = new Stage(canvas);
 					stage.snapPixelsEnabled = true;
@@ -790,10 +810,14 @@
 							var userLink = containerAside.querySelector("aside div");
 
 							var li = containerMain.querySelectorAll('li');
+							var other = containerMain.querySelector('.other');
+							console.log(other);
 
 							if(TOUCH_LISTENER) {
 								li[0].addEventListener('touch', game.play);
 								li[1].addEventListener('touch', game.join);
+
+								other.addEventListener('touch', game.playAlone);
 
 								userLink.addEventListener('touch', game.showProfile);
 							}
@@ -801,6 +825,8 @@
 							if(CLICK_LISTENER) {
 								li[0].addEventListener('click', game.play);
 								li[1].addEventListener('click', game.join);
+
+								other.addEventListener('click', game.playAlone);
 
 								userLink.addEventListener('click', game.showProfile);
 							}
@@ -945,14 +971,19 @@
 			function tick() {
 				if(cancel) return;
 				else {
-					bodyPly01.SetPosition(new b2Vec2(player_01.bitmap.x/30,player_01.bitmap.y/30));
-					bodyPly02.SetPosition(new b2Vec2(player_02.bitmap.x/30,player_02.bitmap.y/30));
+					/*bodyPly01.SetPosition(new b2Vec2(player_01.bitmap.x/30,player_01.bitmap.y/30));
+					bodyPly02.SetPosition(new b2Vec2(player_02.bitmap.x/30,player_02.bitmap.y/30));*/
 					//box2d.update();
 
 					var body = getBodyAtMouse();
 
 		            if(body) {
-		               if(isMouseDown && (!mouseJoint) && body.GetUserData() !== 0) {
+		            	var type = body.GetUserData();
+		               if(
+		               		isMouseDown &&
+		               		(!mouseJoint) &&
+		               		( (type === 1 && other_player == 2) || (type === 2 && other_player == 1) || alone)
+		               	) {
 
 		                  var md = new b2MouseJointDef();
 
@@ -994,7 +1025,7 @@
 		                  socket.emit('ball', {
 		                    x: pos.x,
 		                    y: pos.y
-					      });	
+					      });
 
 		                  if(ball_01.bitmap.x <= 4) {
 		                     console.log('PUNTO PA 0');
@@ -1003,6 +1034,22 @@
 		                     console.log('PUNTO PAL 1');
 		                     //init();
 		                  }
+		               } else if(type === 1) {
+		                 	player_01.bitmap.y = pos.y * 30;
+		                 	if(pos.x*30 < 900) {
+		                 		bodyPly01.SetAwake(false);
+		                 		bodyPly01.SetPosition(new b2Vec2(player_01.bitmap.x/30, player_01.bitmap.y/30));
+		                 	} else {
+		               			player_01.bitmap.x = pos.x * 30;
+		                 	}
+		               } else if(type === 2) {
+		                 	player_02.bitmap.y = pos.y * 30;
+		                 	if(pos.x*30 > 124) {
+								bodyPly02.SetAwake(false);
+		                 		bodyPly02.SetPosition(new b2Vec2(player_02.bitmap.x/30, player_02.bitmap.y/30));
+		                 	} else {
+			               		player_02.bitmap.x = pos.x * 30;
+		                 	}
 		               }
 
 		            }	
@@ -1037,10 +1084,8 @@
 				});
 
 				socket.on('join', function (data) {
-					other_player = 0;
-					if(data) {
-						//do something
-					} else {
+					//other_player = 1;
+					if(!data) {
 						var div = $('.main div');
 						div.addClass("error");
 						setTimeout(function () {
@@ -1057,7 +1102,7 @@
 				socket.on('move', function (data) {
 					var x = data.x;
 					var y = data.y;
-					if(other_player === 1) {
+					/*if(other_player === 1) {
 						if(x < 160) {
 							player_02.bitmap.x = x;
 						} else {
@@ -1073,7 +1118,7 @@
 						}
 						player_01.bitmap.y = y;
 						//bodyPly01.SetPosition(new b2Vec2(x/30,y/30));
-					}
+					}*/
 					update = true;
 				});
 
