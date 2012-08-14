@@ -202,6 +202,46 @@ function handleImageLoad(event) {
 }
 
 
+function handleMouseMove(e) {
+	e.preventDefault();
+	mouseX = (e.clientX - canvasPosition.x) / 30;
+	mouseY = (e.clientY - canvasPosition.y) / 30;
+}
+
+function handleMouseDown(e) {
+	isMouseDown = true;
+	handleMouseMove(e);
+	document.addEventListener("mousemove", handleMouseMove, true);
+}
+
+function handleMouseUp(e) {
+	document.removeEventListener("mousemove", handleMouseMove, true);
+	isMouseDown = false;
+	mouseX = null;
+	mouseY = null;
+}
+
+function handleTouchMove(e) {
+	e.preventDefault();
+	mouseX = (e.touches[0].pageX - canvasPosition.x) / 30;
+	mouseY = (e.touches[0].pageY - canvasPosition.y) / 30;
+}
+
+function handleTouchStart(e) {
+	isMouseDown = true;
+	handleMouseMove(e);
+	document.addEventListener("touchmove", handleTouch, true);
+}
+
+function handleTouchEnd(e) {
+	document.removeEventListener("touchmove", handleTouch, true);
+	isMouseDown = false;
+	mouseX = null;
+	mouseY = null;
+}
+
+
+
 function finishedHandleImage () {
 	if(loadedImages == TOTAL_IMAGES) {
 
@@ -220,8 +260,46 @@ function finishedHandleImage () {
 		stage.addChild(stageContainer);
 
 		setTimeout(function () {
-			console.log('game finhio')
-		}, 1000 * 4);
+			//containerMain.addClass("finished");*
+			// 3
+			document.getElementById("time-3").className += ' active';
+			setTimeout(function() {
+				// 2
+				//document.getElementById("time-3").className = 'time';
+				document.getElementById("time-3").style.display = 'none';
+				document.getElementById("time-2").className += ' active';
+				setTimeout(function() {
+					//1
+					//document.getElementById("time-2").className = 'time';
+					document.getElementById("time-2").style.display = 'none';
+					document.getElementById("time-1").className += ' active';
+					setTimeout(function() {
+						//document.getElementById("time-1").className = 'time';
+						document.getElementById("time-1").style.display = 'none';
+						var winner = document.getElementById("winner");
+						if(scorePlayer01 > scorePlayer02) {
+							winner.innerText = cajuUser + ' won!';
+						} else if(scorePlayer01 < scorePlayer02) {
+							winner.innerText = 'your friend won!';
+						} else {
+							winner.innerText = 'no one won, dead heat';
+						}
+						if(CLICK_LISTENER) {
+							document.removeEventListener("mousedown", handleMouseDown, true);
+							document.removeEventListener("mouseup", handleMouseUp, true);
+						}
+
+						if(TOUCH_LISTENER) {
+							document.removeEventListener("touchstart", handleTouchStart, true);
+							document.removeEventListener("touchend", handleTouchEnd, true);
+						}
+						Ticker.removeAllListeners();
+						cancel = true;
+						containerMain.addClass("finished");
+					},1000);
+				},1000);
+			},1000);
+		}, 1000 * 3); // 10 sec
 	}
 }
 // GAME DEFINITION
@@ -460,41 +538,14 @@ var game = {
 		canvasPosition = getElementPosition(document.getElementById("canvas"));
 		stage = new Stage(canvas);
 
-		function handleMouseMove(e) {
-			e.preventDefault();
-			mouseX = (e.clientX - canvasPosition.x) / 30;
-			mouseY = (e.clientY - canvasPosition.y) / 30;
-		};
-
-
 		if(CLICK_LISTENER) {
-			document.addEventListener("mousedown", function(e) {
-				isMouseDown = true;
-				handleMouseMove(e);
-				document.addEventListener("mousemove", handleMouseMove, true);
-			}, true);
-			 
-			document.addEventListener("mouseup", function() {
-				document.removeEventListener("mousemove", handleMouseMove, true);
-				isMouseDown = false;
-				mouseX = null;
-				mouseY = null;
-			}, true);
+			document.addEventListener("mousedown", handleMouseDown, true);
+			document.addEventListener("mouseup", handleMouseUp, true);
 		}
 
 		if(TOUCH_LISTENER) {
-			document.addEventListener("touchstart", function(e) {
-				isMouseDown = true;
-				handleMouseMove(e);
-				document.addEventListener("touchmove", handleMouseMove, true);
-			}, true);
-			 
-			document.addEventListener("touchend", function() {
-				document.removeEventListener("touchmove", handleMouseMove, true);
-				isMouseDown = false;
-				mouseX = null;
-				mouseY = null;
-			}, true);
+			document.addEventListener("touchstart", handleTouchStart, true);
+			document.addEventListener("touchend", handleTouchEnd, true);
 		}
 
 
@@ -624,11 +675,11 @@ init = function() {
 function tick() {
 	if(cancel) return;
 	else {
-		var body = getBodyAtMouse();
+		var b = getBodyAtMouse();
 
-		if(body) {
-			var type = body.GetUserData();
-			if(
+		if(b) {
+			var type = b.GetUserData();
+			if( mouseX && mouseY &&
 				isMouseDown &&
 				(!mouseJoint) &&
 				( (type === 1 && other_player == 2) || (type === 2 && other_player == 1) || alone)
@@ -636,12 +687,12 @@ function tick() {
 				var md = new b2MouseJointDef();
 
 				md.bodyA = world.GetGroundBody();
-				md.bodyB = body;
+				md.bodyB = b;
 				md.target.Set(mouseX, mouseY);
 				md.collideConnected = true;
-				md.maxForce = 300.0 * body.GetMass();
+				md.maxForce = 300.0 * b.GetMass();
 				mouseJoint = world.CreateJoint(md);
-				body.SetAwake(true);
+				b.SetAwake(true);
 		   }
 		
 		}
@@ -656,17 +707,18 @@ function tick() {
 		}
 
 		world.Step(1 / 60, 10, 10);
-		world.DrawDebugData();
+		//world.DrawDebugData();
 		world.ClearForces();
 
 		for (b = world.GetBodyList() ; b; b = b.GetNext()) {
 			var type = b.GetUserData();
-			var pos = b.GetPosition();
+			var pos = b.GetPosition();			
 
 			//ball
 			if (type === 0) {
 				ball_01.bitmap.x = pos.x * 30;
 				ball_01.bitmap.y = pos.y * 30;
+				ball_01.bitmap.rotation = b.GetAngle()*57.2;
 
 				socket.emit('ball', {
 					x: pos.x,

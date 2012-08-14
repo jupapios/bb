@@ -313,6 +313,28 @@ section .popup input:focus {
   margin-left: -64px;
   margin-top: -250px;
 }
+.game .time {
+  color: #ff7600;
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  line-height: 1em;
+  font-size: 0;
+  margin-left: -75px;
+  margin-top: 0;
+  text-align: center;
+  -webkit-transition: all 300ms linear;
+  -moz-transition: all 300ms linear;
+  -o-transition: all 300ms linear;
+  -ms-transition: all 300ms linear;
+  transition: all 300ms linear;
+  width: 150px;
+  z-index: 99999;
+}
+.game .time.active {
+  font-size: 16em;
+  margin-top: -125px;
+}
 .game .permanent {
   display: none;
 }
@@ -357,7 +379,7 @@ section .popup input:focus {
   filter: alpha(opacity=50);
   pointer-events: none;
 }
-.game .no-active .alert {
+.game .no-active .alert-run {
   -webkit-animation: error 160ms linear 100ms 8 alternate;
   -moz-animation: error 160ms linear 100ms 8 alternate;
   -o-animation: error 160ms linear 100ms 8 alternate;
@@ -365,7 +387,22 @@ section .popup input:focus {
   animation: error 160ms linear 100ms 8 alternate;
   display: block;
 }
-.game .alert {
+.game .finished canvas {
+  opacity: 0.5;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
+  filter: alpha(opacity=50);
+  pointer-events: none;
+}
+.game .finished .alert-gameover {
+  -webkit-animation: error 160ms linear 100ms 8 alternate;
+  -moz-animation: error 160ms linear 100ms 8 alternate;
+  -o-animation: error 160ms linear 100ms 8 alternate;
+  -ms-animation: error 160ms linear 100ms 8 alternate;
+  animation: error 160ms linear 100ms 8 alternate;
+  display: block;
+}
+.game [class^="alert-"],
+.game [class*=" alert-"] {
   background-color: #ff7600;
   -webkit-border-radius: 4px;
   border-radius: 4px;
@@ -463,6 +500,7 @@ section .popup input:focus {
   opacity: 1;
   -ms-filter: none;
   filter: none;
+  pointer-events: all;
 }
 .profile .badges .badge .face {
   -webkit-box-sizing: border-box;
@@ -523,6 +561,7 @@ section .popup input:focus {
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   filter: alpha(opacity=0);
   z-index: 800;
+  pointer-events: none;
 }
 .profile .badges .badge .back img {
   margin-right: 5px;

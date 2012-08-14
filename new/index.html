@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<meta name="viewport" content="initial-scale=1.0,width=1024,user-scalable=no,target-densitydpi=device-dpi" />
+	<!--<meta name="viewport" content="initial-scale=1.0,width=1024,user-scalable=no" />-->
 	<title>caju</title>
 	<link href='css/normalize.css' rel='stylesheet'>
 	<link href='css/main.css' rel='stylesheet'>
@@ -150,14 +150,22 @@
 						<input type="text" placeholder="what's your name?" value="{{user}}">
 						<a class="button" href="javascript:;">save!</a>
 					</div>
-				</div>				
+				</div>
 			</section>
 		</script>
 
 		<script id="section-game" type="text/x-handlebars-template">
 			<section>
-				<div class="alert popup">
+				<h1 id="time-1" class="time">1</h1>
+				<h1 id="time-2" class="time">2</h1>
+				<h1 id="time-3" class="time">3</h1>
+				<div class="alert-run popup">
 					<p>your friend ran!</p>
+				</div>
+				<div class="alert-gameover popup">
+					<p><strong>Gameover</strong><br>
+					<span id="winner"></span>
+					</p>
 				</div>
 				<div class="user-stats player"><span id="scorePlayer">0</span><span>{{player}}</span></div>
 				<div class="user-stats enemy"><span id="scoreEnemy">0</span><span>{{enemy}}</span></div>
