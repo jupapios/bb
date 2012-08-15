@@ -37,8 +37,9 @@ var scorePlayer01 = 0, scorePlayer02 = 0;
 var enableScore = false;
 
 var bodyPly01, bodyPly02;
+var world;
 
- var world = new b2World(
+/* var world = new b2World(
 	   new b2Vec2(0, 0)    //gravity
 	,  false                 //allow sleep
  );
@@ -69,7 +70,7 @@ var bodyPly01, bodyPly02;
 
  bodyDef.position.Set((1024 + 310) / 30 + 1.8, 13);
  world.CreateBody(bodyDef).CreateFixture(fixDef);
- 
+ */
 
  // helpers
 
@@ -243,6 +244,7 @@ function handleTouchEnd(e) {
 
 
 function finishedHandleImage () {
+	console.log(loadedImages, TOTAL_IMAGES);
 	if(loadedImages == TOTAL_IMAGES) {
 
 		stage.snapPixelsEnabled = true;
@@ -258,6 +260,7 @@ function finishedHandleImage () {
 		stage.enableMouseOver(10);
 		//stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
 		stage.addChild(stageContainer);
+		cancel = false;
 
 		setTimeout(function () {
 			//containerMain.addClass("finished");*
@@ -299,7 +302,7 @@ function finishedHandleImage () {
 					},1000);
 				},1000);
 			},1000);
-		}, 1000 * 3); // 10 sec
+		}, 1000 * 60 * 2); // 2 minutes
 	}
 }
 // GAME DEFINITION
@@ -349,6 +352,7 @@ var game = {
 	},
 
 	playAlone: function () {
+		containerMain.removeClass("finished");
 		console.log("CALLED PLAY ALONE");
 		other_player = 2;
 		alone = true;
@@ -364,39 +368,40 @@ var game = {
 
 			var mainMenu = containerMain.querySelectorAll("nav li");
 
-			if(TOUCH_LISTENER) {
-				mainMenu[0].addEventListener('touch', function () {
+			function handleMenuBadges() {
 					document.querySelector('.options').style.display = 'none';
 					this.parentElement.querySelector('li:nth-child(2)').removeClass('active');
 					this.addClass('active');
 					document.querySelector('.badges').removeClass('to-left');
-				});
-				mainMenu[1].addEventListener('touch', function () {
-					this.parentElement.querySelector('li:nth-child(1)').removeClass('active');
+			}
+
+			function handleMenuOptions() {
+					this.parentElement.querySelectorAll('li').removeClass('active');
 					this.addClass('active');
 					document.querySelector('.badges').addClass('to-left');
 					setTimeout(function () {
 						document.querySelector('.options').style.display = 'inline-block';
 					}, 300);
-				});
+			}
+
+			function handleMenuGoBack() {
+				this.parentElement.querySelectorAll('li').removeClass('active');
+				this.addClass('active');
+				init();
+				
+			}
+
+			if(TOUCH_LISTENER) {
+				mainMenu[0].addEventListener('touch', handleMenuBadges);
+				mainMenu[1].addEventListener('touch', handleMenuOptions);
+				mainMenu[2].addEventListener('touch', handleMenuGoBack);
 			}
 
 
 			if(CLICK_LISTENER) {
-				mainMenu[0].addEventListener('click', function () {
-					document.querySelector('.options').style.display = 'none';
-					this.parentElement.querySelector('li:nth-child(2)').removeClass('active');
-					this.addClass('active');
-					document.querySelector('.badges').removeClass('to-left');
-				});
-				mainMenu[1].addEventListener('click', function () {
-					this.parentElement.querySelector('li:nth-child(1)').removeClass('active');
-					this.addClass('active');
-					document.querySelector('.badges').addClass('to-left');
-					setTimeout(function () {
-						document.querySelector('.options').style.display = 'inline-block';
-					}, 300);
-				});
+				mainMenu[0].addEventListener('click', handleMenuBadges);
+				mainMenu[1].addEventListener('click', handleMenuOptions);
+				mainMenu[2].addEventListener('click', handleMenuGoBack);
 			}						
 			var anchor = containerMain.querySelector('.options a');
 
@@ -465,10 +470,70 @@ var game = {
 	},
 
 	start: function (enemy) {
+		loadedImages = 0;
+		scorePlayer01 = 0;
+		scorePlayer02 = 0;
+
+
+		world = new b2World(
+			   new b2Vec2(0, 0)    //gravity
+			,  false                 //allow sleep
+		);
+		 
+		var fixDef = new b2FixtureDef;
+		fixDef.density = 1.0;
+		fixDef.friction = 0.5;
+		fixDef.restitution = 0.9;
+		 
+		var bodyDef = new b2BodyDef;
+		 
+		//create ground
+		bodyDef.type = b2Body.b2_staticBody;
+		fixDef.shape = new b2PolygonShape;
+		fixDef.shape.SetAsBox(30, 2);
+
+		bodyDef.position.Set(10, 600 / 30 + 1.8);
+		world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+		bodyDef.position.Set(10, -1.8);
+		world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+
+		fixDef.shape.SetAsBox(2, 14);    
+
+		bodyDef.position.Set(-310 / 30, 13);
+		world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+		bodyDef.position.Set((1024 + 310) / 30 + 1.8, 13);
+		world.CreateBody(bodyDef).CreateFixture(fixDef);
+
 		//containerMain.innerHTML = templateGame({player:cajuUser});
 		containerMain.innerHTML = templateGame({player:cajuUser, enemy:enemy});
 		document.body.className = "game";
-		document.body.removeChild($('.ball'));
+		document.querySelector('.ball').style.display = 'none';
+
+		if(CLICK_LISTENER) {
+			document.removeEventListener("mousedown", handleMouseDown, true);
+			document.removeEventListener("mouseup", handleMouseUp, true);
+		}
+
+		if(TOUCH_LISTENER) {
+			document.removeEventListener("touchstart", handleTouchStart, true);
+			document.removeEventListener("touchend", handleTouchEnd, true);
+		}		
+
+		var li = containerMain.querySelectorAll('li');
+
+		//Listener
+		if(TOUCH_LISTENER) {
+			li[0].addEventListener('touch', game.playAlone);
+			li[1].addEventListener('touch', init);
+		}
+
+		if(CLICK_LISTENER) {
+			li[0].addEventListener('click', game.playAlone);
+			li[1].addEventListener('click', init);
+		}
 
 		//Canvas work
 		canvas = $('#canvas');
@@ -521,22 +586,23 @@ var game = {
 		bodyDef.userData = 2;
 		bodyPly02 = world.CreateBody(bodyDef);
 		bodyPly02.CreateFixture(fixDef);
-		//bodyPly02.SetLinearVelocity(new b2Vec2(-3,0));
+		bodyPly02.SetLinearVelocity(new b2Vec2(-10,0));
 		// END PLAYER02
 
 
-		/*var debugDraw = new b2DebugDraw();
+		var debugDraw = new b2DebugDraw();
 		debugDraw.SetSprite(debugContext);
 		debugDraw.SetDrawScale(30.0);
 		debugDraw.SetFillAlpha(0.5);
 		debugDraw.SetLineThickness(1.0);
 		debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-		world.SetDebugDraw(debugDraw);*/
+		world.SetDebugDraw(debugDraw);
 
 
 
 		canvasPosition = getElementPosition(document.getElementById("canvas"));
 		stage = new Stage(canvas);
+		stageContainer = new Container();
 
 		if(CLICK_LISTENER) {
 			document.addEventListener("mousedown", handleMouseDown, true);
@@ -548,7 +614,11 @@ var game = {
 			document.addEventListener("touchend", handleTouchEnd, true);
 		}
 
+		console.log("PRE LOAD IMAGES");
 
+		ball_01 = new Image();
+		player_01 = new Image();
+		player_02 = new Image();
 		// BALL
 		ball_01.onload = function (event) {
 			var image = event.target;
@@ -601,6 +671,8 @@ init = function() {
 
 	setTimeout(function () {
 		del(containerMain, function () {
+			// show the ball
+			document.querySelector('.ball').style.display = '';
 
 			if(cajuUser) { // rendering intro section
 				containerMain.innerHTML = template();
@@ -707,7 +779,7 @@ function tick() {
 		}
 
 		world.Step(1 / 60, 10, 10);
-		//world.DrawDebugData();
+		world.DrawDebugData();
 		world.ClearForces();
 
 		for (b = world.GetBodyList() ; b; b = b.GetNext()) {
@@ -722,7 +794,8 @@ function tick() {
 
 				socket.emit('ball', {
 					x: pos.x,
-					y: pos.y
+					y: pos.y,
+					rotation: b.GetAngle()
 				});
 
 				if(ball_01.bitmap.x > 4 && ball_01.bitmap.x < 1020) {
@@ -747,6 +820,9 @@ function tick() {
 				} else {
 					player_01.bitmap.x = pos.x * 30;
 				}
+				if(other_player === 2) {
+					socket.emit('move', {x:player_01.bitmap.x/30, y:player_01.bitmap.y/30});
+				}
 		   } else if(type === 2) {
 				player_02.bitmap.y = pos.y * 30;
 				if(pos.x*30 > 124) {
@@ -754,6 +830,9 @@ function tick() {
 					bodyPly02.SetPosition(new b2Vec2(player_02.bitmap.x/30, player_02.bitmap.y/30));
 				} else {
 					player_02.bitmap.x = pos.x * 30;
+				}
+				if(other_player === 1) {
+					socket.emit('move', {x:player_02.bitmap.x/30, y:player_02.bitmap.y/30});
 				}
 		   }
 
@@ -889,29 +968,38 @@ function callbackInit() {
 		socket.on('move', function (data) {
 			var x = data.x;
 			var y = data.y;
-			/*if(other_player === 1) {
-				if(x < 160) {
+			//console.log(data)
+			if(other_player === 2) {
+				console.log('')
+				/*if(x < 160) {
 					player_02.bitmap.x = x;
 				} else {
 					x = player_02.bitmap.x;
-				}
-				player_02.bitmap.y = y;
+				}*/
+				/*player_01.bitmap.x = x*30;
+				player_01.bitmap.y = y*30;*/
+				bodyPly02.SetPosition(new b2Vec2(x, y));
 				//bodyPly02.SetPosition(new b2Vec2(x/30,y/30));
 			} else {
-				if(x > 864) {
+				/*if(x > 864) {
 					player_01.bitmap.x = x;
 				} else {
 					x = player_01.bitmap.x;
-				}
-				player_01.bitmap.y = y;
+				}*/
+				/*player_02.bitmap.x = x*30;
+				player_02.bitmap.y = y*30;
+				*/
+				bodyPly01.SetPosition(new b2Vec2(x, y));
 				//bodyPly01.SetPosition(new b2Vec2(x/30,y/30));
-			}*/
+			}
+
 			update = true;
 		});
 
 		socket.on('ball', function (data) {
 			ball_01.bitmap.x = data.x*30;
 			ball_01.bitmap.y = data.y*30;
+			ball_01.bitmap.rotation = data.rotation*57.2;
 		});
 
 

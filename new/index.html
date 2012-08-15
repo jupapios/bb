@@ -126,6 +126,8 @@
 					<ul>
 						<li class="active">my badges</li>
 						<li>options</li>
+						<!--<li>stats</li>-->
+						<li>go back</li>
 					</ul>
 				</nav>
 				<div class="badges">
@@ -166,11 +168,15 @@
 					<p><strong>Gameover</strong><br>
 					<span id="winner"></span>
 					</p>
+					<ul>
+						<li>new game</li>
+						<li>main menu</li>
+					</ul>
 				</div>
 				<div class="user-stats player"><span id="scorePlayer">0</span><span>{{player}}</span></div>
 				<div class="user-stats enemy"><span id="scoreEnemy">0</span><span>{{enemy}}</span></div>
 				<canvas id="canvas"></canvas>
-				<canvas id="debugCanvas" width="1024" height="600"></canvas>
+				<canvas id="debugCanvas" width="1024" height="600" style="position: absolute; z-index:9999;"></canvas>
 			</section>
 		</script>
 
