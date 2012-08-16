@@ -13,6 +13,13 @@ const CLICK_LISTENER = true;
 //const SOCKET_URL = "http://cajuws.juan.io:80";
 const SOCKET_URL = "http://192.168.1.21:5000";
 
+// audio files
+var bgAudio = document.getElementById("bgAudio");
+var audio01 = document.getElementById("audio01");
+var audio02 = document.getElementById("audio02");
+var audio03 = document.getElementById("audio03");
+var audio04 = document.getElementById("audio04");
+
 var connection_ready = false;
 
 var alone = false;
@@ -75,31 +82,59 @@ var world;
  // helpers
 
  var mouseX, mouseY, mousePVec, isMouseDown, selectedBody, mouseJoint, canvasPosition;
+
+ var mouseXLeft, mouseYLeft, mouseXRight, mouseYRight, mouseJointLeft, mouseJointRight, isMouseDownLeft, isMouseDownRight;
+ var selectedBodyLeft, selectedBodyRight;
  
 
-function getBodyAtMouse() {
-	mousePVec = new b2Vec2(mouseX, mouseY);
+function getBodyAtMouseRight() {
 	var aabb = new b2AABB();
-	aabb.lowerBound.Set(mouseX - 0.001, mouseY - 0.001);
-	aabb.upperBound.Set(mouseX + 0.001, mouseY + 0.001);
+	mousePVec = new b2Vec2(mouseXRight, mouseYRight);
+	aabb.lowerBound.Set(mouseXRight - 0.001, mouseYRight - 0.001);
+	aabb.upperBound.Set(mouseXRight + 0.001, mouseYRight + 0.001);
 
 	// Query the world for overlapping shapes.
 
-	selectedBody = null;
-	world.QueryAABB(getBodyCB, aabb);
-	return selectedBody;
+	selectedBodyRight = null;
+	world.QueryAABB(getBodyCBRight, aabb);
+	return selectedBodyRight;
 }
 
-function getBodyCB(fixture) {
+
+function getBodyAtMouseLeft() {
+	var aabb = new b2AABB();
+	mousePVec = new b2Vec2(mouseXLeft, mouseYLeft);
+	aabb.lowerBound.Set(mouseXLeft - 0.001, mouseYLeft - 0.001);
+	aabb.upperBound.Set(mouseXLeft + 0.001, mouseYLeft + 0.001);
+
+	// Query the world for overlapping shapes.
+
+	selectedBodyLeft = null;
+	world.QueryAABB(getBodyCBLeft, aabb);
+	return selectedBodyLeft
+}
+
+
+function getBodyCBLeft(fixture) {
 	if(fixture.GetBody().GetType() != b2Body.b2_staticBody) {
 	   if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), mousePVec)) {
-		  selectedBody = fixture.GetBody();
+		  selectedBodyLeft = fixture.GetBody();
 		  return false;
 	   }
 	}
 	return true;
 }
 
+
+function getBodyCBRight(fixture) {
+	if(fixture.GetBody().GetType() != b2Body.b2_staticBody) {
+	   if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), mousePVec)) {
+		  selectedBodyRight = fixture.GetBody();
+		  return false;
+	   }
+	}
+	return true;
+}
 
 //http://js-tut.aardon.de/js-tut/tutorial/position.html
 function getElementPosition(element) {
@@ -153,6 +188,17 @@ var stageContainer = new Container();
 
 // Data from localStorage
 var cajuUser = DB.get("caju_name");
+var cajuBadges = Badges.getAll();
+
+// Data from localStorage
+var cajuMusic = DB.get("caju_music");
+if(!cajuMusic) {
+	DB.save("caju_music", 1);
+	cajuMusic = 1;
+	bgAudio.play();
+} else if(cajuMusic == 1) {
+	bgAudio.play();	
+} 
 var cajuBadges = Badges.getAll();
 
 // Templates
@@ -224,22 +270,110 @@ function handleMouseUp(e) {
 
 function handleTouchMove(e) {
 	e.preventDefault();
+	/*for(var i=0; i<e.touches.length; i++) {
+		if(e.touches[i].pageX > 5012) {
+			mouseX01 = (e.touches[i].pageX - canvasPosition.x) / 30;
+			mouseY01 = (e.touches[i].pageY - canvasPosition.y) / 30;		
+		} else {
+			mouseX02 = (e.touches[i].pageX - canvasPosition.x) / 30;
+			mouseY02 = (e.touches[i].pageY - canvasPosition.y) / 30;			
+		}
+	}*/
 	mouseX = (e.touches[0].pageX - canvasPosition.x) / 30;
 	mouseY = (e.touches[0].pageY - canvasPosition.y) / 30;
+	
 }
 
 function handleTouchStart(e) {
 	isMouseDown = true;
-	handleMouseMove(e);
-	document.addEventListener("touchmove", handleTouch, true);
+	handleTouchMove(e);
+	document.addEventListener("touchmove", handleTouchMove, true);
 }
 
 function handleTouchEnd(e) {
-	document.removeEventListener("touchmove", handleTouch, true);
+	document.removeEventListener("touchmove", handleTouchMove, true);
 	isMouseDown = false;
 	mouseX = null;
 	mouseY = null;
 }
+
+function handleTouchMoveLeft(e) {
+	e.preventDefault();
+	for(var i=0; i<e.touches.length; i++) {
+		if(e.touches[i].pageX < 512) {
+			console.log('hi');
+			mouseXLeft = (e.touches[i].pageX - canvasPosition.x) / 30;
+			mouseYLeft = (e.touches[i].pageY - canvasPosition.y) / 30;
+			/*mouseX = (e.touches[0].pageX - canvasPosition.x) / 30;
+			mouseY = (e.touches[0].pageY - canvasPosition.y) / 30;		*/
+		}
+	}
+}
+
+function handleTouchMoveRight(e) {
+	e.preventDefault();
+	for(var i=0; i<e.touches.length; i++) {
+		if(e.touches[i].pageX > 512) {
+			console.log('hi');
+			mouseXRight = (e.touches[i].pageX - canvasPosition.x) / 30;
+			mouseYRight = (e.touches[i].pageY - canvasPosition.y) / 30;
+			/*mouseX = (e.touches[0].pageX - canvasPosition.x) / 30;
+			mouseY = (e.touches[0].pageY - canvasPosition.y) / 30;		*/
+		}
+	}
+}
+
+function handleTouchStartLeft(e) {
+	isMouseDownLeft = true;
+	handleTouchMoveLeft(e);
+	document.getElementById('handleLeft').addEventListener("touchmove", handleTouchMoveLeft, true);
+}
+
+function handleTouchEndLeft(e) {
+	document.getElementById('handleLeft').removeEventListener("touchmove", handleTouchMoveLeft, true);
+	isMouseDownLeft = false;
+	mouseXLeft = null;
+	mouseYLeft = null;
+	/*mouseX = null;
+	mouseY = null;*/	
+}
+
+function handleTouchStartRight(e) {
+	isMouseDownRight = true;
+	handleTouchMoveRight(e);
+	document.getElementById('handleRight').addEventListener("touchmove", handleTouchMoveRight, true);
+}
+
+function handleTouchEndRight(e) {
+	document.getElementById('handleRight').removeEventListener("touchmove", handleTouchMoveRight, true);
+	isMouseDownRight = false;
+	mouseXRight = null;
+	mouseYRight = null;
+	/*mouseX = null;
+	mouseY = null;	*/	
+}
+
+
+
+// open browser bb
+function openBrowser(url) {
+	try {
+		var args = new blackberry.invoke.BrowserArguments(url);
+		blackberry.invoke.invoke(blackberry.invoke.APP_BROWSER, args);
+	} catch (e) {
+		//debug.log("openBrowser", e, debug.exception);
+		console.log('GOTO: ',url);
+	}
+}
+
+
+function handleMenuGoBack() {
+	this.parentElement.querySelectorAll('li').removeClass('active');
+	this.addClass('active');
+	init();
+	
+}
+
 
 
 
@@ -327,6 +461,16 @@ var game = {
 			containerMain.innerHTML = templateJoin();
 			document.body.className = "join";
 
+			var goBack = containerMain.querySelector('.go-back');
+
+			if(TOUCH_LISTENER) {
+				goBack.addEventListener('touch', handleMenuGoBack);
+			}
+
+			if(CLICK_LISTENER) {
+				goBack.addEventListener('click', handleMenuGoBack);
+			}
+
 			var anchor = containerMain.querySelector('a');
 
 			function joinGame () {
@@ -363,10 +507,45 @@ var game = {
 		del(containerMain, function () {
 			containerMain.innerHTML = templateProfile({
 				user: cajuUser,
-				badges: cajuBadges
+				badges: cajuBadges,
+				music: function () {
+					if(cajuMusic == 1) {
+						return true;
+					} else {
+						return false;
+					}
+				}
 			});
 
+			//!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="http://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+
 			var mainMenu = containerMain.querySelectorAll("nav li");
+
+			var tweetButtons = containerMain.querySelectorAll(".tweet-button");
+
+			var musicButton = containerMain.querySelector(".music-button");
+
+			musicButton.addEventListener('click', function () {
+				if(cajuMusic == 1) {
+					DB.save('caju_music', -1);
+					cajuMusic = -1;
+					bgAudio.pause();
+					this.innerText = 'active music';
+				} else {
+					DB.save('caju_music', 1);
+					cajuMusic = 1;
+					bgAudio.play();
+					this.innerText = 'disable music';
+				}
+			});
+
+			for(var i=0; i<tweetButtons.length; i++) {
+				tweetButtons[i].addEventListener('click', function (e) {
+					e.preventDefault();
+					if (e.stopPropagation) e.stopPropagation();
+					openBrowser(this.getAttribute('href'));
+				});
+			}
 
 			function handleMenuBadges() {
 					document.querySelector('.options').style.display = 'none';
@@ -382,13 +561,6 @@ var game = {
 					setTimeout(function () {
 						document.querySelector('.options').style.display = 'inline-block';
 					}, 300);
-			}
-
-			function handleMenuGoBack() {
-				this.parentElement.querySelectorAll('li').removeClass('active');
-				this.addClass('active');
-				init();
-				
 			}
 
 			if(TOUCH_LISTENER) {
@@ -470,6 +642,14 @@ var game = {
 	},
 
 	start: function (enemy) {
+
+		//
+		//bgAudio.volume -= 0.9;
+
+		bgAudio.addEventListener('ended', function(){
+			this.currentTime = 0;
+		}, false);
+
 		loadedImages = 0;
 		scorePlayer01 = 0;
 		scorePlayer02 = 0;
@@ -586,18 +766,17 @@ var game = {
 		bodyDef.userData = 2;
 		bodyPly02 = world.CreateBody(bodyDef);
 		bodyPly02.CreateFixture(fixDef);
-		bodyPly02.SetLinearVelocity(new b2Vec2(-10,0));
+		//bodyPly02.SetLinearVelocity(new b2Vec2(-10,0));
 		// END PLAYER02
 
 
-		var debugDraw = new b2DebugDraw();
+		/*var debugDraw = new b2DebugDraw();
 		debugDraw.SetSprite(debugContext);
 		debugDraw.SetDrawScale(30.0);
 		debugDraw.SetFillAlpha(0.5);
 		debugDraw.SetLineThickness(1.0);
 		debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-		world.SetDebugDraw(debugDraw);
-
+		world.SetDebugDraw(debugDraw);*/
 
 
 		canvasPosition = getElementPosition(document.getElementById("canvas"));
@@ -610,8 +789,13 @@ var game = {
 		}
 
 		if(TOUCH_LISTENER) {
-			document.addEventListener("touchstart", handleTouchStart, true);
-			document.addEventListener("touchend", handleTouchEnd, true);
+			/*document.addEventListener("touchstart", handleTouchStart, true);
+			document.addEventListener("touchend", handleTouchEnd, true);*/
+			document.getElementById('handleLeft').addEventListener('touchstart', handleTouchStartLeft, true);
+			document.getElementById('handleLeft').addEventListener('touchend', handleTouchEndLeft, true);
+
+			document.getElementById('handleRight').addEventListener('touchstart', handleTouchStartRight, true);
+			document.getElementById('handleRight').addEventListener('touchend', handleTouchEndRight, true);
 		}
 
 		console.log("PRE LOAD IMAGES");
@@ -747,39 +931,108 @@ init = function() {
 function tick() {
 	if(cancel) return;
 	else {
-		var b = getBodyAtMouse();
+		var bLeft = getBodyAtMouseLeft();
+		var bRight = getBodyAtMouseRight();
 
-		if(b) {
-			var type = b.GetUserData();
-			if( mouseX && mouseY &&
+		if(bLeft) {
+			var typeLeft = bLeft.GetUserData();
+
+			if(isMouseDownLeft && !mouseJointLeft) {
+				var md = new b2MouseJointDef();
+				md.bodyA = world.GetGroundBody();
+				md.bodyB = bLeft;
+				md.target.Set(mouseXLeft, mouseYLeft);
+				//console.log('b: player 2');
+				md.collideConnected = true;
+				md.maxForce = 300.0 * bLeft.GetMass();
+				mouseJointLeft = world.CreateJoint(md);
+				bLeft.SetAwake(true);			
+			}
+		}
+
+		if(mouseJointLeft) {
+			if(isMouseDownLeft) {
+				mouseJointLeft.SetTarget(new b2Vec2(mouseXLeft, mouseYLeft));
+			} else {
+				world.DestroyJoint(mouseJointLeft);
+				mouseJointLeft = null;
+			}
+		}
+
+		if(bRight) {
+			var typeRight = bRight.GetUserData();
+
+			if(isMouseDownRight && !mouseJointRight) {
+				var md = new b2MouseJointDef();
+				md.bodyA = world.GetGroundBody();
+				md.bodyB = bRight;
+				md.target.Set(mouseXRight, mouseYRight);
+				//console.log('b: player 2');
+				md.collideConnected = true;
+				md.maxForce = 300.0 * bRight.GetMass();
+				mouseJointRight = world.CreateJoint(md);
+				bRight.SetAwake(true);			
+			}
+		}
+
+		if(mouseJointRight) {
+			if(isMouseDownRight) {
+				mouseJointRight.SetTarget(new b2Vec2(mouseXRight, mouseYRight));
+			} else {
+				world.DestroyJoint(mouseJointRight);
+				mouseJointRight = null;
+			}
+		}		
+
+		/*if(bLeft || bRight) {
+			var typeLeft = bLeft.GetUserData();
+			var typeRight = bRight.GetUserData();
+			//console.log(type)
+			if( typeLeft !== 0 && typeLeft !== 0 &&
 				isMouseDown &&
-				(!mouseJoint) &&
-				( (type === 1 && other_player == 2) || (type === 2 && other_player == 1) || alone)
+				!mouseJoint
 			) {
 				var md = new b2MouseJointDef();
 
 				md.bodyA = world.GetGroundBody();
-				md.bodyB = b;
-				md.target.Set(mouseX, mouseY);
-				md.collideConnected = true;
-				md.maxForce = 300.0 * b.GetMass();
-				mouseJoint = world.CreateJoint(md);
-				b.SetAwake(true);
+				if(bRight && mouseXRight && mouseYRight) {
+					md.bodyB = bRight;
+					md.target.Set(mouseXRight, mouseYRight);
+					console.log('b: player 1');
+					md.collideConnected = true;
+					md.maxForce = 300.0 * bRight.GetMass();
+					mouseJoint = world.CreateJoint(md);
+					bRight.SetAwake(true);
+				} else if(bLeft && mouseXLeft && mouseYLeft) {
+					md.bodyB = bLeft;
+					md.target.Set(mouseXLeft, mouseYLeft);
+					console.log('b: player 2');
+					md.collideConnected = true;
+					md.maxForce = 300.0 * bLeft.GetMass();
+					mouseJoint = world.CreateJoint(md);
+					bLeft.SetAwake(true);
+				}
+				//md.target.Set(mouseX, mouseY);
 		   }
 		
-		}
+		}*/
 		
-		if(mouseJoint) {
+		/*if(mouseJoint) {
 			if(isMouseDown) {
-				mouseJoint.SetTarget(new b2Vec2(mouseX, mouseY));
+				if(other_player === 1){
+					mouseJoint.SetTarget(new b2Vec2(mouseXLeft, mouseYLeft));	
+				} else {
+					mouseJoint.SetTarget(new b2Vec2(mouseXRight, mouseYRight));
+				}
+				//mouseJoint.SetTarget(new b2Vec2(mouseX, mouseY));
 			} else {
 				world.DestroyJoint(mouseJoint);
 				mouseJoint = null;
 			}
-		}
+		}*/
 
 		world.Step(1 / 60, 10, 10);
-		world.DrawDebugData();
+		//world.DrawDebugData();
 		world.ClearForces();
 
 		for (b = world.GetBodyList() ; b; b = b.GetNext()) {

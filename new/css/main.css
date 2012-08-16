@@ -7,6 +7,7 @@
 body {
   margin: 0;
   font-family: 'Quicksand', sans-serif;
+  font-size: 16px;
   -webkit-transition: background-color 800ms linear;
   -moz-transition: background-color 800ms linear;
   -o-transition: background-color 800ms linear;
@@ -18,6 +19,9 @@ body.no-select {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+input {
+  font-family: 'Quicksand', sans-serif;
 }
 section .popup {
   left: 50%;
@@ -43,8 +47,18 @@ section .popup .button {
   display: block;
   float: right;
 }
+section .popup .go-back {
+  color: #fff;
+  float: right;
+  margin-bottom: 9px;
+  text-decoration: underline;
+}
 section .popup input {
   border: 1px solid transparent;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
   padding: 10px 15px;
   -webkit-transition: box-shadow 300ms linear;
   -moz-transition: box-shadow 300ms linear;
@@ -97,6 +111,14 @@ section .popup input:focus {
   transition: box-shadow 800ms linear;
   width: 40px;
   z-index: 9999;
+}
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
 }
 @-moz-keyframes error {
   0% {
@@ -201,29 +223,47 @@ section .popup input:focus {
   text-decoration: underline;
 }
 .intro nav {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  left: 50%;
   position: absolute;
-  margin-top: -4em;
+  margin-top: -56px;
+  margin-left: -120px;
   top: 50%;
   text-align: center;
-  width: 100%;
+  width: 240px;
 }
 .intro ul {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   color: #fff;
   list-style: none;
   font-size: 2.5em;
+  margin-bottom: 35px;
   text-align: center;
 }
 .intro ul li {
   border-bottom: 1px solid;
-  display: inline-block;
-  margin: 0 20px;
   line-height: 48px;
 }
+.intro ul li:first-child {
+  margin-left: 0;
+  float: left;
+}
+.intro ul li:last-child {
+  margin-right: 0;
+  float: right;
+}
 .intro .other {
-  margin-top: 3em;
-  color: rgba(255,255,255,0.6);
-  border-bottom: 1px solid;
-  display: inline-block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  text-decoration: underline;
+  margin-left: 30px;
 }
 .intro .ball {
   -webkit-box-shadow: 0 0 0 4px #ff7600, 0 0 0 8px #d8ffb4;
@@ -313,6 +353,13 @@ section .popup input:focus {
   margin-left: -64px;
   margin-top: -250px;
 }
+.game .handle {
+  position: absolute;
+  top: 0;
+  width: 512px;
+  height: 600px;
+  z-index: 99999;
+}
 .game .time {
   color: #ff7600;
   top: 50%;
@@ -329,7 +376,7 @@ section .popup input:focus {
   -ms-transition: all 3 0ms linear;
   transition: all 3 0ms linear;
   width: 150px;
-  z-index: 99999;
+  z-index: 99998;
 }
 .game .time.active {
   font-size: 16em;
@@ -450,6 +497,15 @@ section .popup input:focus {
 .profile nav li.active {
   text-decoration: none;
 }
+.profile .tweet-button {
+  background: url("../img/social/twitter.png");
+  display: block;
+  height: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 4px;
+  width: 59px;
+}
 .profile .options {
   display: none;
 }
@@ -524,6 +580,10 @@ section .popup input:focus {
   -o-transform-style: preserve-3d;
   -ms-transform-style: preserve-3d;
   transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  backface-visibility: hidden;
   -webkit-transition: all 0.4s ease-in-out;
   -moz-transition: all 0.4s ease-in-out;
   -o-transition: all 0.4s ease-in-out;
@@ -555,7 +615,7 @@ section .popup input:focus {
   background-color: rgba(0,0,0,0.6);
   -webkit-border-radius: 110px;
   border-radius: 110px;
-  padding: 0 30px;
+  padding: 0 10px;
   padding-top: 36px;
   height: 218px;
   width: 218px;
@@ -568,6 +628,7 @@ section .popup input:focus {
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   filter: alpha(opacity=0);
   z-index: 800;
+  text-align: center;
   pointer-events: none;
 }
 .profile .badges .badge .back img {
@@ -580,7 +641,6 @@ section .popup input:focus {
   text-transform: uppercase;
 }
 .profile .badges .badge .back p {
-  font-family: Arial;
   font-size: 0.95em;
 }
 .profile .badges .badge .back a,

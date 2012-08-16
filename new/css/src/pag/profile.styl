@@ -21,6 +21,15 @@
 			&.active
 				text-decoration none
 
+	.tweet-button
+		background url("../img/social/twitter.png")
+		display block
+		height 20px
+		margin-left auto
+		margin-right auto
+		margin-top 4px
+		width 59px
+
 	.options
 		display none
 		//position relative
@@ -67,7 +76,7 @@
 				height inherit
 				//border 1px solid #ccc
 				transform-style preserve-3d
-				//backface-visibility hidden
+				backface-visibility hidden
 				transition all .4s ease-in-out
 
 				ul
@@ -99,13 +108,14 @@
 				//border 1px solid rgba(255,255,255,.2)
 				//box-shadow 2px 2px 5px rgba(0,0,0,0.4)
 				border-radius 110px
-				padding 0 30px
+				padding 0 10px
 				padding-top 36px
 				height 218px
 				width 218px
 				transform rotateY(180deg)
 				opacity 0
 				z-index 800
+				text-align center
 				pointer-events none
 
 				img
@@ -117,7 +127,7 @@
 					text-transform uppercase
 
 				p
-					font-family Arial
+					//font-family Arial
 					font-size .95em
 
 				a

@@ -1,10 +1,15 @@
 body
 	margin 0
 	font-family font-1
+	font-size 16px
 	transition background-color 800ms linear
 
 	&.no-select
 		user-select none
+
+
+input
+	font-family font-1
 
 section
 	.popup
@@ -26,12 +31,21 @@ section
 			display block
 			float right
 
+
+		.go-back
+			color white
+			float right
+			margin-bottom 9px
+			text-decoration underline
+
 		input
 			border 1px solid transparent
+			box-sizing border-box
 			//box-shadow 0 0 5px color-base-3
 			//border 1px solid color-base-1
 			//box-shadow 0 0 5px color-base-1
 			//border-radius 4px
+			width 100%
 			padding 10px 15px
 			transition box-shadow 300ms linear
 
@@ -68,3 +82,11 @@ section
 	transition box-shadow 800ms linear
 	width @height
 	z-index 9999
+
+.clearfix:before
+.clearfix:after
+	content ""
+	display table
+
+.clearfix:after
+	clear both

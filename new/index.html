@@ -61,125 +61,151 @@
 </head>
 <body class="caju">
 
-		<div class="ball" style="top:20px;left:20px;"></div>
+	<audio id="bgAudio" autobuffer>
+		<source src="audio/bgaudio.mp3" type="audio/mpeg">
+	</audio>
 
-		<div class="main" role="main">
-			<section class="caju">
-				<h1>caju</h1>
-			</section>
-		</div>
+	<audio id="audio01" autobuffer>
+		<source src="http://www.html5rocks.com/en/tutorials/audio/quick/test.mp3" type="audio/mpeg">
+	</audio>
 
-		<div class="permanent"></div>
+	<audio id="audio02" autobuffer>
+		<source src="http://www.html5rocks.com/en/tutorials/audio/quick/test.mp3" type="audio/mpeg">
+	</audio>
 
-		<script id="aside-user" type="text/x-handlebars-template">
-			<aside>
-				<div><img src="img/user4.png"><span>{{user}}</span></div>
-			</aside>
-		</script>
+	<audio id="audio03" autobuffer>
+		<source src="http://www.html5rocks.com/en/tutorials/audio/quick/test.mp3" type="audio/mpeg">
+	</audio>
 
-		<script id="section-welcome" type="text/x-handlebars-template">
-			<section>
-				<div class="popup">
-					<input type="text" placeholder="what's your name?">
-					<a class="button" href="javascript:;">continue!</a>
-				</div>
-			</section>
-		</script>
+	<audio id="audio04" autobuffer>
+		<source src="http://www.html5rocks.com/en/tutorials/audio/quick/test.mp3" type="audio/mpeg">
+	</audio>
 
-		<script id="section-intro" type="text/x-handlebars-template">
-			<section>
-				<nav>
-					<ul>
-						<li>Play</li>
-						<li>Join</li>
-					</ul>
-					<div class="other">I have my friend right here!</div>
-				</nav>
-			</section>
-		</script> 
+	<div class="ball" style="top:20px;left:20px;"></div>
 
-		<script id="section-join" type="text/x-handlebars-template">
-			<section>
-				<div class="popup">
-					<input type="text" placeholder="invitation">
-					<a class="button" href="javascript:;">continue!</a>
-				</div>
-			</section>
-		</script>
+	<div class="main" role="main">
+		<section class="caju">
+			<h1>caju</h1>
+		</section>
+	</div>
 
-		<script id="section-waiting" type="text/x-handlebars-template">
-			<section>
-				<div class="popup">
-					<p>waiting your friend</p>
-					<h2>{{id}}</h2>
-					<!--<a href="javascript:;">mail it</a>
-					<a href="javascript:;">tweet it</a>
-					<a href="javascript:;">face it</a>-->
-					<p>tell your friend use this number to join</p>
-				</div>
-			</section>
-		</script>
+	<div class="permanent"></div>
 
-		<script id="section-profile" type="text/x-handlebars-template">
-			<section>
-				<nav>
-					<ul>
-						<li class="active">my badges</li>
-						<li>options</li>
-						<!--<li>stats</li>-->
-						<li>go back</li>
-					</ul>
-				</nav>
-				<div class="badges">
-					{{#each badges}}
-					<div class="badge {{this}}" onclick="this.toggleClass('active')">
-						<div class="face front">
-							<img src="img/badges/{{this.id}}.png">
-							<!--<p>share</p>-->
-						</div>
-						<div class="face back">
-							<h2>{{this.title}}</h2>
-							<!--<p>{{this.description}}</p>-->
-							<a href="https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Flocalhost%3A8000%2F&amp;source=tweetbutton&amp;text=I%20won%20the%20Beta%20Tester%20badge%20playing%20caju%20game&amp;url=http%3A%2F%2Flocalhost%3A8000%2F" class="btn" id="b" target="_blank"><i></i><span class="label" id="l">Tweet</span></a>
-							<iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/tweet_button.html?text=I%20won%20the%20{{str this.title}}%20badge%20playing%20caju%20game" style="width:60px; height:62px;"></iframe>
-						</div>
+	<script id="aside-user" type="text/x-handlebars-template">
+		<aside>
+			<div><img src="img/user4.png"><span>{{user}}</span></div>
+		</aside>
+	</script>
+
+	<script id="section-welcome" type="text/x-handlebars-template">
+		<section>
+			<div class="popup">
+				<input type="text" placeholder="what's your name?">
+				<a class="button" href="javascript:;">continue!</a>
+			</div>
+		</section>
+	</script>
+
+	<script id="section-intro" type="text/x-handlebars-template">
+		<section>
+			<nav>
+				<ul>
+					<li>Play</li>
+					<li>Join</li>
+				</ul>
+				<div class="clearfix"></div>
+				<p class="other">my friend is right here!</p>
+			</nav>
+		</section>
+	</script> 
+
+	<script id="section-join" type="text/x-handlebars-template">
+		<section>
+			<div class="popup">
+				<span class="go-back">go back</span>
+				<input type="text" placeholder="invitation">
+				<a class="button" href="javascript:;">continue!</a>
+			</div>
+		</section>
+	</script>
+
+	<script id="section-waiting" type="text/x-handlebars-template">
+		<section>
+			<div class="popup">
+				<p>waiting your friend</p>
+				<h2>{{id}}</h2>
+				<!--<a href="javascript:;">mail it</a>
+				<a href="javascript:;">tweet it</a>
+				<a href="javascript:;">face it</a>-->
+				<p>tell your friend use this number to join</p>
+			</div>
+		</section>
+	</script>
+
+	<script id="section-profile" type="text/x-handlebars-template">
+		<section>
+			<nav>
+				<ul>
+					<li class="active">my badges</li>
+					<li>options</li>
+					<!--<li>stats</li>-->
+					<li>go back</li>
+				</ul>
+			</nav>
+			<div class="badges">
+				{{#each badges}}
+				<div class="badge {{this.id}}" onclick="this.toggleClass('active')">
+					<div class="face front">
+						<img src="img/badges/{{this.id}}.png">
+						<!--<p>share</p>-->
 					</div>
-					{{/each}}
-				</div>
-				<div class="options">
-					<div class="popup">
-						<p>change your name</p>
-						<input type="text" placeholder="what's your name?" value="{{user}}">
-						<a class="button" href="javascript:;">save!</a>
+					<div class="face back">
+						<h2>{{this.title}}</h2>
+						<p>{{this.description}}</p>
+						<a href="https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Flocalhost%3A8000%2F&amp;source=tweetbutton&amp;text=I%20won%20the%20{{str this.title}}%20badge%20playing%20caju%20game&amp;url=http%3A%2F%2Flocalhost%3A8000%2F" class="tweet-button" target="_blank"></a>
 					</div>
 				</div>
-			</section>
-		</script>
+				{{/each}}
+			</div>
+			<div class="options">
+				<div class="popup">
+					<p>change your name</p>
+					<input type="text" placeholder="what's your name?" value="{{user}}">
+					<a class="button" href="javascript:;">save!</a>
 
-		<script id="section-game" type="text/x-handlebars-template">
-			<section>
-				<h1 id="time-1" class="time">1</h1>
-				<h1 id="time-2" class="time">2</h1>
-				<h1 id="time-3" class="time">3</h1>
-				<div class="alert-run popup">
-					<p>your friend ran!</p>
+					<p>music</p>
+					<a class="button music-button" href="javascript:;">{{#if music}}disable music{{else}}active music{{/if}}</a>				
 				</div>
-				<div class="alert-gameover popup">
-					<p><strong>Gameover</strong><br>
-					<span id="winner"></span>
-					</p>
-					<ul>
-						<li>new game</li>
-						<li>main menu</li>
-					</ul>
-				</div>
-				<div class="user-stats player"><span id="scorePlayer">0</span><span>{{player}}</span></div>
-				<div class="user-stats enemy"><span id="scoreEnemy">0</span><span>{{enemy}}</span></div>
-				<canvas id="canvas"></canvas>
-				<canvas id="debugCanvas" width="1024" height="600" style="position: absolute; z-index:9999;"></canvas>
-			</section>
-		</script>
+			</div>
+		</section>
+	</script>
 
-		<script src="js/main.js"></script>
+	<script id="section-game" type="text/x-handlebars-template">
+		<section>
+			<h1 id="time-1" class="time">1</h1>
+			<h1 id="time-2" class="time">2</h1>
+			<h1 id="time-3" class="time">3</h1>
+			<div class="alert-run popup">
+				<p>your friend ran!</p>
+			</div>
+			<div class="alert-gameover popup">
+				<p><strong>Gameover</strong><br>
+				<span id="winner"></span>
+				</p>
+				<ul>
+					<li>new game</li>
+					<li>main menu</li>
+				</ul>
+			</div>
+			<div class="user-stats player"><span id="scorePlayer">0</span><span>{{player}}</span></div>
+			<div class="user-stats enemy"><span id="scoreEnemy">0</span><span>{{enemy}}</span></div>
+			<canvas id="canvas"></canvas>
+			<canvas id="debugCanvas" width="1024" height="600" style="position: absolute; z-index:9999;"></canvas>
+			<div id="handleLeft" class="handle" style="left:0;"></div>
+			<div id="handleRight" class="handle" style="left:512px;"></div>
+		</section>
+	</script>
+
+	<script src="js/main.js"></script>
 </body>
 </html>

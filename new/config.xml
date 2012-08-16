@@ -7,8 +7,6 @@
 
   <name>caju</name>
   
-  <access uri="*" subdomains="true"></access>
-  
   <description>Game test</description>
 
   <rim:orientation mode="landscape"/>
@@ -25,5 +23,12 @@
 
   <feature id="blackberry.ui.dialog"/>
   <feature id="blackberry.app.event"/>
-  <feature id="blackberry.invoke"/>
+  <feature id="blackberry.invoke" required="true"/>
+  <feature id="blackberry.invoke.BrowserArguments" required="true"/>
+  <feature id="blackberry.app.event" required="true"/>
+
+
+  <access subdomains="true" uri="*"/>
+  <access subdomains="true" uri="http://platform.twitter.com"/>
+  <access subdomains="true" uri="http://twitter.com"/>
 </widget>
