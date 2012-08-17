@@ -11,7 +11,7 @@ const TOUCH_LISTENER = true;
 const CLICK_LISTENER = true;
 
 //const SOCKET_URL = "http://cajuws.juan.io:80";
-const SOCKET_URL = "http://192.168.1.21:5000";
+const SOCKET_URL = "http://192.168.0.18:5000";
 
 // audio files
 var bgAudio = document.getElementById("bgAudio");
@@ -249,7 +249,7 @@ function handleImageLoad(event) {
 }
 
 
-function handleMouseMove(e) {
+/*function handleMouseMove(e) {
 	e.preventDefault();
 	mouseX = (e.clientX - canvasPosition.x) / 30;
 	mouseY = (e.clientY - canvasPosition.y) / 30;
@@ -266,19 +266,54 @@ function handleMouseUp(e) {
 	isMouseDown = false;
 	mouseX = null;
 	mouseY = null;
+}*/
+
+function handleMouseMoveLeft(e) {
+	e.preventDefault();
+	mouseXLeft = (e.clientX - canvasPosition.x) / 30;
+	mouseYLeft = (e.clientY - canvasPosition.y) / 30;
 }
 
-function handleTouchMove(e) {
+function handleMouseMoveRight(e) {
 	e.preventDefault();
-	/*for(var i=0; i<e.touches.length; i++) {
-		if(e.touches[i].pageX > 5012) {
-			mouseX01 = (e.touches[i].pageX - canvasPosition.x) / 30;
-			mouseY01 = (e.touches[i].pageY - canvasPosition.y) / 30;		
-		} else {
-			mouseX02 = (e.touches[i].pageX - canvasPosition.x) / 30;
-			mouseY02 = (e.touches[i].pageY - canvasPosition.y) / 30;			
-		}
-	}*/
+	mouseXRight = (e.clientX - canvasPosition.x) / 30;
+	mouseYRight = (e.clientY - canvasPosition.y) / 30;
+	console.log(mouseXRight, mouseYRight);
+}
+
+
+function handleMouseDownLeft(e) {
+	isMouseDownLeft = true;
+	handleMouseMoveLeft(e);
+	document.getElementById('handleLeft').addEventListener("mousemove", handleMouseMoveLeft, true);
+}
+
+function handleMouseUpLeft(e) {
+	document.getElementById('handleLeft').removeEventListener("mousemove", handleMouseMoveLeft, true);
+	isMouseDownLeft = false;
+	mouseXLeft = null;
+	mouseYLeft = null;
+	/*mouseX = null;
+	mouseY = null;*/	
+}
+
+function handleMouseDownRight(e) {
+	isMouseDownRight = true;
+	handleMouseMoveRight(e);
+	document.getElementById('handleRight').addEventListener("mousemove", handleMouseMoveRight, true);
+}
+
+function handleMouseUpRight(e) {
+	document.getElementById('handleRight').removeEventListener("mousemove", handleMouseMoveRight, true);
+	isMouseDownRight = false;
+	mouseXRight = null;
+	mouseYRight = null;
+	/*mouseX = null;
+	mouseY = null;	*/	
+}
+
+/*function handleTouchMove(e) {
+	e.preventDefault();
 	mouseX = (e.touches[0].pageX - canvasPosition.x) / 30;
 	mouseY = (e.touches[0].pageY - canvasPosition.y) / 30;
 	
@@ -295,7 +330,7 @@ function handleTouchEnd(e) {
 	isMouseDown = false;
 	mouseX = null;
 	mouseY = null;
-}
+}*/
 
 function handleTouchMoveLeft(e) {
 	e.preventDefault();
@@ -646,9 +681,9 @@ var game = {
 		//
 		//bgAudio.volume -= 0.9;
 
-		bgAudio.addEventListener('ended', function(){
+		/*bgAudio.addEventListener('ended', function(){
 			this.currentTime = 0;
-		}, false);
+		}, false);*/
 
 		loadedImages = 0;
 		scorePlayer01 = 0;
@@ -692,7 +727,7 @@ var game = {
 		document.body.className = "game";
 		document.querySelector('.ball').style.display = 'none';
 
-		if(CLICK_LISTENER) {
+		/*if(CLICK_LISTENER) {
 			document.removeEventListener("mousedown", handleMouseDown, true);
 			document.removeEventListener("mouseup", handleMouseUp, true);
 		}
@@ -700,7 +735,7 @@ var game = {
 		if(TOUCH_LISTENER) {
 			document.removeEventListener("touchstart", handleTouchStart, true);
 			document.removeEventListener("touchend", handleTouchEnd, true);
-		}		
+		}*/	
 
 		var li = containerMain.querySelectorAll('li');
 
@@ -784,8 +819,14 @@ var game = {
 		stageContainer = new Container();
 
 		if(CLICK_LISTENER) {
-			document.addEventListener("mousedown", handleMouseDown, true);
-			document.addEventListener("mouseup", handleMouseUp, true);
+			/*document.addEventListener("mousedown", handleMouseDown, true);
+			document.addEventListener("mouseup", handleMouseUp, true);*/
+
+			document.getElementById('handleLeft').addEventListener('mousedown', handleMouseDownLeft, true);
+			document.getElementById('handleLeft').addEventListener('mouseup', handleMouseUpLeft, true);
+
+			document.getElementById('handleRight').addEventListener('mousedown', handleMouseDownRight, true);
+			document.getElementById('handleRight').addEventListener('mouseup', handleMouseUpRight, true);			
 		}
 
 		if(TOUCH_LISTENER) {
@@ -946,7 +987,7 @@ function tick() {
 				md.collideConnected = true;
 				md.maxForce = 300.0 * bLeft.GetMass();
 				mouseJointLeft = world.CreateJoint(md);
-				bLeft.SetAwake(true);			
+				bLeft.SetAwake(true);
 			}
 		}
 
@@ -971,7 +1012,7 @@ function tick() {
 				md.collideConnected = true;
 				md.maxForce = 300.0 * bRight.GetMass();
 				mouseJointRight = world.CreateJoint(md);
-				bRight.SetAwake(true);			
+				bRight.SetAwake(true);
 			}
 		}
 
@@ -982,7 +1023,7 @@ function tick() {
 				world.DestroyJoint(mouseJointRight);
 				mouseJointRight = null;
 			}
-		}		
+		}
 
 		/*if(bLeft || bRight) {
 			var typeLeft = bLeft.GetUserData();
@@ -1013,7 +1054,7 @@ function tick() {
 					bLeft.SetAwake(true);
 				}
 				//md.target.Set(mouseX, mouseY);
-		   }
+			}
 		
 		}*/
 		
@@ -1037,7 +1078,7 @@ function tick() {
 
 		for (b = world.GetBodyList() ; b; b = b.GetNext()) {
 			var type = b.GetUserData();
-			var pos = b.GetPosition();			
+			var pos = b.GetPosition();
 
 			//ball
 			if (type === 0) {
@@ -1065,7 +1106,7 @@ function tick() {
 					}
 					enableScore = false;
 				}
-		   } else if(type === 1) {
+			} else if(type === 1) {
 				player_01.bitmap.y = pos.y * 30;
 				if(pos.x*30 < 900) {
 					bodyPly01.SetAwake(false);
@@ -1076,7 +1117,7 @@ function tick() {
 				if(other_player === 2) {
 					socket.emit('move', {x:player_01.bitmap.x/30, y:player_01.bitmap.y/30});
 				}
-		   } else if(type === 2) {
+			} else if(type === 2) {
 				player_02.bitmap.y = pos.y * 30;
 				if(pos.x*30 > 124) {
 					bodyPly02.SetAwake(false);
@@ -1087,17 +1128,15 @@ function tick() {
 				if(other_player === 1) {
 					socket.emit('move', {x:player_02.bitmap.x/30, y:player_02.bitmap.y/30});
 				}
-		   }
-
-		}	
+			}
+		}
 
 		stage.update();
 	}
 	/*if (update) {
 		update = false; // only update once
 	}*/
-}				
-
+}
 
 
 /************************************
