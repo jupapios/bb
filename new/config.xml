@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <widget xmlns="http://www.w3.org/ns/widgets"
         xmlns:rim="http://www.blackberry.com/ns/widgets"
-        version="2.0.0.0">
+        version="1.0.1">
 
   <author href="http://juan.io" rim:copyright="Copyright 2012 Juan.io">@jp_pinilla</author>
 
@@ -10,8 +10,8 @@
   <description>Game test</description>
 
   <rim:orientation mode="landscape"/>
-		
-  <rim:category name="games"/>	
+
+  <rim:category name="games"/>
 
   <rim:permissions>
     <rim:permit>access_shared</rim:permit> 
@@ -31,4 +31,5 @@
   <access subdomains="true" uri="*"/>
   <access subdomains="true" uri="http://platform.twitter.com"/>
   <access subdomains="true" uri="http://twitter.com"/>
+  <access subdomains="true" uri="http://cajuws.juan.io"/>
 </widget>

@@ -61,23 +61,23 @@
 </head>
 <body class="caju">
 
-	<audio id="bgAudio" autobuffer>
+	<audio id="bgAudio" autobuffer preload loop>
 		<source src="audio/bgaudio.mp3" type="audio/mpeg">
 	</audio>
 
-	<audio id="audio01" autobuffer>
+	<audio id="audio01" autobuffer preload>
+		<source src="audio/audio01.mp3" type="audio/mpeg">
+	</audio>
+
+	<audio id="audio02" autobuffer preload>
+		<source src="audio/audio02.mp3" type="audio/mpeg">
+	</audio>
+
+	<audio id="audio03" autobuffer preload>
 		<source src="http://www.html5rocks.com/en/tutorials/audio/quick/test.mp3" type="audio/mpeg">
 	</audio>
 
-	<audio id="audio02" autobuffer>
-		<source src="http://www.html5rocks.com/en/tutorials/audio/quick/test.mp3" type="audio/mpeg">
-	</audio>
-
-	<audio id="audio03" autobuffer>
-		<source src="http://www.html5rocks.com/en/tutorials/audio/quick/test.mp3" type="audio/mpeg">
-	</audio>
-
-	<audio id="audio04" autobuffer>
+	<audio id="audio04" autobuffer preload>
 		<source src="http://www.html5rocks.com/en/tutorials/audio/quick/test.mp3" type="audio/mpeg">
 	</audio>
 
@@ -193,7 +193,9 @@
 				<span id="winner"></span>
 				</p>
 				<ul>
+				{{#if alone}}
 					<li>new game</li>
+				{{/if}}
 					<li>main menu</li>
 				</ul>
 			</div>
