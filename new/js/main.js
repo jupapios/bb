@@ -560,12 +560,26 @@ var game = {
 					} else {
 						return false;
 					}
+				},
+				stats: {
+					online: {
+						won: 1,
+						lost: 1,
+						dead: 1,
+						total: 1
+					},
+					face: {
+						won: 1,
+						lost: 1,
+						dead: 1,
+						total: 1						
+					}
 				}
 			});
 
 			//!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="http://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 
-			var mainMenu = containerMain.querySelectorAll("nav li");
+			//var mainMenu = containerMain.querySelectorAll("nav li");
 
 			var tweetButtons = containerMain.querySelectorAll(".tweet-button");
 
@@ -594,33 +608,85 @@ var game = {
 			}
 
 			function handleMenuBadges() {
-					document.querySelector('.options').style.display = 'none';
-					this.parentElement.querySelector('li:nth-child(2)').removeClass('active');
-					this.addClass('active');
-					document.querySelector('.badges').removeClass('to-left');
+				document.querySelector('.options').style.display = 'none';
+				this.parentElement.querySelectorAll('li').removeClass('active');
+				this.addClass('active');
+				document.querySelector('.badges').removeClass('to-left');
+				document.querySelector('.options').removeClass('to-left');
+				document.querySelector('.stats').removeClass('to-left');
+			}
+
+			function handleMenuStats() {
+				this.parentElement.querySelectorAll('li').removeClass('active');
+				this.addClass('active');
+				document.querySelector('.badges').addClass('to-left');
+				document.querySelector('.options').removeClass('to-left');
+				document.querySelector('.stats').removeClass('to-left');
+				setTimeout(function () {
+					document.querySelector('.stats').style.display = 'inline-block';
+				}, 300);
 			}
 
 			function handleMenuOptions() {
-					this.parentElement.querySelectorAll('li').removeClass('active');
-					this.addClass('active');
-					document.querySelector('.badges').addClass('to-left');
-					setTimeout(function () {
-						document.querySelector('.options').style.display = 'inline-block';
-					}, 300);
+				this.parentElement.querySelectorAll('li').removeClass('active');
+				this.addClass('active');
+				document.querySelector('.badges').addClass('to-left');
+				document.querySelector('.stats').addClass('to-left');
+				document.querySelector('.options').removeClass('to-left');
+				setTimeout(function () {
+					document.querySelector('.options').style.display = 'inline-block';
+				}, 300);
 			}
 
+
 			if(TOUCH_LISTENER) {
-				mainMenu[0].addEventListener('touch', handleMenuBadges);
-				mainMenu[1].addEventListener('touch', handleMenuOptions);
-				mainMenu[2].addEventListener('touch', handleMenuGoBack);
+				containerMain.querySelector('.li-badges').addEventListener('touch', handleMenuBadges);
+				containerMain.querySelector('.li-options').addEventListener('touch', handleMenuOptions);
+				containerMain.querySelector('.li-stats').addEventListener('touch', handleMenuStats);
+				containerMain.querySelector('.li-go-back').addEventListener('touch', handleMenuGoBack);
 			}
 
 
 			if(CLICK_LISTENER) {
-				mainMenu[0].addEventListener('click', handleMenuBadges);
-				mainMenu[1].addEventListener('click', handleMenuOptions);
-				mainMenu[2].addEventListener('click', handleMenuGoBack);
-			}						
+				containerMain.querySelector('.li-badges').addEventListener('click', handleMenuBadges);
+				containerMain.querySelector('.li-options').addEventListener('click', handleMenuOptions);
+				containerMain.querySelector('.li-stats').addEventListener('click', handleMenuStats);
+				containerMain.querySelector('.li-go-back').addEventListener('click', handleMenuGoBack);
+			}
+
+			/*var data = {
+			  items: [{label: 'September posts', data: 12015},
+			  {label: 'October posts', data: 23834},
+			  {label: 'November posts', data: 24689}]
+			};			
+
+			var bluffGraph = new Bluff.Pie('onlineGraph', '200x200');
+			//Use keynote theme. Several other themes can be used
+			  //bluffGraph.theme_keynote();
+			  //bluffGraph.title = 'Number of posts';
+
+			  for (i in data.items) {
+			    var item = data.items[i];
+			    //Add each data item to pie
+			    bluffGraph.data(item.label, item.data);
+			  }
+
+			  bluffGraph.hide_title = true;
+			  bluffGraph.hide_legend = true;
+			  bluffGraph.hide_line_numbers = true;
+			  bluffGraph.hide_line_markers = true;
+			  bluffGraph.hide_mini_legend = true;
+			  bluffGraph.hide_dots = true;
+			  bluffGraph.hide_labels_less_than = 100;
+
+			bluffGraph.set_theme({
+			    colors: ['#202020', 'white', '#a21764', '#8ab438',
+			             '#999999', '#3a5b87', 'black'],
+			    marker_color: '#aea9a9'
+			    //background_colors: ['#D7576C', '#D7576C']
+			  });			  
+			  //Finally draw the chart
+			  bluffGraph.draw();	*/				
 			var anchor = containerMain.querySelector('.options a');
 
 			if(TOUCH_LISTENER) {

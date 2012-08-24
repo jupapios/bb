@@ -55,6 +55,8 @@
 	<script src="js/lib/handlebars.js"></script>
 	<script src="js/lib/box2d.js"></script>
 	<script src="js/lib/easel.js"></script>
+	<!--<script src="js/lib/js-class.js"></script>
+	<script src="js/lib/bluff-min.js"></script>-->
 
 	<script src="js/storage.js"></script>
 	<script src="js/badges.js"></script>
@@ -146,10 +148,10 @@
 		<section>
 			<nav>
 				<ul>
-					<li class="active">my badges</li>
-					<li>options</li>
-					<!--<li>stats</li>-->
-					<li>go back</li>
+					<li class="li-badges active">my badges</li>
+					<li class="li-stats">stats</li>
+					<li class="li-options">options</li>
+					<li class="li-go-back">go back</li>
 				</ul>
 			</nav>
 			<div class="badges">
@@ -167,6 +169,28 @@
 				</div>
 				{{/each}}
 			</div>
+			<div class="stats">
+				<div class="info">
+					<h2>Online Score</h2>
+					<ul>
+						<li>Games Won: {{stats.online.won}}</li>
+						<li>Games Lost: {{stats.online.lost}}</li>
+						<li>Dead Heat: {{stats.online.dead}}</li>
+						<li>Played Games: {{stats.online.total}}</li>
+					</ul>
+					<a href="https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Flocalhost%3A8000%2F&amp;source=tweetbutton&amp;text=I%20won%20the%20badge%20playing%20caju%20game&amp;url=http%3A%2F%2Flocalhost%3A8000%2F" class="tweet-button" target="_blank"></a>
+				</div>
+				<div class="info">
+					<h2>Face Score</h2>
+					<ul>
+						<li>Games Won: {{stats.face.won}}</li>
+						<li>Games Lost: {{stats.face.lost}}</li>
+						<li>Dead Heat: {{stats.face.dead}}</li>
+						<li>Played Games: {{stats.face.total}}</li>
+					</ul>
+					<a href="https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Flocalhost%3A8000%2F&amp;source=tweetbutton&amp;text=I%20won%20the%20badge%20playing%20caju%20game&amp;url=http%3A%2F%2Flocalhost%3A8000%2F" class="tweet-button" target="_blank"></a>
+				</div>				
+			</div>
 			<div class="options">
 				<div class="popup">
 					<p>change your name</p>
@@ -174,7 +198,7 @@
 					<a class="button" href="javascript:;">save!</a>
 
 					<p>music</p>
-					<a class="button music-button" href="javascript:;">{{#if music}}disable music{{else}}active music{{/if}}</a>				
+					<a class="button music-button" href="javascript:;">{{#if music}}disable music{{else}}active music{{/if}}</a>
 				</div>
 			</div>
 		</section>
